@@ -17,6 +17,88 @@ The language provides:
 
 The language comes with a representation syntax and a description syntax: the latter is the inner form in which language expressions are handled and evaluated.
 
+## Expressions
+
+Awful can essentially do only two things: to represent expressions in an inner form and to evaluate them.
+
+An expression is the application of one or more functions to a value: possible values are
+
+- *numbers*, decimal numbers, possibly signed, possibly with decimal part, possibly with exponent; examples: `-1 +.001 -1e+1 +100.001e-1`.
+- *strings*, sequences of characters enclosed between quotes or double quotes.
+- *lambdas*, thus functions not applied to any value but taken per se: the syntax is `{label : expression}`, the terms `label` and `expression` will be defined below.
+
+From the syntactic point of view, expressions are just sequences of tokens, separated by spaces or delimiters (which are tokens, too) and spanning thru the end of the line.
+
+Numbers and strings aside, the other kinds of tokens are:
+
+- *delimiters*, thus the single character tokens `( ) [ ] { } , :` that are always parsed as single tokens, regardless of surrounding characters.
+- *labels*, sequences of contiguous characters delimited either by spaces or by delimiters.
+
+For example `1+2` is a label, while `1 +2` is a number followed by a label and `1 + 2` is a number followed by a label followed by a number. `1,2` are a number followed by a delimiter followed by another number.
+
+An expression can now be defined as:
+
+    expression  = value
+                | function value
+                
+    function    = lambda
+                | infix
+                | label
+
+    lambda      = "{" label ":" expression "}"
+    
+    value       = number
+                | string
+                | function
+    
+    infix       = "(" ")"
+                | "(" list ")"
+
+    list        = expression
+                | list operator expression
+    
+    operator    = ","
+                | "+" | "-" | "*" | "/" | "^"
+                | "$"
+                | "=" | "<" | ">" | "<>" | ">=" | "<="
+                | "and" | "or"
+
+## Evaluation
+
+An expression can be evaluated, thus it can be processed to produce a single value: however, all labels freely appearing in it should possess a value to be used during the evaluation.
+
+Such a value is provided by an *environment*, thus a list of pairs (label, value): whenever a label is encountered, the corresponding value in the environment is retrieved and substituted to the label.
+
+Consider for example
+
+    (x + 1)
+
+This cannot be evalued unless an environment defining `x` is provided: thus the expression will have possibly different values in different environments.
+
+An expression which can be evaluated with no reference to any environment is called *closed expression*. On providing an environment an expression may be closed, and we call the pair (environment, expression) a *closure* of the expression.
+
+Now let us describe the evaluation algorithm `eval` which takes an environment A, an expression E and returns the value V = eval(A, E) of the expression according to the environment.
+
+1. Parse a value V' from the expression:
+    - if the value is a number or a string then V' is that number or string;
+    - if the value is an infix expression then evaluate it (see below) and let V' be the resulting value;
+    - if the value is a function then let V' that function;
+    - if the value is a label then retrieve its value from A and set V' to that value.
+2. If V' is not a function then set V = V' and stop (with an error if there are more tokens in the expression).
+3. Else if V' is a function then evaluate the remaining tokens in the expressions to get a value V'', next apply function V' to the actual value V'' to get the value V.
+
+To evaluate an infix expression one uses an operator precedence evaluation process, for example a stack-based bottom up process.
+
+The priorities of operators are, from the less prioritaire to the more prioritaire:
+
+- ,
+- and or
+- = < > <> >= <=
+- \+ \- $
+- \* /
+- ^
+
+Infix may be nested to alter priorities.
 
 ## Inner form
 
