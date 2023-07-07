@@ -17,6 +17,51 @@ The language provides:
 
 The language comes with a representation syntax and a description syntax: the latter is the inner form in which language expressions are handled and evaluated.
 
+
+## Inner form
+
+The inner form of an Awful expression is given by a list of values/labels. Lists are, as usual, ordered sequences of values: the first value of the list is called its *head* while the list of remaining elements is called its *tail*. An empty list has neither head nor tail; a list with one element has head but not tail.
+
+We write `L:` for the head of a list and `:L` for its tail. Lists are represented by their items enclosed between parentheses. For example if `L` is `(1 2 3)` then `L: = 1` and `:L = (2 3)`.
+
+
+Each possible value is represented by a list as follows:
+
+- A number x is `(NUMBER x)`.
+- A string s is `(STRING s)`.
+- A list (x1, ..., xn) is `(LIST x1 ... xn)`.
+- A function {x: x1 ... xn} is `(FUNCTION x x1 ... xn)`.
+- A label x is `(LABEL x)`.
+- A builtin function f is `(BUILTIN f)`.
+
+For example the expression
+
+    ~ abs f (x + y, x - y)
+
+is translated into
+
+    ((BUILTIN ~) (BUILTIN abs) (LABEL f) (LIST (+ (LABEL x) (LABEL y)) (- (LABEL x) (LABEL y))))
+
+An environment is a list of pairs (label list), such as
+
+    ((x (NUMBER 10)) (y (NUMBER 5)) (f /))
+
+When an expression is evaluated, the first item of the list is parsed and, if it is a number, string or list its value is the value of the expression: if there are more symbol in the expression an error occurs.
+
+
+
+
+
+
+Within this environment, the previous expression is evaluated as follows:
+
+1. The builtin `~` is parsed and it is invoked on the tail of the list: `((BUILTIN abs) (LABEL f) (LIST (+ (LABEL x) (LABEL y)) (- (LABEL x) (LABEL y))))`.
+2. The invoked function evaluates its parameter and next uses it: thus a new evaluation starts.
+   -
+
+    
+
+
 ## Syntax
 
 ```
