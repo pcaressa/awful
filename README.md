@@ -18,7 +18,7 @@ The language provides the bare minimum equipment for a functional one:
 
 The language comes with a representation syntax and a description syntax: the latter is the inner form in which language expressions are handled and evaluated.
 
-## Expressions
+## Expressions description
 
 Awful can essentially do only two things: to represent expressions in an inner form and to evaluate them.
 
@@ -94,17 +94,11 @@ This syntax is written having a top-down recursive parser in mind, and it easier
 
 When an expression is parsed, it is actually translated into an inner form, described in the next section, before being evaluated.
 
+## Expression evaluation
 
-## Expression representation
+To evaluate an expression means to assign to it a uniquely determined value, which depends both on the constant parts of the expression (according to the algorithm given below) and on the labels, whose values are retrieved from an *evaluation environment* wrt which che evaluation is performed.
 
-
-
-
-## Evaluation
-
-An expression can be evaluated, thus it can be processed to produce a single value: however, all labels freely appearing in it should possess a value to be used during the evaluation.
-
-Such a value is provided by an *environment*, thus a list of pairs (label, value): whenever a label is encountered, the corresponding value in the environment is retrieved and substituted to the label.
+An environment is a list of pairs (label, value): whenever a label is encountered, the corresponding value in the environment is retrieved and substituted to the label.
 
 Consider for example
 
@@ -116,26 +110,74 @@ An expression which can be evaluated with no reference to any environment is cal
 
 Now let us describe the evaluation algorithm `eval` which takes an environment A, an expression E and returns the value V = eval(A, E) of the expression according to the environment.
 
-1. Parse a value V' from the expression:
-    - if the value is a number or a string then V' is that number or string;
-    - if the value is an infix expression then evaluate it (see below) and let V' be the resulting value;
-    - if the value is a function then let V' that function;
-    - if the value is a label then retrieve its value from A and set V' to that value.
-2. If V' is not a function then set V = V' and stop (with an error if there are more tokens in the expression).
-3. Else if V' is a function then evaluate the remaining tokens in the expressions to get a value V'', next apply function V' to the actual value V'' to get the value V.
+We define the value of eval following the syntax we given above.
 
-To evaluate an infix expression one uses an operator precedence evaluation process, for example a stack-based bottom up process.
+- To evaluate a pair `P1,P2` evaluate first P1, next P2, take their values V1 and V2 and return the pair (V1,V2) as value.
+- To evaluate `R1 and R2` they are both evalued, they both should be numbers and the minimum of the two is returned as value.
+- To evaluate `R1 or R2` they are both evalued, they both should be numbers and the maximum of the two is returned as value.
+- To evaluate `not R` R is evalued, it should be a number N, then 1-N is returned as value.
+- To evaluate `S1 relop S2`, both S1 and S2 are evaled, they should be numbers, then if the relation holds true 1 is returned, else 0 is returned as value.
+- To evaluate `S1 + S2`, `S1 - S2`, `S1 * S2`, `S1 / S2`, `S1 mod S2`, `S1 ^ S2`, `~ S1`, both S1 and S2 are evaled, they should be numbers, then the operation is performed and the value returned as value.
+- To evaluate `S1 $ S2`, both S1 and s2 are evauled, they should be strings, then the concatenation of these two strings is returned as value.
+- To evaluate a label, the label is searched in the environment A: if not found the evaluation fails, else the value associated to the label by the environment is returned as value.
+- A number, string or function have themselves as values.
+- When a function is followed by a value, the function is evalued on that value.
+
+The last point deserves some remarks. First of all, functions have only one parameter. Moreover, a function which is followed by something else is considered to be applied to that something else, which is evaluated and whose value is given to the function as actual parameter.
+
+The algorithm is
+
+- When a function is parsed and the expression in which it is contained is not ended, then evaluate the rest of the expression and the resulting value is given to the function as actual parameter.
+
+So on writing
+
+    sqrt abs x
+
+first is evalued `x`, whose value in the current environment is retrieved, next `abs x` is evalued and finally `sqrt abs x`.
+
+Notice that
+
+    compose (f, g)
+
+contains three functions, `compose`, `f` and `g`: the former is evaluated on the pair `(f, g)`, while both `f` and `g` are not followed by any value (the comma and the parenthesis being delimiters, not values) so that their are not evalued on any actual parameter but considered values *per se*.
 
 The priorities of operators are, from the less prioritaire to the more prioritaire:
 
 - ,
 - and or
+- not
 - = < > <> >= <=
 - \+ \- $
 - \* /
+- ~
 - ^
 
-Infix may be nested to alter priorities.
+
+## Expression representation
+
+The inner representation of expressions relies on stacks: a stack is just a list of items with only two operations allowed:
+
+- to push an element onto the stack;
+- to pop the last pushed element from the stack.
+
+We will assume that stacks can contain the following kinds of items:
+
+- numbers;
+- strings;
+- labels;
+- other stacks.
+
+We will denote a stack as a list whose last item is the top, for example (3 2 1) or also (... 3 2 1).
+
+The algorithm to translate from an expression into a stack is shown below, for the moment let us remark how values are represented:
+
+- Numbers, strings and labels are represented by themselves.
+- 
+
+
+
+## Evaluation
+
 
 
 ## Blocks
