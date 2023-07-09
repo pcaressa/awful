@@ -1,0 +1,92 @@
+Continuo a occuparmi di Alan #Turing con un altro thread, il terzo mi pare, su questa affascinante e fondamentale figura del '900 che continua a influenzare e plasmare il nostro mondo: sì, perché Turing è stato anche il primo a occuparsi di #IntelligenzaArtificiale. 0/
+
+Da una ventina d'anni, o forse più, abbiamo a che fare con sistemi di #AI che sfruttano alcuni principi, come vedremo indicati da Turing fra il 1948 e il 1951(!), che li mettono in grado di interagire con noi, profilarci, dedurre informazioni dai nostri dati, utilizzarle, ecc. 1/
+
+Un esempio è l'algoritmo di Twitter: delle miriadi di contenuti possibili a ogni istante, ci fa vedere quelli che in qualche modo attirano il nostro interesse, per esempio opinioni che amiamo o che odiamo, con lo scopo di massimizzare il nostro tempo di permanenza sul social. 2/
+
+Per farlo si basa sulle informazioni che riesce a catturare dal nostro comportamento in rete: like, retweet, follow, blocchi e ogni altra attività che svolgiamo, spesso senza starci a pensare, qui su Twitter e che nel corso del tempo forma un enorme dossier digitale, 3/
+
+che viene utilizzato per conoscerci in modo che noi non sapremmo fare: noi umani sappiamo infatti decifrare altri segnali, il comportamento, le cose che vengono dette, ecc. mentre le #AI dei social si addestrano a correlare dati dai quali noi sapremmo cavare ben poco. 4/
+
+Turing inizia a interessarsi di #AI nel 1948, lo stesso anno in cui i primi due computer propriamente detti stavano per essere completati: l'ENIAC progettato da John Mauchly e Prosper Eckert negli USA, e il Manchester Baby negli UK, su progetto dello stesso Turing. 5/
+
+Queste macchine enormi occupavano intere stanze, consumavano tantissimo ed erano milioni di volte più lente delle attuali, che hanno milioni di volte la memoria di quei primi giganti stupidi. 6/
+
+(Isaac Asimov parla in un suo racconto di uno scienziato che emerge dalle "viscere di Multivac" perché immagina un supercomputer Multivac, che fa il verso a uno della sua epoca, come il celebre Univac. Ma questa è un'altra storia.) 7/
+
+Pensare che questi mostri costruiti sostanzialmente per calcoli numerici, per esempio calcoli balistici, potessero mostrare una forma di intelligenza richiedeva una dose di visionarietà che solo un pazzo o un genio, e questo è il caso di Turing, potevano possedere. 8/
+
+Nel suo saggio del 1948 Turing capisce subito che l'idea di costruire un robot universale, in grado di replicare un essere umano (il sogno degli androidi che popolano la mitologia e la letteratura fino all'epoca moderna), è troppo generica e complessa: 9/
+
+"Un modo per impostare il nostro compito di costruire una macchina pensante sarebbe quello di prendere un uomo intero e provare a sostituire tutte le sue parti con dispositivi elettronici. Lui includerebbe telecamere, microfoni, altoparlanti, ruote e servo-meccanismi" 10/
+
+"del tipo di un cervello elettronico. Ciò richiederebbe naturalmente uno sforzo enorme. [...] Inoltre [...] la creatura non potrebbe avere contatto col cibo, col sesso, lo sport e molte altre cose di interesse per gli esseri umani." 11/
+
+"Invece io propongo di provare a vedere cosa possa essere fatto con un cervello che sia più o meno senza corpo, provvisto al più di organi di vista, parola e udito". Turing individua anche possibili campi nei quali queste macchine avrebbero potuto eccellere 12/
+
+La lista dà i brividi se letta oggi: "Giochi vari, come scacchi, tris, bridge, poker. L’apprendimento del linguaggio. La traduzione del linguaggio. La crittografia. La matematica". 12/
+
+I successi letteralmente sovrumani delle #AI negli ultimi decenni sono avvenuti sostanzialmente in questi campi, eccezion fatta per il riconoscimento e la generazione di immagini. 13/
+
+Un'altra grande intuizione di Turing è che una macchina pensante non deve essere costruita bell'è pronta, ma deve seguire lo stesso percorso di interazione con l'ambiente che seguono gli animali e l'uomo. Ancora nelle sue profetiche parole: 14/
+
+"Invece che scrivere un programma per computer per simulare una mente adulta, perché piuttosto non provare a produrne uno che simuli la mente di un bambino? Se questo fosse soggetto a un’appropriata educazione si otterrebbe la mente di un adulto." Lo scrive nel 1950! 15/
+
+Quindi Turing teorizza il machine learning: costruire una macchina, o un software che gira in una macchina, in grado di imparare e poi farlo interagire con l'ambiente in una fase di apprendimento ed educazione che lo porti al livello di un essere umano adulto. 16/
+
+Ma come fare questo apprendimento? Oggi ci sono varie classi di algoritmi per farlo, come le celebri reti neurali i cui primi rudimenti furono dati negli anni '40. Turing profetizza una classe di algoritmi che oggi si chiamano "reinforcement learning" nel suo scritto del 1950: 17/
+
+"Normalmente associamo al processo di insegnamento a premi e punizioni. Semplici macchine-bambino potrebbero essere costruite in modo che gli eventi che precedono una punizione tendano a non essere ripetuti," 18/
+
+"mentre un segnale di premio aumenterebbe la probabilità di ripetizione degli eventi che vi hanno portato [...] L’uso di premi e punizioni è nel migliore dei casi solo una parte del processo di apprendimento." 18/
+
+"Detto brutalmente, se l’insegnante non ha altri mezzi di comunicazione con l’allievo, la quantità di informazioni che può raggiungerlo non eccede il numero totale di premi e punizioni applicati." (Computing machinery & intelligence, 1950). 19/
+
+Arduo sottovalutare la portata profetica di queste idee! Pensiamo a cosa era il mondo nel 1950, quando i nostri genitori o nonni erano bambini. Turing morì nel 1954, altrove ho spiegato come sia finito vittima di omofobia sistemica: scrisse queste cose fra il 1948 e il 1951. 20/
+
+Ma non basta: un'altra idea fondamentale delle #AI contemporanee, che mancava in quelle degli anni '60, '70 e '80, era l'uso centrale della casualità nei processi di apprendimento. Di nuovo Turing lo aveva capito con mezzo secolo di anticipo: 21/
+
+"È probabilmente giusto inserire elementi casuali in una macchina che apprende. Un elemento di casualità è utile quando cerchiamo la soluzione a un problema. [...] Ora, il processo di apprendimento può essere visto come la ricerca di una forma di comportamento" 22/
+
+"che soddisfi l’insegnante (o qualche altro criterio). Poiché c’è probabilmente un gran numero di soluzioni soddisfacenti, il criterio casuale sembra migliore di quello sistematico. Si dovrebbe notare che è usato anche nel processo evolutivo." 23/
+
+Il contributo più noto di Turing è il suo famoso test, il "gioco dell'imitazione". Di nuovo la cosa migliore è leggere le sue parole:
+"Vi propongo la domanda 'può una macchina pensare?'. Si dovrebbe iniziare col definire il significato dei termini 'macchina' e 'pensare'." 24/
+
+"Le definizioni dovrebbero essere circoscritte in modo da riflettere il più possibile l’uso ordinario di queste parole, ma questo approccio è fuorviante. [...] Invece sostituirò la domanda con un’altra, strettamente legata ma espressa con parole relativamente non ambigue." 25/
+
+"La nuova forma del problema può essere descritta in termini di un gioco che chiamiamo 'il gioco dell’imitazione'. Si gioca con tre persone, un uomo, una donna e un inquirente che può essere di entrambi i sessi. L’inquirente sta in una stanza separata dagli altri due." 26/
+
+"Lo scopo del gioco per l’inquirente è di determinare quale degli altri due sia l’uomo e quale la donna. Li conosce solo con le sigle X e Y e alla fine del gioco deve dire 'X è l'uomo' oppure 'Y è l'uomo'. Lo scopo del gioco per il terzo giocatore è aiutare l’inquirente" 27/
+
+"Ora facciamoci una domanda: 'Cosa accadrebbe se una macchina prendesse il ruolo di A in questo gioco?' L’inquirente sbaglierebbe lo stesso numero di volte che se il gioco fosse giocato da un uomo? Queste domande sostituiscono la nostra originaria 'Può una macchina pensare?' 28/
+
+"con la domanda 'Si può immaginare un computer che riesca a vincere il gioco dell’imitazione?'". Cioè riuscirebbe un computer a confondere un inquirente umano che lui (il computer) è l'umano e l'altro interlocutore il computer? 29/
+
+"Credo che in circa 50 anni sarà possibile programmare computer, con capacità di memoria di miliardi di numeri, per far loro giocare il gioco dell’imitazione così bene che un inquirente medio non avrà più del 70% di possibilità di vincere dopo 5 minuti di conversazione." 30/
+
+(ChatGPT e i suoi simili hanno centinaia di miliardi di numeri come parametri al loro interno e in 5 minuti probabilmente ingannerebbero molti inquirenti nel gioco dell'imitazione, se fossero disposti a giocarlo.) 31/
+
+C'è da dire che il test di Turing misura una forma parzialissima di intelligenza, legata alla capacità di sostenere una conversazione: un bonobo, un polpo o un delfino non potrebbero esservi sottoposti ma non abbiamo dubbi che siano intelligenti! 32/
+
+E che il test di Turing misuri la capacità di comprensione di un testo e non semplicemente la capacità di fare un copiaincolla, come effettivamente fanno i #LLM che vanno a stimare la probabilità della distribuzioni di parole in un testo, è oggetto di dibattito (Searle &Co). 33/
+
+Ma gli elementi che Turing introduce nei suoi profetici lavori scientifici sono proprio quelli oggi impiegati nelle #AI e dei quali tanto si dibatte. Come ogni genio, Turing si interroga sulle conseguenze delle sue idee in un saggio del 1951, Computing machinery&intelligence 34/
+
+"Supponiamo che le macchine intelligenti siano una possibilità concreta e guardiamo alle conseguenze nel costruirle [...] Ci sarebbe grande opposizione da parte di chi fa un lavoro intellettuale, che avrebbe paura di essere soppiantato. Ma probabilmente si sbaglierebbero" 35/
+
+"Resterebbe ancora molto da fare, per esempio provare a interpretare correttamente cosa dicano le macchine, o provare a tenere il passo agli standard di intelligenza imposti dalle macchine, perché mi sembra probabile che," 36/
+
+"una volta che i metodi dell’intelligenza meccanica si inizino ad applicare, non ci vorrebbe molto a sorpassare le nostre deboli capacità. Queste macchine non morirebbero, e sarebbero in grado di conversare fra loro per aumentare la loro conoscenza." 37/
+
+"Quindi, a un certo punto, potremmo aspettarci che le macchine prendano il controllo, nel modo menzionato da Samuel Butler in Erewhon." Concludo con altre preoccupazioni espresse in un altro articolo del 1951 "Can digital computer think?": 38/
+
+"Se una macchina può pensare, potrebbe pensare in modo più intelligente di quanto facciamo noi? E in tal caso che ne sarebbe di noi? [...] Simili pericoli e umiliazioni potrebbero scaturire anche dal fatto che potremmo essere sopraffatti dai ratti o dai maiali." 39/
+
+"Questa è una possibilità che teoricamente è difficile mettere in dubbio, ma abbiamo
+convissuto con ratti e maiali così a lungo, senza che la loro intelligenza si sia accresciuta di molto, quindi non siamo preoccupati da questa possibilità." 40/
+
+"Sentiamo che se pure accadrà, sarà fra molto milioni di anni. Ma il nuovo pericolo è più vicino. Se verrà lo farà certamente nel prossimo millennio [il terzo]. Una possibilità remota ma non astronomicamente remota, certamente qualcosa che ci trasmette ansia."
+THE END
+
+
