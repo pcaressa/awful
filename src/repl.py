@@ -1,16 +1,20 @@
 # repl.py - Simple repl module
 
 def repl(interpreter, prompt = ""):
-    print("[type: 'bye' to leave, 'batch FILENAME' to process a file]")
+    print()
+    print("Type: 'bye' to leave, 'batch FILENAME' to process a file")
+    print("Lines starting with backslash or empty are skipped")
+    print("A line ending with backslash is joined to the following one")
     print()
     while (p := input(prompt + ": ")) != "bye":
         p = p.strip()
-        if p == "":
+        # Skip empty lines or lines starting with backslash
+        if p == "" or (len(p) > 0 and p[0] == "\\"):
             continue
         # Join lines ending with backslash
         while len(p) > 0 and p[-1] =='\\':
             q = input(prompt + "| ").strip()
-            p += q
+            p = p[:-1] + q  # strip also the '\\' on the right
         if p[:6] == "batch ":
             try:
                 filename = p[6:].strip()
