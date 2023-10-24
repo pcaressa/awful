@@ -286,10 +286,23 @@ def apply(f, e, c):
     # environment of the closure augmented by d.
     y, e_dummy, c_dummy = eval_term([d] + f[3], f[2])
 
-    #if len(c_dummy) > 0:
-    #    raise BaseException("Too much stuff in function definition")
+    if len(c_dummy) > 0:
+        raise BaseException("Too much stuff in function definition")
 
     return y, e, c
+
+def evaluation(e, c):
+    tok_next = look_ahead(c)
+    if tok_next in KEYWORDS:
+        retval, e, c = KEYWORDS[tok_next](e, c[1:])
+        c = expect(c, ")")
+    else:
+        f, e, c = eval_term(e, c)
+        if f[0] != "CLOSURE":
+            raise BaseException(f"Not a function: {f}")
+        retval, e, c = apply(f, e, c)
+        # no need to skip the ending ")": apply do it for us.
+    return retval, e, c
 
 def eval_term(e, c):
     """Evaluate the term in c using environment e to retrieve
@@ -309,20 +322,32 @@ def eval_term(e, c):
     elif tok == "{":
         retval, e, c = closure(e, c)
     elif tok == "(":
-        tok_next = look_ahead(c)
-        if tok_next in KEYWORDS:
-            retval, e, c = KEYWORDS[tok_next](e, c[1:])
-            c = expect(c, ")")
-        else:
-            f, e, c = eval_term(e, c)
-            if f[0] != "CLOSURE":
-                raise BaseException(f"Not a function: {f}")
-            retval, e, c = apply(f, e, c)
-            # no need to skip the ending ")": apply do it for us.
+        retval, e, c = evaluation(e, c)
     else:
         raise BaseException(f"Syntax error: {tok, val}")
-
     return retval, e, c
+
+def awful_to_str(v):
+    """Given an awful value return the string representing it."""
+    # v = [type, value]
+    t = v[0]
+    val = v[1]
+    if t in DELIMITERS or t in KEYWORDS: s = val
+    elif t == "NUMBER": s = str(val)
+    elif t == "STRING": s = '"' + val + '"'
+    elif t == "LIST":
+        s = "["
+        for x in val:
+            s += awful_to_str(x) + ","
+        s = s[:-1] + "]"
+    elif t == "CLOSURE":
+        s = "{ " + " ".join(val) + ":"
+        for x in v[2]:  # body
+            s += awful_to_str(x)
+        s += "}"
+    else:
+        s = "?"
+    return s
 
 def awful(p):
     """Parses an expression from the string p and evaluates it."""
