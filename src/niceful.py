@@ -77,7 +77,7 @@
                 "+" | "-" | ":"
                 "*" | "/"
 """
-from awful import awful
+from awful import awful, awful_to_str
 from scan import expect, look_ahead, parse, scan
 
 DELIMITERS = "()[],:"
@@ -90,6 +90,43 @@ KEYWORDS = ("1st", "and", "else", "fun", "if", "in", "let",
 # Classic top-down parser: verbose but easy. Each
 # function parses from c and translates into a string
 # s a syntactic production in a recursive way.
+
+def parse_list(c):
+    """Parse a list from c and translate it into a string s:
+    the pair (s, c) is returned, with c updated and the first
+    unparsed token is the final ']'.
+    A list [e1,..,en] turns into the Awful expression
+    PUSH e1(PUSH e2(...(PUSH en NIL)...)."""
+    if look_ahead(c) == "]":
+        retval = "NIL"
+    else:
+        s, c = parse_let(c)
+        retval = "(PUSH " + s + " "
+        npar = 1    # number of opened parentheses in retval
+        while look_ahead(c) == ",":
+            s, c = parse_let(c[1:])
+            retval += "(PUSH " + s + " "
+            npar += 1
+        c = expect(c, "]")
+        retval += " NIL" + (")"*npar)
+    return retval, c
+
+def parse_funappl(retval, c):
+    "retval contains the term just parsed."
+    while len(c) > 0 and c[0][0] == "(":
+        aparams = []
+        c = c[1:]   # skip the "("
+        while look_ahead(c) != ")":
+            s1, c = parse_let(c)
+            aparams.append(s1)
+            tok = look_ahead(c)
+            c = c[1:]
+            if tok == ")":
+                break
+            if tok != ",":
+                raise BaseException("',' or ')' expected in actual parameter list")
+        retval = "(" + retval  + " " + ",".join(aparams) + ")"
+    return retval, c
 
 def parse_term(c):
     tok, val, c = parse(c)
@@ -111,41 +148,14 @@ def parse_term(c):
         s, c = parse_term(c)
         retval = "BOS " + s
     elif tok == "[":
-        # A list [e1,..,en] is translated into (e1):(e2):...(en):NIL
-        tok = look_ahead(c)
-        if tok == "]": retval = "NIL"
-        else:
-            s, c = parse_let(c)
-            retval = "(PUSH " + s + " "
-            npar = 1    # number of opened parentheses in retval
-            while look_ahead(c) == ",":
-                s, c = parse_let(c[1:])
-                retval += "(PUSH " + s + " "
-                npar += 1
-            c = expect(c, "]")
-            #if look_ahead(c) != "]":
-            #    raise BaseException("',' or ']' expected")
-            retval += " NIL" + (")"*npar)
+        retval, c = parse_list(c)
     else:
         raise BaseException(f"Syntax error: '{val}'")
 
     # After a term, a list of actual parameters, enclosed
     # between parentheses and separated by commas, may follows:
     # if it is the case, translate it.
-    while len(c) > 0 and c[0][0] == "(":
-        aparams = []
-        c = c[1:]   # skip the "("
-        while look_ahead(c) != ")":
-            s1, c = parse_let(c)
-            aparams.append(s1)
-            tok = look_ahead(c)
-            c = c[1:]
-            if tok == ")":
-                break
-            if tok != ",":
-                raise BaseException("',' or ')' expected in actual parameter list")
-        retval = "(" + retval  + " " + ",".join(aparams) + ")"
-    return retval, c
+    return  parse_funappl(retval, c)
 
 def parse_prod(c):
     retval, c = parse_term(c)
@@ -261,7 +271,8 @@ def niceful(t):
         s, c = parse_let(c)
         print(s)
         y = awful(s)
-        # print(s + " -> " + str(y))
+        if y != None:
+            y = awful_to_str(y)
     except BaseException as ex:
         print("Error:", ex)
         y = None
