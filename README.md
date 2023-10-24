@@ -1,4 +1,6 @@
-# AWFUL - A Weird FUnctional Language
+# WIP!!!
+
+## AWFUL - A Weird FUnctional Language
 
 ### Paolo Caressa
 
