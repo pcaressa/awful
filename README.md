@@ -188,6 +188,8 @@ We can express Niceful syntax by means of the following grammar written in the o
 
 Each Niceful syntactic construction can be translated into a corresponding Awful expression or part of expression: thus Niceful is just a different form in which to express Awful expressions.
 
+### Niceful translation function
+
 For each kind of Niceful construct we will now specify the corresponding Awful expression. More precisely, let us define a function *y* = T(*x*) that translates a Niceful expression *x* into an Awful expression *y*.
 
 We will define T on all possible expressions as defined by the previous grammar:
