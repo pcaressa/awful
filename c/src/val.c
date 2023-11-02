@@ -4,30 +4,36 @@
 #include "../header/stack.h"
 #include "../header/val.h"
 
-/** Print a value on a file. */
-void val_printf(FILE *file, int type, val_t v)
+void val_delete(val_t v)
 {
-    switch (type) {
-    case NUMBER: fprintf(file, "%g", v.n); break;
-    case STRING: fprintf(file, "'%s'", v.t); break;
-    case ATOM: fputs(v.t, file); break;
-    case DELIMITER: fputc(v.d, file); break;
-    case KEYWORD: fprintf(file, "<function %p>", v.p); break;
+    if (v.type == STACK || v.type == CLOSURE)
+        // A closure is a stack of stacks [params, body, env]
+        stack_delete(v.val.s);
+}
+
+void val_printf(FILE *f, val_t v)
+{
+    switch (v.type) {
+    case NUMBER: fprintf(f, "%g", v.val.n); break;
+    case STRING: fprintf(f, "'%s'", v.val.t); break;
+    case ATOM: fputs(v.val.t, f); break;
+    case KEYWORD: fprintf(f, "<function %p>", v.val.p); break;
     case STACK: {
-        fputc('[', file);
-        stack_t s = v.s;
+        fputc('[', f);
+        stack_t s = v.val.s;
         while (s != NULL) {
-            val_printf(file, s->type, s->val);
+            val_printf(f, s->val);
             if (s->next == NULL) break;
-            fputc(',', file);
+            fputc(',', f);
             s = s->next;
         }
-        fputc(']', file);
+        fputc(']', f);
         break;
     }
     case CLOSURE: {
-        fputs("CLOSURE: ", file);
-        val_printf(file, STACK, v);
+        fputs("CLOSURE: ", f);
+        val_t v1 = {.type = STACK, .val.s = v.val.s};
+        val_printf(f, v1);
         break;
     }
     //~ case CLOSURE: {
@@ -42,10 +48,10 @@ void val_printf(FILE *file, int type, val_t v)
         //~ break;
     //~ }
     default:
-        if (type > 32 && type < 128) {
-            fprintf(file, "'%c'", v.d);
+        if (v.type > 32 && v.type < 128) {
+            fprintf(f, "'%c'", v.val.d);
         } else {
-            fputc('?', file);
+            fputc('?', f);
         }
     }
 }

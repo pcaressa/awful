@@ -12,6 +12,7 @@
 
 stack_t scan(char *text, char *delimiters, stack_t keywords)
 {
+    val_t v;
     assert(text != NULL);
     stack_t tokens = NULL;
     while (*text != '\0') {
@@ -19,20 +20,21 @@ stack_t scan(char *text, char *delimiters, stack_t keywords)
         if (*text == '\0') break;
         if (strchr(delimiters, *text) != NULL) {
             //tokens = stack_push(tokens, DELIMITER, *text);
-            tokens = stack_push(tokens, *text, *text);
-            ++ text;
-        } else
-        if (*text == '\\') {    // Comment
-            break;
-        } else
+            v.type = *text;
+            tokens = stack_push(tokens, v);
+            ++ text; }
+        else
+        if (*text == '\\') break; // Comment: skip it!
+        else
         if (*text == '\'' || *text == '"') {
             char q = *text;
             char *p = strchr(text + 1, q);
             except_on(p == NULL, "End of text inside string");
-            char *t = str_new(text + 1, p - text - 1);
-            tokens = stack_push(tokens, STRING, t);
-            text = p + 1;
-        } else {
+            v.type = STRING;
+            v.val.t = str_new(text + 1, p - text - 1);
+            tokens = stack_push(tokens, v);
+            text = p + 1; }
+        else {
             // Scans up to the following space or delimiter.
             char *p = text++;
             while (*text != '\0' && !isspace(*text)
@@ -41,27 +43,28 @@ stack_t scan(char *text, char *delimiters, stack_t keywords)
             // The atom starts at p and its length is text - p.
             // Check against a number.
             char *q;
-            double n = strtod(p, &q);
+            v.val.n = strtod(p, &q);
             if (q == text) {
-                tokens = stack_push(tokens, NUMBER, n);
-            } else {
+                v.type = NUMBER;
+                tokens = stack_push(tokens, v); }
+            else {
                 char *t = str_new(p, text - p);
 
                 // Check against a keyword.
                 stack_t k = keywords;
                 while (k != NULL) {
                     // k is a stack of consecutive pairs name->pointer
-                    assert(k->type == ATOM);
-                    if (strcmp(t, k->val.t) == 0) {
-                        tokens = stack_push(tokens, KEYWORD, k->next->val.p);
-                        break;
-                    }
-                    k = k->next->next;
-                }
-                if (k == NULL)  // Atom (variable!)
-                    tokens = stack_push(tokens, ATOM, t);
-            }
-        }
-    }
+                    assert(k->val.type == ATOM);
+                    if (strcmp(t, k->val.val.t) == 0) {
+                        v.type = KEYWORD;
+                        v.val.p = k->next->val.val.p;
+                        tokens = stack_push(tokens, v);
+                        break; }
+                    k = k->next->next; }
+                if (k == NULL) {
+                    // Atom (variable!)
+                    v.type = ATOM;
+                    v.val.t = t;
+                    tokens = stack_push(tokens, v); }}}}
     return tokens;
 }
