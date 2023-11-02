@@ -117,14 +117,16 @@ Let us describe how to implement the Awful interpreter. We will assume to use a 
 
 We'll write stacks as: [*tos,2os,3os, ...*] being *tos* the topmost elements etc.
 
+The interpreter will be described by words but using only the values available in the language itself: we will use the Json notation [x1,...,xn] for stacks, as already stated, and we will write {k1:v1,...,kn:vn} as an abbreviation for the stack [[k1,v1],...,[kn:vn]].
+
 ### Afwul interpreter
 
 The interpreter exposes a function/method *s = awful(t)* that accepts a string and returns a stack of one of the following forms:
 
-- ["NUMBER", *n*]
-- ["STRING", *t*]
-- ["STACK", *s*]
-- ["CLOSURE", *p, b, e*] where:
+- {"NUMBER": *n*}
+- {"STRING", *t*}
+- {"STACK", *s*}
+- {"CLOSURE", *p, b, e*} where:
     - *p* is the stack [*x1,...,xn*] of formal parameter names;
     - *b* is a stack of tokens containing the body of the funciton;
     - *e* is stack of stacks, the environment in which the function has been defined.
