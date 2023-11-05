@@ -356,6 +356,7 @@ def awful(p):
         y, e, c = eval_term([], c)
         if len(c) > 0:
             print("Warning: more stuff on the expression after evaluation!")
+        y = awful_to_str(y)
     except BaseException as ex:
         print("Error:", ex)
         y = None
