@@ -1,0 +1,120 @@
+awful.c:22:    except_on(y->type != NUMBER, "Number expected");    \
+awful.c:24:    except_on(x->type != NUMBER, "Number expected");
+awful.c:29:    return stack_push(NULL, NUMBER, x->val.n + y->val.n);
+awful.c:35:    return stack_push(NULL, NUMBER, x->val.n / y->val.n);
+awful.c:41:    return stack_push(NULL, NUMBER, x->val.n * y->val.n);
+awful.c:47:    return stack_push(NULL, NUMBER, pow(x->val.n, y->val.n));
+awful.c:53:    return stack_push(NULL, NUMBER, x->val.n - y->val.n);
+awful.c:59:    return stack_push(NULL, NUMBER, x->val.n < y->val.n);
+awful.c:65:    return stack_push(NULL, NUMBER, x->val.n <= y->val.n);
+awful.c:73:    int type = x->type;
+awful.c:74:    if (type == y->type) {
+awful.c:76:            flag = x->val.n == y->val.n;
+awful.c:79:            flag = strcmp(x->val.t, y->val.t) == 0;
+awful.c:90:    retval->val.n = !retval->val.n;
+awful.c:115:    for (; e != NULL; e = e->next) {
+awful.c:117:            name->value -> name->value -> ... */
+awful.c:118:        assert(e->type == STACK);
+awful.c:119:        for (stack_t p = e->val.s; p != NULL; p = p->next->next) {
+awful.c:120:            assert(p->type == STRING);
+awful.c:121:            if (strcmp(t, p->val.t) == 0) {
+awful.c:122:                return p->next;
+awful.c:144:    int parentheses = 0;    // '('-')' matches counter
+awful.c:146:    while (tokens != NULL && (tokens->type != ')' && tokens->type != ',' || parentheses > 0)) {
+awful.c:147:        parentheses = (tokens->type == '(') - (tokens->type == ')');
+awful.c:149:        tokens = tokens->next;
+awful.c:152:    tokens = tokens->next;          // skip ')' or ','
+awful.c:171:    except_on(f->type != CLOSURE, "Function expected");
+awful.c:173:    stack_t fparams = f->val.s;
+awful.c:174:    stack_t body = f->next->val.s;
+awful.c:175:    stack_t fenv = f->next->next->val.s;
+awful.c:180:    for (stack_t p = fparams; p != NULL; p = p->next) {
+awful.c:183:        assoc = stack_push(pair, ATOM, p->val.t);
+awful.c:189:    for (stack_t p = assoc; p != NULL; p = p->next->next) {
+awful.c:190:        stack_t pn = p->next;
+awful.c:194:        if (retval->next != NULL) retval->next = pn->next;
+awful.c:195:        p->next = retval;
+awful.c:225:    while (tokens->type != ':') {
+awful.c:226:        except_on(tokens->type != ATOM, "Atom expected");
+awful.c:227:        params = stack_push(params, ATOM, tokens->val.t);
+awful.c:228:        tokens = tokens->next;
+awful.c:231:        //~ if (tokens->type == '!') {
+awful.c:235:        //~ except_on(tokens == NULL || tokens->type != ATOM,
+awful.c:238:        //~ param = stack_push(param, ATOM, tokens->val.t);
+awful.c:243:    tokens = tokens->next;  // skip ':'
+awful.c:247:    while (tokens != NULL && (tokens->type != '}' || braces > 0)) {
+awful.c:248:        braces = (tokens->type == '{') - (tokens->type == '}');
+awful.c:250:        tokens = tokens->next;
+awful.c:253:    tokens = tokens->next;
+awful.c:277:    switch (tokens->type) {
+awful.c:280:        tokens = tokens->next;
+awful.c:283:        retval = awful_find(tokens->val.t, env);
+awful.c:284:        except_on(retval == NULL, "Undefined variable %s", tokens->val.t);
+awful.c:285:        tokens = tokens->next;
+awful.c:289:        tokens = tokens->next;
+awful.c:290:        retval = ((keyword_t)(tokens->val.p))(&tokens, env);
+awful.c:293:        tokens = tokens->next;
+awful.c:297:        tokens = tokens->next;
+awful.c:316:    // pairs name->address->... for keywords.
+awful.c:327:    // a stack of consecutive pairs name->address of keywords.
+except.c:16:        longjmp(except_buf, -1);
+scan.c:28:            char *t = str_new(text + 1, p - text - 1);
+scan.c:37:            char *t = str_new(p, text - p);
+scan.c:42:                // p is a stack with two elements: name->pointer
+scan.c:43:                assert(k->type == ATOM);
+scan.c:44:                if (strcmp(t, k->val.t) == 0) {
+scan.c:45:                    tokens = stack_push(tokens, KEYWORD, k->next->val.p);
+scan.c:48:                k = k->next->next;
+stack.c:17:        if (s->type == ATOM || s->type == STRING) {
+stack.c:18:            str_del(s->val.t);
+stack.c:20:        if (s->type == STACK) {
+stack.c:21:            stack_delete(s->val.s);
+stack.c:23:        if (s->type == CLOSURE) {
+stack.c:25:            stack_t params = s->val.s;
+stack.c:26:            stack_t body = params->next;
+stack.c:27:            stack_t env = body->next;
+stack.c:32:        stack_t next = s->next;
+stack.c:35:        /*stack_t next = s->next;
+stack.c:37:        s->next = stack_freelist;
+stack.c:46:    s = tos->next;
+stack.c:47:    -- tos->refs;
+stack.c:48:    if (tos->refs == 0) {
+stack.c:49:        tos->next = stack_freelist;
+stack.c:60:    s->next = s2;
+stack.c:72:        stack_freelist = stack_freelist->next;
+stack.c:80:    tos->refs = 1;
+stack.c:81:    tos->type = t;
+stack.c:85:    case NUMBER: tos->val.n = va_arg(args, double); break;
+stack.c:87:    case ATOM: tos->val.t = va_arg(args, char*); break;
+stack.c:89:    case CLOSURE: tos->val.s = va_arg(args, stack_t); break;
+stack.c:90:    case KEYWORD: tos->val.p = va_arg(args, void*); break;
+stack.c:91:    //case DELIMITER: tos->val.d = (char)va_arg(args, int); break;
+stack.c:95:            tos->val.d = t;
+stack.c:102:    tos->next = s;
+stack.c:108:    if (s == NULL || s->next == NULL) {
+stack.c:111:    /* for each triple of consecutive elements a->b->c
+stack.c:112:        inverts the links as a<-b<-c. */
+stack.c:115:    stack_t next = s->next;
+stack.c:117:    while (next->next != NULL) {
+stack.c:118:        here->next = prev;
+stack.c:119:        stack_t next_next = next->next;
+stack.c:120:        next->next = here;
+stack.c:125:    next->next = here;
+str.c:8:    A string contains a hidden field s[-1] where the
+str.c:12:#define REF(s) (((unsigned*)(s))[-1])
+str.c:23:        free((unsigned*)s - 1);
+str.c:25:        -- REF(s);
+val.c:20:            val_printf(file, s->type, s->val);
+val.c:21:            if (s->next == NULL) break;
+val.c:23:            s = s->next;
+val.c:38:        //~ val_printf(file, STACK, v.s->next.val.s);
+val.c:40:        //~ val_printf(file, STACK, v->next->next.val.s);
+scan.h:10:    stack of consecutive pairs name->value->... where
+scan.h:16:    - {type:NUMBER, val:n}
+scan.h:17:    - {type:STRING, val:t}
+scan.h:18:    - {type:ATOM, val:t}
+scan.h:19:    - {type:STACK, val:s}
+scan.h:20:    - {type:CLOSURE, val:s}
+scan.h:21:    - {type:KEYWORD, val:p}
+scan.h:22:    - {type:d} if d is a delimiter (val is ignored)
+val.h:20:    NUMBER = -7,

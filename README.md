@@ -23,18 +23,31 @@ One may thinks to representation language as the "inner form" and to publication
 Currently the status of the project is the following:
 
 - Documentation: this md file.
-- Awful: the afwul.py (that uses scan.py and repl.py) script.
-- Niceful: the niceful.py (that uses scan.py and repl.py) script.
+- Awful:
+    - Python implementation: [srpy/] folder containing a series of Python scripts with a complete implementation: see below for the usae.
+    - C implementation: [src/] folder containing C sources to be compiled into a single executable.
+- Niceful:
+    - Python implementation: [srpy/] folder containing the niceful.py script.
 
 TODOs:
 
-- More efficient implementation, say in C, of the awful interpreter.
-- Same for Niceful.
 - Niceful implementation in Niceful, used to self-implement Niceful using the Awful interpreter.
 
 ## Awful: an AWful FUnctional Language
 
 Awful provides a Lisp-like (but parentheses-less) formalism to encode values and expressions.
+
+### Launching the interpreter
+
+The Python prototype is simple to use: you'll need the Python environment set up, version 3; no packages other than the built-in ones are used.
+
+Just store the folder [srpy] somewhere in the PATH and launch
+
+    python3 awful
+
+A prompt will appear:
+
+????????????????????????????
 
 ### Awful syntax
 
@@ -117,14 +130,16 @@ Let us describe how to implement the Awful interpreter. We will assume to use a 
 
 We'll write stacks as: [*tos,2os,3os, ...*] being *tos* the topmost elements etc.
 
+The interpreter will be described by words but using only the values available in the language itself: we will use the Json notation [x1,...,xn] for stacks, as already stated, and we will write {k1:v1,...,kn:vn} as an abbreviation for the stack [[k1,v1],...,[kn:vn]].
+
 ### Afwul interpreter
 
 The interpreter exposes a function/method *s = awful(t)* that accepts a string and returns a stack of one of the following forms:
 
-- ["NUMBER", *n*]
-- ["STRING", *t*]
-- ["STACK", *s*]
-- ["CLOSURE", *p, b, e*] where:
+- {"NUMBER": *n*}
+- {"STRING", *t*}
+- {"STACK", *s*}
+- {"CLOSURE", *p, b, e*} where:
     - *p* is the stack [*x1,...,xn*] of formal parameter names;
     - *b* is a stack of tokens containing the body of the funciton;
     - *e* is stack of stacks, the environment in which the function has been defined.

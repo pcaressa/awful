@@ -1,0 +1,4 @@
+ADD 10 20
+(({x:{y:ADD x y}} 10) 20)
+({x:{y:ADD x y}} 10)
+{x:{y:ADD x y}}
