@@ -185,8 +185,7 @@ static val_t awful_find(char *t, stack_t e)
 static stack_t awful_parse(stack_t *r_tokens)
 {
     stack_t tokens = *r_tokens;
-    except_on(tokens == NULL,
-        "Unexpected end of text in actual parameter");
+    except_on(tokens == NULL, "Unexpected end of text in actual parameter");
     int parentheses = 0;    // '('-')' match counter
     stack_t body = NULL;
     int type;
@@ -195,11 +194,8 @@ static stack_t awful_parse(stack_t *r_tokens)
         body = stack_dup(tokens, body);
         tokens = tokens->next;
     }
-    except_on(tokens == NULL,
-        "Unexpected end of text in actual parameter");
-
+    except_on(tokens == NULL, "Unexpected end of text in actual parameter");
     tokens = tokens->next;          // skip ')' or ','
-    
     *r_tokens = tokens;
     return stack_reverse(body);
 }
@@ -215,7 +211,6 @@ static val_t awful_application(stack_t *r_tokens, stack_t env)
     except_on(tokens == NULL, "Unexpected end of text");
 
     // tokens = f [e1 "," ... "," en] ")"
-    
     val_t f = awful_eval(&tokens, env);
 
     except_on(f.type != CLOSURE, "Function expected");
@@ -310,7 +305,6 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
     }
     params = stack_reverse(params);
     tokens = tokens->next;  // skip ':'
-
     stack_t body = NULL;
     int braces = 0;
     int type;
@@ -322,14 +316,12 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
     except_on(tokens == NULL, "Unexpected end of text");
     tokens = tokens->next;  // skip the '}'
     body = stack_reverse(body);
-
     // Creates the closure as a stack [params, body, env]
     stack_t s = NULL;
     s = stack_push_s(s, env);
     s = stack_push_s(s, body);
     s = stack_push_s(s, params);
     val_t retval = {.type = CLOSURE, .val.s = s};
-    
     *r_tokens = tokens;
     return retval;    
 }
