@@ -37,10 +37,19 @@ void val_printf(FILE *f, val_t v)
     case CLOSURE: {
         fputc('{', f);
         stack_t s = v.val.s;
-        val_list_printf(f, s->val.val.s);
+        // Formal parameters are preceded by their marker ('!' or NONE)
+        for (stack_t fp = s->val.val.s; fp != NULL; fp = fp->next) {
+            fputc((fp->val.type == '!') ? '!' : ' ', f);
+            fp = fp->next;
+            fputs(fp->val.val.t, f);
+        }
         fputc(':', f);
         s = s->next;
-        val_list_printf(f, s->val.val.s);
+        // The body is printed with no commas to separate items
+        for (stack_t b = s->val.val.s; b != NULL; b = b->next) {
+            fputc(' ', f);
+            val_printf(f, b->val);
+        }
         fputc('|', f);
         s = s->next;
         val_list_printf(f, s->val.val.s);
@@ -48,10 +57,6 @@ void val_printf(FILE *f, val_t v)
         break;
     }
     default:
-        if (v.type > 32 && v.type < 128) {
-            fprintf(f, "'%c'", v.type);
-        } else {
-            fputc('?', f);
-        }
+        fputc((v.type > 32 && v.type < 128) ? v.type : '?', f);
     }
 }
