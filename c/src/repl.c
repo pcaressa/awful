@@ -5,34 +5,6 @@
 #include <string.h>
 #include "../header/repl.h"
 
-<<<<<<< HEAD
-int repl(int (*interpret)(char*, FILE*), char *prompt)
-{
-    static char buf[BUFSIZ];
-    static char tib[128];
-    
-    *buf = '\0';
-    fprintf(stderr, "\n%s: ", prompt);
-    
-    FILE *in = fopen("../in.awf", "r");
-    assert(in != NULL);
-    
-    while (fgets(tib, sizeof(tib), in) != NULL) {
-fputs(tib, stderr);
-        char *pn = strchr(tib, '\n');
-        if (pn != NULL && pn[-1] == '\\') {
-            // Join the line to buf.
-            strcat(buf, tib);
-            fprintf(stderr, "\n%s| ", prompt);
-            continue;
-        }
-        if (*buf == '\0') strcpy(buf, tib);
-        // Now buf contains the text to interpret
-        interpret(buf, stderr);
-        fprintf(stderr, "\n%s: ", prompt);
-        *buf = '\0';
-    }
-=======
 /** Safe version of strcat: if the concatenated text from
     buf and line exceeds size an error is raised on file out
     and 1 is returned, else 0 is returned. */
@@ -117,6 +89,5 @@ int repl(FILE *in, FILE *out, int (*interpret)(char*, FILE*), char *prompt)
     while (rep(in, out, interpret, prompt))
         ;
     fputs("Goodbye\n", out);
->>>>>>> 8a8839ebbf159d15191d30c8f61f114de2d17dd7
     return 0;
 }
