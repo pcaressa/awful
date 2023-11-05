@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 (({x:{y:ADD x y}} 10) 20)
 ({x:{y:ADD x y}} 10)
 {x y: ADD x y}
 COND 1 2 3
+=======
+ADD 10 20
+{x:{y:ADD x y}}
+({x:{y:ADD x y}} 10)
+(({x:{y:ADD x y}} 10) 20)
+>>>>>>> 8a8839ebbf159d15191d30c8f61f114de2d17dd7

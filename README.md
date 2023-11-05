@@ -4,7 +4,7 @@
 
 ## Introduction
 
-AWFUL is a simple functional language designed and implemented for didactic purposes: its main motivation was to understand and to replicate ideas by Peter J Landin borrowed from his papers from early '60s.
+Awful is a simple functional language designed and implemented for didactic purposes: its main motivation was to understand and to replicate ideas by Peter J Landin borrowed from his papers from early '60s.
 
 Awful provides the bare minimum equipment for a functional environment:
 
@@ -23,18 +23,85 @@ One may thinks to representation language as the "inner form" and to publication
 Currently the status of the project is the following:
 
 - Documentation: this md file.
-- Awful: the afwul.py (that uses scan.py and repl.py) script.
-- Niceful: the niceful.py (that uses scan.py and repl.py) script.
+- Awful:
+    - Python implementation: [py/](py/) folder containing a series of Python scripts with a complete implementation: see below for the usae.
+    - C implementation: [c/](c/) folder containing C headers and sources to be compiled into a single executable.
+- Niceful:
+    - Python implementation: [py/](py/) folder containing the niceful.py script.
 
-TODOs:
+TODO:
 
-- More efficient implementation, say in C, of the awful interpreter.
-- Same for Niceful.
 - Niceful implementation in Niceful, used to self-implement Niceful using the Awful interpreter.
 
-## Awful: an AWful FUnctional Language
+## Awful: A Weird FUnctional Language
 
 Awful provides a Lisp-like (but parentheses-less) formalism to encode values and expressions.
+
+### Using the interpreter
+
+Currently two interpreters are available: a Python version, written in a non idiomatic Python aimed at portability, and a C version, that should be considered the reference implementation.
+
+#### Python version
+
+The Python prototype is simple to use: you'll need the Python environment set up, version 3; no packages other than the built-in ones are used.
+
+Just store the folder [py] somewhere in the PATH and launch
+
+    python3 awful
+
+In the first place, you can launch this command from inside the folder [py/] itself.
+
+#### C version
+
+The C interpreter ought to be compiled before being used: you'll need a C compiler such as `clang` or the one coming with `MS Visual Studio` etc. Some compilers, such as `clang`, needs to explicit load math libraries when compiling.
+
+The [c/] folder contains all source files needed to compile the interpreter: see the [c/README.md] for instructions.
+
+For example you could type, inside the [c/src/]:
+
+    clang -lm *.c -o awful
+
+Of course, add all compiler options you like. The executable awful can now be launched to execute the interpreter.
+
+### Interacting with the interpreter
+
+After launching the interpreter, a prompt will appear:
+
+    AWFUL - AWful FUnctional Language
+    (c) 2023 by Paolo Caressa <github.com/pcaressa/awful>
+
+    Type: 'bye' to leave, 'batch FILENAME' to process a file
+    Lines starting with backslash or empty are skipped
+    A line ending with backslash is joined to the following one
+
+    awful:
+
+Now you can type an Awful expression and get the result computed: if the expression needs to span over multiple lines then add a final backslash to the line and the interpreter will ask for more, as in
+
+    awful: ADD 1       \
+    awful|     MUL 2 3
+    7.0
+    awful: 
+
+To leave the interpreter type `bye`, to evaluate a file whose lines contain single Awful expressions use `batch FILENAME`; a line starting by a backslash will be ignored, so that one can insert comments in a batch file in this way.
+
+For example suppose the `sample.awf` text file contains
+
+    \ Example of function application
+    ({x:ADD x 1} 10)
+
+    ADD\
+    19\
+    21
+
+Then, we could write
+
+    awful:batch sample.awf
+    11.0
+    40.0
+    awful:
+
+Inside a script one can use the `bye` and the `batch` directives, too.
 
 ### Awful syntax
 
@@ -106,49 +173,6 @@ is encountered, the following algorithm is performed: keep in mind that a functi
     - if not, its value is searched first in *fenv* and next in *e*;
     - if no value can be associated to the variable, an error is raised.
 - *e1* is popped from *e*, restoring it as it was before the evaluation took place. 
-
-## Awful implementation
-
-Let us describe how to implement the Awful interpreter. We will assume to use a language that can represent the following data types:
-
-- floating point numbers.
-- strings.
-- stacks whose items can be numbers, strings and stacks.
-
-We'll write stacks as: [*tos,2os,3os, ...*] being *tos* the topmost elements etc.
-
-The interpreter will be described by words but using only the values available in the language itself: we will use the Json notation [x1,...,xn] for stacks, as already stated, and we will write {k1:v1,...,kn:vn} as an abbreviation for the stack [[k1,v1],...,[kn:vn]].
-
-### Afwul interpreter
-
-The interpreter exposes a function/method *s = awful(t)* that accepts a string and returns a stack of one of the following forms:
-
-- {"NUMBER": *n*}
-- {"STRING", *t*}
-- {"STACK", *s*}
-- {"CLOSURE", *p, b, e*} where:
-    - *p* is the stack [*x1,...,xn*] of formal parameter names;
-    - *b* is a stack of tokens containing the body of the funciton;
-    - *e* is stack of stacks, the environment in which the function has been defined.
-
-To do that, *awul(t)* does the following:
-
-- scans the string *t* transforming it in a list *c* of tokens [*t1,...,tn*]: each token is a pair [*type, value*] where:
-    - aaa
-- instantiates an empty *e* environment stack.
-- calls the function *eval(c,e)* and, after discarding both *c* and *e*, returns its result. 
-
-### Eval function
-
-TODO
-
-### Closures definitions
-
-TODO
-
-### Closures evaluations
-
-TODO
 
 ## Niceful: an NICE FUnctional Language
 
@@ -226,6 +250,50 @@ We will define T on all possible expressions as defined by the previous grammar:
 
 The only care one has to take when implementing the translator function T from Niceful expressions to Awful expressions are priorities of Niceful binary operators, expressed in the BNF grammar.
 
-## Niceful implementation
+## Implementation
+
+Let us describe how to implement the Awful interpreter. We will assume to use a language that can represent the following data types:
+
+- floating point numbers.
+- strings.
+- stacks whose items can be numbers, strings and stacks.
+
+We'll write stacks as: [*tos,2os,3os, ...*] being *tos* the topmost elements etc.
+
+The interpreter will be described by words but using only the values available in the language itself: we will use the Json notation [x1,...,xn] for stacks, as already stated, and we will write {k1:v1,...,kn:vn} as an abbreviation for the stack [[k1,v1],...,[kn:vn]].
+
+### Afwul interpreter
+
+The interpreter exposes a function/method *s = awful(t)* that accepts a string and returns a stack of one of the following forms:
+
+- {"NUMBER": *n*}
+- {"STRING", *t*}
+- {"STACK", *s*}
+- {"CLOSURE", *p, b, e*} where:
+    - *p* is the stack [*x1,...,xn*] of formal parameter names;
+    - *b* is a stack of tokens containing the body of the funciton;
+    - *e* is stack of stacks, the environment in which the function has been defined.
+
+To do that, *awul(t)* does the following:
+
+- scans the string *t* transforming it in a list *c* of tokens [*t1,...,tn*]: each token is a pair [*type, value*] where:
+    - aaa
+- instantiates an empty *e* environment stack.
+- calls the function *eval(c,e)* and, after discarding both *c* and *e*, returns its result. 
+
+### Eval function
+
+TODO
+
+### Closures definitions
+
+TODO
+
+### Closures evaluations
+
+TODO
+
+
+### Niceful interpreter
 
 TODO
