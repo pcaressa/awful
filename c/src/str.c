@@ -38,24 +38,15 @@ char *str_new(char *s, int n)
     if (str_table[h] != NULL)
         for (stack_t p = str_table[h]; p != NULL; p = p->next)
             // Compare character-wise including the final '\0'.
-<<<<<<< HEAD
-            if (memcmp(p->val.t, s, n) == 0 && p->val.t[n] == '\0')
-                return p->val.t;
-=======
             if (memcmp(p->val.val.t, s, n) == 0 && p->val.val.t[n] == '\0')
                 return p->val.val.t;
->>>>>>> 8a8839ebbf159d15191d30c8f61f114de2d17dd7
     // The string is not in the stack: create and insert it
     char *t = malloc(n + 1);
     assert(t != NULL);
     memcpy(t, s, n);
     t[n] = '\0';
-<<<<<<< HEAD
-    str_table[h] = stack_push(str_table[h], STRING, t);
-=======
     val_t v = {.type = STRING, .val.t = t};
     str_table[h] = stack_push(str_table[h], v);
->>>>>>> 8a8839ebbf159d15191d30c8f61f114de2d17dd7
     return t;
 }
 
