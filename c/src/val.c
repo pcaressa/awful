@@ -11,6 +11,16 @@ void val_delete(val_t v)
         stack_delete(v.val.s);
 }
 
+static void val_list_printf(FILE *f, stack_t s)
+{
+    while (s != NULL) {
+        val_printf(f, s->val);
+        if (s->next == NULL) break;
+        fputc(',', f);
+        s = s->next;
+    }
+}
+
 void val_printf(FILE *f, val_t v)
 {
     switch (v.type) {
@@ -20,36 +30,26 @@ void val_printf(FILE *f, val_t v)
     case KEYWORD: fprintf(f, "<function %p>", v.val.p); break;
     case STACK: {
         fputc('[', f);
-        stack_t s = v.val.s;
-        while (s != NULL) {
-            val_printf(f, s->val);
-            if (s->next == NULL) break;
-            fputc(',', f);
-            s = s->next;
-        }
+        val_list_printf(f, v.val.s);
         fputc(']', f);
         break;
     }
     case CLOSURE: {
-        fputs("CLOSURE: ", f);
-        val_t v1 = {.type = STACK, .val.s = v.val.s};
-        val_printf(f, v1);
+        fputc('{', f);
+        stack_t s = v.val.s;
+        val_list_printf(f, s->val.val.s);
+        fputc(':', f);
+        s = s->next;
+        val_list_printf(f, s->val.val.s);
+        fputc('|', f);
+        s = s->next;
+        val_list_printf(f, s->val.val.s);
+        fputc('}', f);
         break;
     }
-    //~ case CLOSURE: {
-        //~ // {type:CLOSURE, val:[[x1,...,xn], body, env]}
-        //~ fputc('{', file);
-        //~ val_printf(file, STACK, v);
-        //~ fputc(':', file);
-        //~ val_printf(file, STACK, v.s->next.val.s);
-        //~ fputs(" where ", file);
-        //~ val_printf(file, STACK, v->next->next.val.s);
-        //~ fputc('}', file);
-        //~ break;
-    //~ }
     default:
         if (v.type > 32 && v.type < 128) {
-            fprintf(f, "'%c'", v.val.d);
+            fprintf(f, "'%c'", v.type);
         } else {
             fputc('?', f);
         }

@@ -7,7 +7,15 @@
 #include "stack.h"
 
 /** Constants used to encode values or tokens types. */
-enum { NONE, NUMBER, STRING, ATOM, KEYWORD, STACK, CLOSURE };
+enum {
+    NONE,       // No value at all, different from NIL
+    NUMBER,     // Number type
+    STRING,     // String type
+    ATOM,       // Atom type (used for variables)
+    KEYWORD,    // Built-in function type
+    STACK,      // Stack type
+    CLOSURE     // Closure type
+};
 
 /** Type containing a single Awful value or token. */
 typedef struct val_s {

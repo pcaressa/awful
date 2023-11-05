@@ -13,18 +13,15 @@
 stack_t scan(char *text, char *delimiters, stack_t keywords)
 {
     val_t v;
-    assert(text != NULL);
     stack_t tokens = NULL;
     while (*text != '\0') {
-        text += strspn(text, " \t\n\r");
-        if (*text == '\0') break;
+        text += strspn(text, " \t\n\r");    // skip spaces
+        if (*text == '\0' || *text == '\\') break;
         if (strchr(delimiters, *text) != NULL) {
             //tokens = stack_push(tokens, DELIMITER, *text);
             v.type = *text;
             tokens = stack_push(tokens, v);
             ++ text; }
-        else
-        if (*text == '\\') break; // Comment: skip it!
         else
         if (*text == '\'' || *text == '"') {
             char q = *text;
@@ -49,7 +46,6 @@ stack_t scan(char *text, char *delimiters, stack_t keywords)
                 tokens = stack_push(tokens, v); }
             else {
                 char *t = str_new(p, text - p);
-
                 // Check against a keyword.
                 stack_t k = keywords;
                 while (k != NULL) {

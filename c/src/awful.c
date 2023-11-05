@@ -154,12 +154,6 @@ static val_t TOS(stack_t *tokens, stack_t env)
 
 typedef val_t (*keyword_t)(stack_t*, stack_t);
 
-static struct { char *s; val_t k;} KEYWORDS[] = {
-#   define R(x) {#x, {.type = KEYWORD, .val.p = (void*)x}},
-#   include "keywords.h"
-#   undef R
-};
-
 /** Look for an atom inside an stack of environments:
     if found then return a clone of the value of the
     variable. */
@@ -167,9 +161,9 @@ static val_t awful_find(char *t, stack_t e)
 {
     // We expect e to [name,value,...,name,value]
     for (; e != NULL; e = e->next)
-        for (stack_t p = e->val.val.s; p != NULL; p = p->next->next)            if (strcmp(t, p->val.val.t) == 0) {
+        for (stack_t p = e->val.val.s; p != NULL; p = p->next->next)
+            if (strcmp(t, p->val.val.t) == 0)
                 return p->next->val;
-            }
     val_t none = {.type = NONE};
     return none;
 }
@@ -189,7 +183,7 @@ static stack_t awful_parse(stack_t *r_tokens)
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text");
     
-    int parentheses = 0;    // '('-')' matches counter
+    int parentheses = 0;    // '('-')' match counter
     stack_t body = NULL;
     int type;
     while (tokens != NULL && ((type = tokens->val.type) != ')' && type != ',' || parentheses > 0)) {
@@ -211,14 +205,16 @@ static stack_t awful_parse(stack_t *r_tokens)
     environment.*/
 static val_t awful_application(stack_t *r_tokens, stack_t env)
 {
-//fprintf(stderr, "> awful_application\n");
+//~ fprintf(stderr, "> awful_application\n");
 
-    stack_t tokens = *r_tokens;
-    except_on(tokens == NULL, "Unexpected end of text");
+    except_on(*r_tokens == NULL, "Unexpected end of text");
 
     // tokens = f [e1 "," ... "," en] ")"
     
-    val_t f = awful_eval(&tokens, env);
+    val_t f = awful_eval(r_tokens, env);
+
+//~ fputc('\n', stderr); val_printf(stderr, f);
+
     except_on(f.type != CLOSURE, "Function expected");
     // f.val.s = [[x1...xn] [body] [fenv]]
     // f.val.s.val.s = [x1, ...,xn]
@@ -227,42 +223,41 @@ static val_t awful_application(stack_t *r_tokens, stack_t env)
     stack_t fparams = f.val.s->val.val.s;
     stack_t body = f.val.s->next->val.val.s;
     stack_t fenv = f.val.s->next->next->val.val.s;
+//~ stack_printf(stderr, fparams); fputc('\n', stderr);
+//~ stack_printf(stderr, body); fputc('\n', stderr);
+//~ stack_printf(stderr, fenv); fputc('\n', stderr);
 
     /* For each formal parameter parse an expression and
         associate it to the parameter inside assoc. */
     stack_t assoc = NULL;
     for (stack_t p = fparams; p != NULL; p = p->next) {
-        stack_t pair = awful_parse(&tokens);
-        //pair = stack_push(pair, STACK, p);
-        assoc = stack_push(pair, p->val);
-        //assoc = stack_push(assoc, STACK, pair);
+        stack_t actual = awful_parse(r_tokens);
+        assoc = stack_push_s(assoc, actual);
+        assoc = stack_push(assoc, p->val);
     }
+//~ stack_printf(stderr, assoc); fputc('\n', stderr);
 
     // Evaluates all expressions in the environment assoc
     for (stack_t p = assoc; p != NULL; p = p->next->next) {
-        stack_t pn = p->next;
+        stack_t to_eval = p->next->val.val.s;
         // Evaluate and substitute the value
-        stack_t pn_saved = pn;
-        val_t retval = awful_eval(&pn, env);
+        stack_t saved = to_eval;    // awful_eval changes to_eval
+        val_t retval = awful_eval(&to_eval, env);
         p->next->val = retval;
-        stack_drop(pn_saved);
+        stack_delete(saved);
     }
-    val_t v = {.type = STACK, .val.s = assoc};
-    stack_t new_env = stack_push(fenv, v);
+    stack_t new_env = stack_push_s(fenv, assoc);
 
-//fputs("assoc=", stderr); stack_printf(stderr, assoc); fputc('\n', stderr);
-//fputs("fenv=", stderr); stack_printf(stderr, fenv); fputc('\n', stderr);
-//fputs("env=", stderr); stack_printf(stderr, env); fputc('\n', stderr);
-//fputs("body=", stderr); stack_printf(stderr, body); fputc('\n', stderr);
-
+//~ fputs("assoc=", stderr); stack_printf(stderr, assoc); fputc('\n', stderr);
+//~ fputs("fenv=", stderr); stack_printf(stderr, fenv); fputc('\n', stderr);
+//~ fputs("env=", stderr); stack_printf(stderr, env); fputc('\n', stderr);
+//~ fputs("body=", stderr); stack_printf(stderr, body); fputc('\n', stderr);
+//~ fputs("new_env=", stderr); stack_printf(stderr, new_env); fputc('\n', stderr);
     val_t retval = awful_eval(&body, new_env);
-    stack_delete(assoc);
-    stack_delete(new_env);
     val_delete(f);
     
-//fprintf(stderr, "< awful_application\n");
+//~ fprintf(stderr, "< awful_application\n");
 
-    *r_tokens = tokens;
     return retval;
 }
 
@@ -274,22 +269,24 @@ static val_t awful_application(stack_t *r_tokens, stack_t env)
     is this stack (or NONE in case of error). */
 static val_t awful_closure(stack_t *r_tokens, stack_t env)
 {
-//fprintf(stderr, "> awful_closure\n");
+//~ fprintf(stderr, "> awful_closure\n");
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text");
 
     // tokens = [a1 ... an] ":" e "}"
     stack_t params = NULL;
     while (tokens->val.type != ':') {
-        except_on(tokens->val.type != ATOM, "Atom expected");
+        except_on(tokens->val.type != ATOM,
+                  "Atom expected as closure formal parameter");
         params = stack_push(params, tokens->val);
         tokens = tokens->next;
     }
+    params = stack_reverse(params);
     tokens = tokens->next;  // skip ':'
 
-//fputs("params=", stderr); stack_printf(stderr, params); fputc('\n', stderr);
+//~ fputs("params=", stderr); stack_printf(stderr, params); fputc('\n', stderr);
     
-//stack_printf(stderr, tokens); fputc('\n', stderr);
+//~ stack_printf(stderr, tokens); fputc('\n', stderr);
     stack_t body = NULL;
     int braces = 0;
     int type;
@@ -302,25 +299,19 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
     tokens = tokens->next;  // skip the '}'
     body = stack_reverse(body);
 
-//fputs("body=", stderr); stack_printf(stderr, body); fputc('\n', stderr);
+//~ fputs("body=", stderr); stack_printf(stderr, body); fputc('\n', stderr);
     
-    // Creates the closure [params, body, env]
-    val_t retval = {.type = STACK, .val.s = NULL};
-
-    val_t v = {.type = STACK, .val.s = env};
-    retval.val.s = stack_push(retval.val.s, v);
-
-    v.val.s = body;
-    retval.val.s = stack_push(retval.val.s, v);
-
-    v.type = CLOSURE;
-    v.val.s = params;
-    retval.val.s = stack_push(retval.val.s, v);
+    // Creates the closure as a stack [params, body, env]
+    stack_t s = NULL;
+    s = stack_push_s(s, env);
+    s = stack_push_s(s, body);
+    s = stack_push_s(s, params);
+    val_t retval = {.type = CLOSURE, .val.s = s};
     
-//fputs("fenv=", stderr); stack_printf(stderr, env); fputc('\n', stderr);
+//~ fputs("fenv=", stderr); stack_printf(stderr, env); fputc('\n', stderr);
     *r_tokens = tokens;
     
-//fprintf(stderr, "< awful_closure\n");
+//~ fprintf(stderr, "< awful_closure\n");
     return retval;    
 }
 
@@ -330,12 +321,12 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
     is NONE. */
 static val_t awful_eval(stack_t *r_tokens, stack_t env)
 {
-//fprintf(stderr, "> awful_eval(");stack_printf(stderr, *r_tokens);fprintf(stderr, ", ");stack_printf(stderr, env);fprintf(stderr, ")\n");
-    
+//~ fprintf(stderr, "> awful_eval(");stack_printf(stderr, *r_tokens);fprintf(stderr, ", ");stack_printf(stderr, env);fprintf(stderr, ")\n");
+
     stack_t tokens = *r_tokens;
-    val_t retval;
     except_on(tokens == NULL, "Unexpected end of text");
     
+    val_t retval;
     switch (tokens->val.type) {
     case NUMBER:
     case STRING:
@@ -363,48 +354,59 @@ static val_t awful_eval(stack_t *r_tokens, stack_t env)
         retval = awful_application(&tokens, env);
         break;
     default:
-//fprintf(stderr, "\n%i[%c]\n", tokens->type, tokens->type);
+fprintf(stderr, "\n%i[%c]\n", tokens->val.type, tokens->val.type);
         except_on(1, "Bad expression");
     }
     *r_tokens = tokens;
+//~ fprintf(stderr, "< awful_eval = ");val_printf(stderr, retval);fprintf(stderr, "\n");
     return retval;
 }
 
-/** Interpret a string and return the corresponding a string
-    expressing the resulting value: this string is inside a
-    hidden buffer. If an error occurs, a non zero error core
-    is returned. */
+/** Interpret a string and print the resulting value.
+    If an error occurs, a non zero error code is returned. */
 int awful(char *text, FILE *file)
-{
+{    
     if (setjmp(except_buf) != 0) return -1;
-    
-    // Creates the stack containing the consecutive
-    // pairs name->address->... for keywords.
+
+    /*  Creates the stack containing the consecutive pairs
+        name->address->... for keywords that it is needed
+        by scan. We use some macro black magic including
+        the file "keywords.h" that contains the list of
+        all keyword names as R(name). */
     stack_t keywords = NULL;
-    for (int i = 0; KEYWORDS[i].k.val.t != NULL; ++ i) {
-        keywords = stack_push(keywords, KEYWORDS[i].k);
-        val_t v = {.type = ATOM, .val.t = KEYWORDS[i].s};
+    val_t v;
+#   define R(x)                             \
+        v.type = KEYWORD; v.val.p = x;      \
+        keywords = stack_push(keywords, v); \
+        v.type = ATOM; v.val.t = #x;        \
         keywords = stack_push(keywords, v);
-    }
+#   include "keywords.h"
+#   undef R
+
     // Scans the text into the tokens stack.
     stack_t tokens = scan(text, "(){},:", keywords);
-    tokens = stack_reverse(tokens);
-
-    stack_t tokens0 = tokens;
-    val_t v = awful_eval(&tokens, NULL);
-    stack_delete(tokens0);
+    stack_delete(keywords);
     
+    tokens = stack_reverse(tokens);
+    stack_t tokens_saved = tokens;
+    v = awful_eval(&tokens, NULL);
+
+//~ val_printf(stderr, v); fputc('\n', stderr);
+//~ stack_printf(stderr, tokens0); fputc('\n', stderr);
+    stack_delete(tokens_saved);
     if (v.type == NONE) return -1;
 
     val_printf(file, v);
     val_delete(v);
-
     return 0;
 }
 
 int main(int argc, char **argv)
 {
+    FILE *in = fopen("../in.awf", "r");
+    assert(in != NULL);
+    
     fputs("AWFUL - A Weird FUnctional Language\n", stderr);
     fputs("(c) 2023 by Paolo Caressa\n", stderr);
-    return repl(awful, "awful");
+    return repl(in, awful, "eval");
 }

@@ -1,5 +1,4 @@
+ADD 10 20
 (({x:{y:ADD x y}} 10) 20)
 ({x:{y:ADD x y}} 10)
-{x y: ADD x y}
-COND 1 2 3
-PUSH 1 PUSH 2 PUSH 3 NIL
+{x:{y:ADD x y}}
