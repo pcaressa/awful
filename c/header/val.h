@@ -6,30 +6,6 @@
 #include <stdio.h>
 #include "stack.h"
 
-<<<<<<< HEAD
-/** Type containing a single Awful value or token. */
-typedef union {
-    char d;             // Used for delimiters
-    double n;           // Number
-    char *t;            // string
-    struct stack_s *s;  // stack or closure
-    void *p;            // Used for keywords
-} val_t;
-
-/** Constants used to encode values or tokens types. */
-enum {
-    NUMBER = -7,
-    STRING,
-    ATOM,
-    DELIMITER,
-    KEYWORD,
-    STACK,
-    CLOSURE
-};
-
-/** Print a value on a file. */
-extern void val_printf(FILE *file, int type, val_t v);
-=======
 /** Constants used to encode values or tokens types. */
 enum {
     NONE,       // No value at all, different from NIL
@@ -62,6 +38,5 @@ extern void val_delete(val_t v);
 
 /** Print a value on a file. */
 extern void val_printf(FILE *f, val_t v);
->>>>>>> 8a8839ebbf159d15191d30c8f61f114de2d17dd7
 
 #endif
