@@ -4,20 +4,21 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../header/awful_key.h"
 #include "../header/except.h"
 #include "../header/scan.h"
 #include "../header/stack.h"
 #include "../header/str.h"
 #include "../header/val.h"
 
-stack_t scan(char *text, char *delimiters, stack_t keywords)
+stack_t scan(char *text, char *delims, void *key_find(char *text))
 {
     val_t v;
     stack_t tokens = NULL;
     while (*text != '\0') {
         text += strspn(text, " \t\n\r");    // skip spaces
         if (*text == '\0' || *text == '\\') break;
-        if (strchr(delimiters, *text) != NULL) {
+        if (strchr(delims, *text) != NULL) {
             //tokens = stack_push(tokens, DELIMITER, *text);
             v.type = *text;
             tokens = stack_push(tokens, v);
@@ -35,7 +36,7 @@ stack_t scan(char *text, char *delimiters, stack_t keywords)
             // Scans up to the following space or delimiter.
             char *p = text++;
             while (*text != '\0' && !isspace(*text)
-            && strchr(delimiters, *text) == NULL)
+            && strchr(delims, *text) == NULL)
                 ++ text;
             // The atom starts at p and its length is text - p.
             // Check against a number.
@@ -47,20 +48,14 @@ stack_t scan(char *text, char *delimiters, stack_t keywords)
             else {
                 char *t = str_new(p, text - p);
                 // Check against a keyword.
-                stack_t k = keywords;
-                while (k != NULL) {
-                    // k is a stack of consecutive pairs name->pointer
-                    assert(k->val.type == ATOM);
-                    if (strcmp(t, k->val.val.t) == 0) {
-                        v.type = KEYWORD;
-                        v.val.p = k->next->val.val.p;
-                        tokens = stack_push(tokens, v);
-                        break; }
-                    k = k->next->next; }
-                if (k == NULL) {
-                    // Atom (variable!)
+                void *k = key_find(t);
+                if (k != NULL) {
+                    v.type = KEYWORD;
+                    v.val.p = k;
+                } else {
                     v.type = ATOM;
                     v.val.t = t;
-                    tokens = stack_push(tokens, v); }}}}
+                }
+                tokens = stack_push(tokens, v); }}}
     return tokens;
 }

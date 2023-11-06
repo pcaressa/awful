@@ -5,164 +5,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../header/awful.h"
+#include "../header/awful_key.h"
 #include "../header/except.h"
 #include "../header/repl.h"
 #include "../header/scan.h"
 #include "../header/stack.h"
 #include "../header/val.h"
 
-// Referenced before being defined:
-static val_t awful_eval(stack_t *r_tokens, stack_t env);
-
-/*
-    Keywords routines.
-*/
-
-/** Parses two expressions and check their values are numbers. */
-#define GETXY() \
-    val_t y = awful_eval(tokens, env);    \
-    except_on(y.type != NUMBER, "Number expected");    \
-    val_t x = awful_eval(tokens, env);    \
-    except_on(x.type != NUMBER, "Number expected");
-
-static val_t ADD(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n += y.val.n;
-    return x;
-}
-
-static val_t BOS(stack_t *tokens, stack_t env)
-{
-    val_t x = awful_eval(tokens, env);
-    except_on(x.type != STACK, "TOS x needs x to be a stack");
-    x.val.s = x.val.s->next;
-    return x;
-}
-
-static val_t COND(stack_t *tokens, stack_t env)
-{
-    val_t x = awful_eval(tokens, env);
-    val_t y = awful_eval(tokens, env);
-    val_t z = awful_eval(tokens, env);
-    except_on(x.type != NUMBER, "Number expected in COND");
-    return (x.val.n) ? y : z;
-}
-
-static val_t DIV(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n /= y.val.n;
-    return x;
-}
-
-static val_t EQ(stack_t *tokens, stack_t env)
-{
-    val_t y = awful_eval(tokens, env);
-    val_t x = awful_eval(tokens, env);
-    double flag = 0.0;
-    int type = x.type;
-    if (type == y.type) {
-        if (type == NUMBER) {
-            flag = x.val.n == y.val.n;
-        } else
-        if (type == STRING || type == ATOM) {
-            flag = strcmp(x.val.t, y.val.t) == 0;
-        } else {
-            except_on(1, "EQ applies only to atoms");
-        }
-    }
-    x.val.n = flag;
-    return x;
-}
-
-static val_t LE(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n = x.val.n <= y.val.n;
-    return x;
-}
-
-static val_t LT(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n = x.val.n < y.val.n;
-    return x;
-}
-
-static val_t MAX(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    return x.val.n > y.val.n ? x : y;
-}
-
-static val_t MIN(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    return x.val.n < y.val.n ? x : y;
-}
-
-static val_t MUL(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n *= y.val.n;
-    return x;
-}
-
-static val_t NE(stack_t *tokens, stack_t env)
-{
-    val_t retval = EQ(tokens, env);
-    retval.val.n = !retval.val.n;
-    return retval;
-}
-
-static val_t NIL(stack_t *tokens, stack_t env)
-{
-    val_t v = {.type = STACK, .val.s = NULL};
-    return v;
-}
-
-static val_t POW(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n = pow(x.val.n, y.val.n);
-    return x;
-}
-
-static val_t PUSH(stack_t *tokens, stack_t env)
-{
-    val_t x = awful_eval(tokens, env);
-    val_t y = awful_eval(tokens, env);
-    except_on(y.type != STACK, "PUSH x y needs y to be a stack");
-    y.val.s = stack_push(y.val.s, x);
-    return y;
-}
-
-static val_t SUB(stack_t *tokens, stack_t env)
-{
-    GETXY();
-    x.val.n -= y.val.n;
-    return x;
-}
-
-static val_t TOS(stack_t *tokens, stack_t env)
-{
-    val_t x = awful_eval(tokens, env);
-    except_on(x.type != STACK, "TOS x needs x to be a stack");
-    return x.val.s->val;
-}
-
-typedef val_t (*keyword_t)(stack_t*, stack_t);
-
-/** The list of keywords will be stored inside this stack. */
-static stack_t awful_keywords = NULL;
-
-/** Look for an atom inside an stack of environments:
-    if found then return a clone of the value of the
-    variable. */
+/** Look for an atom inside a stack of environments: if found,
+    then return a clone of the value of the variable. */
 static val_t awful_find(char *t, stack_t e)
 {
-    // We expect e to be [name,value,...,name,value]
+    // Expect e to be [name,value,...,name,value]
     for (; e != NULL; e = e->next)
         for (stack_t p = e->val.val.s; p != NULL; p = p->next->next)
             if (strcmp(t, p->val.val.t) == 0)
@@ -170,13 +25,6 @@ static val_t awful_find(char *t, stack_t e)
     val_t none = {.type = NONE};
     return none;
 }
-
-/** \note
-
-    The interpreter expects in input a stack whose
-    elements are "tokens", thus each item is a value
-    representing a value or a symbol.
-*/
 
 /** Parses a sequence of tokens from r_tokens until the
     next "," or ")" is found: the ending ')' or ',' is
@@ -326,57 +174,51 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
     return retval;    
 }
 
-/** Interpret a token list, w.r.t. an environment, both
-    passed by reference, and return the value with the
-    result of the evaluation. On error, the returned value
-    is NONE. */
-static val_t awful_eval(stack_t *r_tokens, stack_t env)
+val_t awful_eval(stack_t *r_tokens, stack_t env)
 {
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text");
     
-    val_t retval;
+    val_t v;
     switch (tokens->val.type) {
     case NUMBER:
     case STRING:
-        retval = tokens->val;
+        v = tokens->val;
         tokens = tokens->next;
         break;
     case ATOM:
-        retval = awful_find(tokens->val.val.t, env);
-        except_on(retval.type == NONE, "Undefined variable %s", tokens->val.val.t);
+        v = awful_find(tokens->val.val.t, env);
+        except_on(v.type == NONE, "Undefined variable %s", tokens->val.val.t);
         tokens = tokens->next;
         break;
     case KEYWORD: {
         // A keyword has the address of its routine as value
-        keyword_t k = (keyword_t)tokens->val.val.p;
+        awful_key_t k = (awful_key_t)tokens->val.val.p;
         tokens = tokens->next;
-        retval = (*k)(&tokens, env);
+        v = (*k)(&tokens, env);
         break;
     }
     case '{':
         tokens = tokens->next;
-        retval = awful_closure(&tokens, env);
+        v = awful_closure(&tokens, env);
         break;
     case '(':
         tokens = tokens->next;
-        retval = awful_application(&tokens, env);
+        v = awful_application(&tokens, env);
         break;
     default:
         except_on(1, "Unknown token");
     }
     *r_tokens = tokens;
-    return retval;
+    return v;
 }
 
-/** Interpret a string and print the resulting value.
-    If an error occurs, a non zero error code is returned. */
 int awful(char *text, FILE *file)
 {    
     if (setjmp(except_buf) != 0) return -1;
 
     // Scans the text into the tokens stack.
-    stack_t tokens = scan(text, "(){},:!", awful_keywords);
+    stack_t tokens = scan(text, "(){},:!", awful_key_find);
     
     tokens = stack_reverse(tokens);
     stack_t tokens_saved = tokens;
@@ -388,28 +230,4 @@ int awful(char *text, FILE *file)
     }
     fputc('\n', file);
     return v.type == NONE;
-}
-
-int main(int argc, char **argv)
-{
-    /*  Creates the stack containing the consecutive pairs
-        name->address->... for keywords that it is needed
-        by scan. We use some macro black magic including
-        the file "keywords.h" that contains the list of
-        all keyword names as R(name). */
-    val_t v;
-#   define R(x)                                         \
-        v.type = KEYWORD; v.val.p = x;                  \
-        awful_keywords = stack_push(awful_keywords, v); \
-        v.type = ATOM; v.val.t = #x;                    \
-        awful_keywords = stack_push(awful_keywords, v);
-#   include "keywords.h"
-#   undef R
-
-    fputs("AWFUL - A Weird FUnctional Language\n", stderr);
-    fputs("(c) 2023 by Paolo Caressa\n", stderr);
-    repl(stdin, stderr, awful, "awful");
-
-    stack_delete(awful_keywords);
-    return 0;
 }

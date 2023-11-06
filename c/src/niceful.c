@@ -1,7 +1,8 @@
 /** \file niceful.c */
 
-#define MAIN main0
+#include <stdio.h>
 
-int MAIN(void)
+int niceful(char *text, FILE *file)
 {
+    return 0;
 }

@@ -1,8 +1,11 @@
 /** \file repl.c */
 
+#define AWFUL
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include "../header/awful.h"
 #include "../header/repl.h"
 
 /** Safe version of strcat: if the concatenated text from
@@ -27,7 +30,7 @@ static int strcat_safe(char *buf, unsigned size, char *line, FILE *out)
     a line from in.
     On error NULL is returned, else a hidden text with the line
     just interpreted. */
-static char *rep(FILE *in, FILE *out, int (*interpret)(char*, FILE*), char *prompt)
+static char *rep(FILE *in, FILE *out, int (*eval)(char*, FILE*), char *prompt)
 {
     static char buf[BUFSIZ];
     static char line[128];
@@ -68,26 +71,37 @@ static char *rep(FILE *in, FILE *out, int (*interpret)(char*, FILE*), char *prom
         else {
             int saved = line_count;
             line_count = 0;
-            while (rep(f, out, interpret, NULL))
+            while (rep(f, out, eval, NULL))
                 ;
             fclose(f);
             line_count = saved;
         }
     } else {
-        if (*text != '\0' && interpret(text, out))
+        if (*text != '\0' && eval(text, out))
             fprintf(out, " line %i\n", line_count);
     }
     return buf;
 }
 
-int repl(FILE *in, FILE *out, int (*interpret)(char*, FILE*), char *prompt)
+int main(int argc, char **argv)
 {
-    fputs("\nType: 'bye' to leave, 'batch FILENAME' to process a file"
-        "\nLines starting with backslash or empty are skipped"
-        "\nA line ending with backslash is joined to the following one\n",
-        out);
-    while (rep(in, out, interpret, prompt))
+    puts(
+#   ifdef AWFUL
+        "AWFUL - A Weird FUnctional Language\n"
+#   else
+        "NICEFUL - a NICE FUnctional Language\n"
+#   endif
+        "(c) 2023 by Paolo Caressa\n\n"
+        "Type: 'bye' to leave, 'batch FILENAME' to process a file\n"
+        "Lines starting with backslash or empty are skipped\n"
+        "A line ending with backslash is joined to the following one\n"
+    );
+#   ifdef AWFUL
+    while (rep(stdin, stdout, awful, "awful"))
+#   else
+    while (rep(stdin, stderr, niceful, "nice"))
+#   endif
         ;
-    fputs("Goodbye\n", out);
+    fputs("Goodbye\n", stdout);
     return 0;
 }
