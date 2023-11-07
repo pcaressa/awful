@@ -123,7 +123,7 @@ An expression is a sequence of token matching one of the following rules:
 The number of expressions that need to follow a keyword is:
 
 - 1 for `BOS TOS`.
-- 2 for `ADD DIV EQ LE LT MAX MIN MUL NE POW PUSH SUB`.
+- 2 for `ADD DIV EQ GE GT LE LT MAX MIN MUL NE POW PUSH SUB`.
 - 3 for `COND`.
 
 ### Awful semantics
@@ -135,6 +135,8 @@ The behavior of keywords when they are executed is the following: by *e* we mean
 - the value of `COND` *n e1 e2* is *e1 if *n* is not zero, else *e2*;
 - the value of `DIV` *n1 n2* is *e1 / e2*;
 - the value of `EQ` *e1 e2* is 1 if *e1 = e2*, else 0;
+- the value of `GE` *n1 n2* is 1 if *n1 >= n2*, else 0;
+- the value of `GT` *n1 n2* is 1 if *n1 > n2*, else 0;
 - the value of `LE` *n1 n2* is 1 if *n1 <= n2*, else 0;
 - the value of `LT` *n1 n2* is 1 if *n1 < n2*, else 0;
 - the value of `MAX` *n1 n2* is *n1* if *n1 > n2*, else *n2*;
@@ -182,25 +184,32 @@ Niceful provides a ML-like formalism to encode values and expressions.
 
 We can express Niceful syntax by means of the following grammar written in the old good BNF style symbols of the language are enclosed between backslashes, that are not part of the language alphabet:
 
-    expression = fun-expr
-        | \let\ assignments \in\ expression
-        | \letrec\ assignments \in\ expression
+    expression =
+        conditional |
+        \let\ assignments \in\ expression |
+        \letrec\ assignments \in\ expression
 
-    assignments = [ atom \=\ fun-expr {\,\ atom \=\ fun-expr} ]
+    assignments = atom \=\ fun-expr {\,\ atom \=\ fun-expr}
 
-    fun-expr = conditional | \fun\ {\!\ atom} \:\ expression
-
-    conditional = proposition
-        | \if\ proposition \then\ expression \else\ expression
+    conditional =
+        proposition |
+        \if\ proposition \then\ expression \else\ expression
 
     proposition = relation {bool-op proposition}
     
-    relation = sum [ rel-op sum ]
+    relation =
+        sum [ rel-op sum ] |
+        \not\ relation
+    
     sum = product { add-op product }
+    
     product = term { mul-op term }
+    
     power = term [\^\ term]
-    term = atom | string | list | \-\ term | \1st\ term | \rest\ term 
-        | \(\ expression \)\ | term { \(\ [expr-list] \)\ }
+    
+    term = atom | string | list | \-\ term | \1st\ term | \rest\ term |
+        \(\ expression \)\ | term { \(\ [expr-list] \)\ } |
+        \fun\ {\!\ atom} \:\ expression
     
     expr-list = expression {\,\ expression}
 
@@ -210,7 +219,7 @@ We can express Niceful syntax by means of the following grammar written in the o
     mul-op = \*\ | \/\
 
     string = \"\{character}\"\ | \'\{character}\'\
-    list = \[\ [expr-list] \]\
+    list = \[\ \[\ | \[\ [expr-list] \]\
 
 Each Niceful syntactic construction can be translated into a corresponding Awful expression or part of expression: thus Niceful is just a different form in which to express Awful expressions.
 
@@ -223,6 +232,7 @@ We will define T on all possible expressions as defined by the previous grammar:
 - If *x* is a number, string or atom then T(*x*) = *x*.
 - T(`[]`) = `NIL`
 - T(`[`*e1* `,` ... `,` *en* `]`) = `PUSH` T(*e1*) `PUSH` T(*e2*) ... `PUSH` T(*en*) `NIL`
+- T(`fun` *x1 ... xn* `:` *e*) = `{` *x1 ... xn* `:` *e* `}` 
 - T(`-` *e*) = `SUB 0 ` T(*e*)
 - T(`1st` *e*) = `TOS` *e*
 - T(`rest` *e*) = `BOS` *e*
