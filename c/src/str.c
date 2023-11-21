@@ -16,6 +16,9 @@
 
 #define TABSIZE (1024)
 
+/** The string table is an array indexed by string hashes:
+    each item contains a stack with the list of all strings
+    with that same hash. */
 static stack_t str_table[TABSIZE] = {0};
 
 /** Simple minded hash function. **/
@@ -27,6 +30,16 @@ static unsigned hash(char *s, int n)
         h &= TABSIZE - 1;
     }
     return h;
+}
+
+void str_del(char *s)
+{
+    // SHOULD IMPLEMENT A FREELIST FOR STRINGS:
+    // each item contains the size of the allocated string
+    // and the actual string: when the latter is freed,
+    // the area is put into the free list ordered by length
+    // so that str_new, before mallocating, could check if
+    // there's an already allocated available string.
 }
 
 char *str_new(char *s, int n)
@@ -58,4 +71,3 @@ void str_status(void)
             ++ n;
     fprintf(stderr, "%i strings allocated\n", n);
 }
-

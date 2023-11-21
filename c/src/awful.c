@@ -48,6 +48,18 @@ static stack_t awful_parse(stack_t *r_tokens)
     return stack_reverse(body);
 }
 
+#ifdef DEBUG
+// Debug stuff
+static int __indent_ = 0;
+#define RESET __indent_ = 0;
+#define ENTER for (int i=0;i<__indent_;++i)putchar(' ');printf("> %s: tokens = ", __func__); stack_printf(stdout, *r_tokens); fputs(", env = ", stdout);stack_printf(stdout, env); putchar('\n'); fflush(stdout); ++ __indent_;
+#define EXIT --__indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: ", __func__);val_printf(stdout, retval); putchar('\n'); fflush(stdout);
+#else
+#define RESET
+#define ENTER
+#define EXIT
+#endif
+
 /** Parse the application of a closure to a list of actual
     parameters and return its value: *r_tokens is the
     "control stack" containing the next symbol to parse,
@@ -55,13 +67,12 @@ static stack_t awful_parse(stack_t *r_tokens)
     environment.*/
 static val_t awful_application(stack_t *r_tokens, stack_t env)
 {
-    stack_t tokens = *r_tokens;
-    except_on(tokens == NULL, "Unexpected end of text");
-
+ENTER
     // tokens = f [e1 "," ... "," en] ")"
-    val_t f = awful_eval(&tokens, env);
-
+    val_t f = awful_eval(r_tokens, env);
+    stack_t tokens = *r_tokens;
     except_on(f.type != CLOSURE, "Function expected");
+
     /*  Notice that closure f is represented as:
             f.val.s = [[x1...xn] [body] [fenv]]
             f.val.s.val.s = [x1, ...,xn]
@@ -116,6 +127,7 @@ static val_t awful_application(stack_t *r_tokens, stack_t env)
     val_delete(f);
     
     *r_tokens = tokens;
+EXIT
     return retval;
 }
 
@@ -127,6 +139,7 @@ static val_t awful_application(stack_t *r_tokens, stack_t env)
     is this stack (or NONE in case of error). */
 static val_t awful_closure(stack_t *r_tokens, stack_t env)
 {
+ENTER
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text");
 
@@ -171,63 +184,65 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
     s = stack_push_s(s, params);
     val_t retval = {.type = CLOSURE, .val.s = s};
     *r_tokens = tokens;
+EXIT
     return retval;    
 }
 
 val_t awful_eval(stack_t *r_tokens, stack_t env)
 {
+ENTER
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text");
     
-    val_t v;
+    val_t retval;
     switch (tokens->val.type) {
     case NUMBER:
     case STRING:
-        v = tokens->val;
+        retval = tokens->val;
         tokens = tokens->next;
         break;
     case ATOM:
-        v = awful_find(tokens->val.val.t, env);
-        except_on(v.type == NONE, "Undefined variable %s", tokens->val.val.t);
+        retval = awful_find(tokens->val.val.t, env);
+        except_on(retval.type == NONE,
+            "Undefined variable %s", tokens->val.val.t);
         tokens = tokens->next;
         break;
     case KEYWORD: {
         // A keyword has the address of its routine as value
         awful_key_t k = (awful_key_t)tokens->val.val.p;
         tokens = tokens->next;
-        v = (*k)(&tokens, env);
+        retval = (*k)(&tokens, env);
         break;
     }
     case '{':
         tokens = tokens->next;
-        v = awful_closure(&tokens, env);
+        retval = awful_closure(&tokens, env);
         break;
     case '(':
         tokens = tokens->next;
-        v = awful_application(&tokens, env);
+        retval = awful_application(&tokens, env);
         break;
     default:
         except_on(1, "Unknown token");
     }
     *r_tokens = tokens;
-    return v;
+EXIT
+    return retval;
 }
 
 int awful(char *text, FILE *file)
-{    
-    if (setjmp(except_buf) != 0) return -1;
-
-    // Scans the text into the tokens stack.
+{
+    val_t v = {.type = NONE};
     stack_t tokens = scan(text, "(){},:!", awful_key_find);
-    
-    tokens = stack_reverse(tokens);
-    stack_t tokens_saved = tokens;
-    val_t v = awful_eval(&tokens, NULL);
-    stack_delete(tokens_saved);
-    if (v.type != NONE) {
-        val_printf(file, v);
-        val_delete(v);
+    if (tokens != NULL && setjmp(except_buf) == 0) {
+        stack_t tokens_saved = tokens;
+        v = awful_eval(&tokens_saved, NULL);
+        if (v.type != NONE) {
+            val_printf(file, v);
+            val_delete(v);
+        }
+        fputc('\n', file);
     }
-    fputc('\n', file);
+    stack_delete(tokens);   // also in case of exception
     return v.type == NONE;
 }

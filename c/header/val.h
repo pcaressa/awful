@@ -14,7 +14,7 @@ enum {
     ATOM,       // Atom type (used for variables)
     KEYWORD,    // Built-in function type
     STACK,      // Stack type
-    CLOSURE     // Closure type
+    CLOSURE,    // Closure type
 };
 
 /** Type containing a single Awful value or token. */

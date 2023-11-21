@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../header/awful_key.h"
-#include "../header/except.h"
 #include "../header/scan.h"
 #include "../header/stack.h"
 #include "../header/str.h"
@@ -27,7 +26,10 @@ stack_t scan(char *text, char *delims, void *key_find(char *text))
         if (*text == '\'' || *text == '"') {
             char q = *text;
             char *p = strchr(text + 1, q);
-            except_on(p == NULL, "End of text inside string");
+            if (p == NULL) {
+                fputs("End of text inside string\n", stderr);
+                stack_delete(tokens);
+                return NULL; }
             v.type = STRING;
             v.val.t = str_new(text + 1, p - text - 1);
             tokens = stack_push(tokens, v);
@@ -57,5 +59,5 @@ stack_t scan(char *text, char *delims, void *key_find(char *text))
                     v.val.t = t;
                 }
                 tokens = stack_push(tokens, v); }}}
-    return tokens;
+    return stack_reverse(tokens);
 }

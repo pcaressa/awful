@@ -24,10 +24,11 @@ static void val_list_printf(FILE *f, stack_t s)
 void val_printf(FILE *f, val_t v)
 {
     switch (v.type) {
+    case NONE: fputs("NONE", f); break;
     case NUMBER: fprintf(f, "%g", v.val.n); break;
     case STRING: fprintf(f, "'%s'", v.val.t); break;
     case ATOM: fputs(v.val.t, f); break;
-    case KEYWORD: fprintf(f, "<function %p>", v.val.p); break;
+    case KEYWORD: fprintf(f, "<keyword %p>", v.val.p); break;
     case STACK: {
         fputc('[', f);
         val_list_printf(f, v.val.s);

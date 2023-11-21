@@ -9,8 +9,7 @@
 
 /** Free stack: this contains a list of free stack items
     that can be used to construct other stacks. An item
-    in stack_free has type NONE so that it is rcognized
-    by delete and drop routines that leave it untouched. */
+    in stack_free has type NONE. */
 static stack_t stack_free = NULL;
 
 static int stack_obj_count = 0;
@@ -29,9 +28,9 @@ stack_t stack_drop(stack_t s)
     s->next = stack_free;
     stack_free = s;
     if (s->val.type == STACK || s->val.type == CLOSURE) {
-        s->val.type = NONE;
         stack_delete(s->val.val.s);
     }
+    s->val.type = NONE;
     return next;
 }
 

@@ -1,27 +1,13 @@
 /** \file repl.c */
 
-#define AWFUL
+//#define AWFUL
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include "../header/awful.h"
+#include "../header/nice.h"
 #include "../header/repl.h"
-
-/** Safe version of strcat: if the concatenated text from
-    buf and line exceeds size an error is raised on file out
-    and 1 is returned, else 0 is returned. */
-static int strcat_safe(char *buf, unsigned size, char *line, FILE *out)
-{
-    if (strlen(buf) + strlen(line) >= size) {
-        fprintf(out,
-            "Text line too long: max %i characters allowed!\n",
-            size);
-        return 1;
-    }
-    strcat(buf, line);
-    return 0;
-}
 
 /** Scan from file in a line of text (possibly asking for more
     if the line ends with a backslash), apply to the result the
@@ -33,39 +19,29 @@ static int strcat_safe(char *buf, unsigned size, char *line, FILE *out)
 static char *rep(FILE *in, FILE *out, int (*eval)(char*, FILE*), char *prompt)
 {
     static char buf[BUFSIZ];
-    static char line[128];
-    static int line_count = 1;
-    
+    static int line_count = 0;
+
     *buf = '\0';
-    if (prompt != NULL)
-        fprintf(out, "\n%s %i: ", prompt, line_count);
-    if (fgets(line, sizeof(line), in) == NULL)
-        return NULL;
     ++ line_count;
-    // Manage multiple lines
+    if (prompt) fprintf(out, "\n%s %i: ", prompt, line_count);
+    if (fgets(buf, sizeof(buf), in) == NULL) return NULL;
+
     char *p;
-    while ((p = strchr(line, '\\')) != NULL) {
-        p[0] = ' ';
-        p[1] = '\0';
-        if (strcat_safe(buf, sizeof buf, line, out))
+    while ((p = strchr(buf, '\\')) != NULL) {
+        if (prompt) fprintf(out, "\n%s %i| ", prompt, line_count);
+        if ((p = fgets(p, sizeof(buf) - (p - buf), in)) == NULL)
             return NULL;
-        if (prompt != NULL)
-            fprintf(out, "%s %i| ", prompt, line_count);
-        fgets(line, sizeof(line), in);
-        ++ line_count;
     }
-    if (strcat_safe(buf, sizeof buf, line, out))
-        return NULL;
-    char *text = buf + strspn(buf, " \t\n\r");  // skip spaces
-    if ((p = strrchr(text, '\n')) != NULL)
-        *p = '\0';  // strip ending newline
-    if (strcmp(text, "bye") == 0)
-        return NULL;
+    // Strip initial spaces and ending newline
+    char *text = buf + strspn(buf, " \t\n\r");
+    if ((p = strrchr(text, '\n')) != NULL) *p = '\0';
+
+    if (strcmp(text, "bye") == 0) return NULL;
     if (memcmp(text, "batch ", 6) == 0) {
         text += 6;  // skip "batch "
-        text += strspn(text, " \t\n\r");    // skip spaces
-        if ((p = strrchr(text, '\n')) != NULL)
-            *p = '\0';  // strip '\n'
+        text += strspn(text, " \t\n\r");        // skip spaces
+        (p = strrchr(text, '\n')) && (*p = '\0'); // strip ending '\n'
+        
         FILE *f = fopen(text, "r");
         if (f == NULL) perror(text);
         else {
@@ -78,8 +54,9 @@ static char *rep(FILE *in, FILE *out, int (*eval)(char*, FILE*), char *prompt)
         }
     } else {
         if (*text != '\0' && eval(text, out))
-            fprintf(out, " line %i\n", line_count);
+           fprintf(out, " @ line %i\n", line_count);
     }
+//stack_status();
     return buf;
 }
 
@@ -99,7 +76,7 @@ int main(int argc, char **argv)
 #   ifdef AWFUL
     while (rep(stdin, stdout, awful, "awful"))
 #   else
-    while (rep(stdin, stderr, niceful, "nice"))
+    while (rep(stdin, stderr, nice, "niceful"))
 #   endif
         ;
     fputs("Goodbye\n", stdout);

@@ -13,10 +13,10 @@
 
 /** Parses two expressions and check their values are numbers. */
 #define GETXY() \
-    val_t y = awful_eval(tokens, env);    \
-    except_on(y.type != NUMBER, "Number expected");    \
     val_t x = awful_eval(tokens, env);    \
-    except_on(x.type != NUMBER, "Number expected");
+    except_on(x.type != NUMBER, "Number expected");    \
+    val_t y = awful_eval(tokens, env);    \
+    except_on(y.type != NUMBER, "Number expected");
 
 static val_t ADD(stack_t *tokens, stack_t env)
 {
@@ -28,7 +28,7 @@ static val_t ADD(stack_t *tokens, stack_t env)
 static val_t BOS(stack_t *tokens, stack_t env)
 {
     val_t x = awful_eval(tokens, env);
-    except_on(x.type != STACK, "TOS x needs x to be a stack");
+    except_on(x.type != STACK, "BOS x needs x to be a stack");
     x.val.s = x.val.s->next;
     return x;
 }
@@ -51,8 +51,8 @@ static val_t DIV(stack_t *tokens, stack_t env)
 
 static val_t EQ(stack_t *tokens, stack_t env)
 {
-    val_t y = awful_eval(tokens, env);
     val_t x = awful_eval(tokens, env);
+    val_t y = awful_eval(tokens, env);
     double flag = 0.0;
     int type = x.type;
     if (type == y.type) {
@@ -66,6 +66,20 @@ static val_t EQ(stack_t *tokens, stack_t env)
         }
     }
     x.val.n = flag;
+    return x;
+}
+
+static val_t GE(stack_t *tokens, stack_t env)
+{
+    GETXY();
+    x.val.n = x.val.n >= y.val.n;
+    return x;
+}
+
+static val_t GT(stack_t *tokens, stack_t env)
+{
+    GETXY();
+    x.val.n = x.val.n > y.val.n;
     return x;
 }
 
@@ -145,30 +159,25 @@ static val_t TOS(stack_t *tokens, stack_t env)
     return x.val.s->val;
 }
 
-void *awful_key_find(char *text)
+void *awful_key_find(char *t)
 {
-    /*  Associative table names:subroutines. */
-    static struct { char *name; awful_key_t subr; } keys[] = {
-        {"ADD", ADD},
-        {"BOS", BOS},
-        {"COND", COND},
-        {"DIV", DIV},
-        {"EQ", EQ},
-        {"LE", LE},
-        {"LT", LT},
-        {"MAX", MAX},
-        {"MIN", MIN},
-        {"MUL", MUL},
-        {"NE", NE},
-        {"NIL", NIL},
-        {"POW", POW},
-        {"PUSH", PUSH},
-        {"SUB", SUB},
-        {"TOS", TOS},
-    };
-    for (int i = 0; i < sizeof(keys)/sizeof(*keys); ++ i) {
-        if (strcmp(keys[i].name, text) == 0)
-            return (void*)keys[i].subr;
-    }
-    return NULL;
+    return
+        (strcmp(t, "ADD") == 0) ? ADD:
+        (strcmp(t, "BOS") == 0) ? BOS:
+        (strcmp(t, "COND") == 0) ? COND:
+        (strcmp(t, "DIV") == 0) ? DIV:
+        (strcmp(t, "EQ") == 0) ? EQ:
+        (strcmp(t, "GE") == 0) ? GE:
+        (strcmp(t, "GT") == 0) ? GT:
+        (strcmp(t, "LE") == 0) ? LE:
+        (strcmp(t, "LT") == 0) ? LT:
+        (strcmp(t, "MAX") == 0) ? MAX:
+        (strcmp(t, "MIN") == 0) ? MIN:
+        (strcmp(t, "MUL") == 0) ? MUL:
+        (strcmp(t, "NE") == 0) ? NE:
+        (strcmp(t, "NIL") == 0) ? NIL:
+        (strcmp(t, "POW") == 0) ? POW:
+        (strcmp(t, "PUSH") == 0) ? PUSH:
+        (strcmp(t, "SUB") == 0) ? SUB:
+        (strcmp(t, "TOS") == 0) ? TOS: NULL;
 }

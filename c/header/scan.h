@@ -14,10 +14,13 @@
 
     Scan returns a tokens list, thus a stack containing the
     list of tokens where the top of the stack contains the
-    first token, etc.
+    first token, etc. If some error occurred, NULL is returned
+    and in case of end of text inside a string, a message is
+    printed on the stderr.
     
     Each item is an Awful value as follows:
     
+    - {type:NONE}
     - {type:NUMBER, val:n}
     - {type:STRING, val:t}
     - {type:ATOM, val:t}
