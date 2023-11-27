@@ -8,8 +8,8 @@ Awful is a simple functional language designed and implemented for didactic purp
 
 Awful provides the bare minimum equipment for a functional environment:
 
-- atomic data types: numbers, strings and atoms; atoms are used to refer to other objects
-- structured data types: stacks and closures
+- atomic data types: numbers, strings and atoms; atoms are used to refer to other objects;
+- structured data types: stacks and closures.
 
 The language comes in two layers:
 
@@ -22,16 +22,17 @@ One may thinks to representation language as the "inner form" and to publication
 
 Currently the status of the project is the following:
 
-- Documentation: this md file.
-- Awful:
-    - Python implementation: [py/](py/) folder containing a series of Python scripts with a complete implementation: see below for the usae.
-    - C implementation: [c/](c/) folder containing C headers and sources to be compiled into a single executable.
-- Niceful:
-    - Python implementation: [py/](py/) folder containing the niceful.py script.
+- Documentation: this reference file plus a tutorial in [doc/](doc/).
+- Python implementation: [python/](python/) folder containing a series of Python scripts with a complete implementation: see below for the usage (see also [python/README.md](python/README.md)).
+- C implementation: [c/](c/) folder folontaining C headers and sources to be compiled into a single executable; see [c/README.md](c/README.md/) for usage.
 
 TODO:
 
 - Niceful implementation in Niceful, used to self-implement Niceful using the Awful interpreter.
+- Afwul to C translator.
+
+Enjoy!
+Paolo
 
 ## Awful: A Weird FUnctional Language
 
@@ -39,7 +40,7 @@ Awful provides a Lisp-like (but parentheses-less) formalism to encode values and
 
 ### Using the interpreter
 
-Currently two interpreters are available: a Python version, written in a non idiomatic Python aimed at portability, and a C version, that should be considered the reference implementation.
+Currently two interpreters are available: a Python version, written in a non idiomatic Python aimed at portability, which served for prototyping purposes and a C version, that should be considered *the* implementation.
 
 #### Python version
 
@@ -53,15 +54,17 @@ In the first place, you can launch this command from inside the folder [py/] its
 
 #### C version
 
-The C interpreter ought to be compiled before being used: you'll need a C compiler such as `clang` or the one coming with `MS Visual Studio` etc. Some compilers, such as `clang`, needs to explicit load math libraries when compiling.
+The C interpreter ought to be compiled before being used: you'll need a C compiler such as `clang` or the one coming with `MS Visual Studio` etc. Some compilers, such as `clang`, explicitly need to load math libraries when compiling.
 
 The [c/] folder contains all source files needed to compile the interpreter: see the [c/README.md] for instructions.
 
 For example you could type, inside the [c/src/]:
 
-    clang -lm *.c -o awful
+    clang -lm -DAWFUL *.c -o awful
 
-Of course, add all compiler options you like. The executable awful can now be launched to execute the interpreter.
+to create an executable for the Awful language (of course, add all compiler options you like). The executable awful can now be launched to execute the interpreter:
+
+    ./awful
 
 ### Interacting with the interpreter
 
@@ -74,16 +77,16 @@ After launching the interpreter, a prompt will appear:
     Lines starting with backslash or empty are skipped
     A line ending with backslash is joined to the following one
 
-    awful:
+    awful 1:
 
 Now you can type an Awful expression and get the result computed: if the expression needs to span over multiple lines then add a final backslash to the line and the interpreter will ask for more, as in
 
-    awful: ADD 1       \
-    awful|     MUL 2 3
-    7.0
-    awful: 
+    awful 1: ADD 1       \
+    awful 2|     MUL 2 3
+    7
+    awful 3: 
 
-To leave the interpreter type `bye`, to evaluate a file whose lines contain single Awful expressions use `batch FILENAME`; a line starting by a backslash will be ignored, so that one can insert comments in a batch file in this way.
+To leave the interpreter type `bye`, to evaluate a file whose lines contain single Awful expressions use `batch FILENAME`; text after a backslash will be ignored, so that one can insert comments in a batch file in this way.
 
 For example suppose the `sample.awf` text file contains
 
@@ -96,10 +99,10 @@ For example suppose the `sample.awf` text file contains
 
 Then, we could write
 
-    awful:batch sample.awf
-    11.0
-    40.0
-    awful:
+    awful 1: batch sample.awf
+    11
+    40
+    awful 2:
 
 Inside a script one can use the `bye` and the `batch` directives, too.
 
@@ -110,7 +113,7 @@ An expression is just a sequence of token: a token can be
 - a number: a decimal/exponential notation representing a floating point number.
 - a string: an immutable character sequence enclosed between double quotes and not containing double quotes or enclosed between quotes and not containing quotes.
 - a delimiter: parentheses, braces, comma and colon.
-- a keyword: one of the symbols `ADD BOS COND DIV EQ LE LT MAX MIN MUL NE POW PUSH SUB TOS`.
+- a keyword: one of the symbols `ADD BOS COND DIV EQ GE GT LE LT MAX MIN MUL NE POW PUSH SUB TOS`.
 - an atom: a contiguous sequence of non space characters and non delimiter characters which is neither a number nor a keyword.
 
 An expression is a sequence of token matching one of the following rules:
@@ -122,7 +125,7 @@ An expression is a sequence of token matching one of the following rules:
 
 The number of expressions that need to follow a keyword is:
 
-- 1 for `BOS TOS`.
+- 1 for `BOS ISNIL TOS`.
 - 2 for `ADD DIV EQ GE GT LE LT MAX MIN MUL NE POW PUSH SUB`.
 - 3 for `COND`.
 
@@ -137,6 +140,7 @@ The behavior of keywords when they are executed is the following: by *e* we mean
 - the value of `EQ` *e1 e2* is 1 if *e1 = e2*, else 0;
 - the value of `GE` *n1 n2* is 1 if *n1 >= n2*, else 0;
 - the value of `GT` *n1 n2* is 1 if *n1 > n2*, else 0;
+- the value of `ISNIL` *n1* is 1 if *n1 = NIL*, else 0;
 - the value of `LE` *n1 n2* is 1 if *n1 <= n2*, else 0;
 - the value of `LT` *n1 n2* is 1 if *n1 < n2*, else 0;
 - the value of `MAX` *n1 n2* is *n1* if *n1 > n2*, else *n2*;
@@ -176,9 +180,89 @@ is encountered, the following algorithm is performed: keep in mind that a functi
     - if no value can be associated to the variable, an error is raised.
 - *e1* is popped from *e*, restoring it as it was before the evaluation took place. 
 
+Notice that `(f e1, ..., en)` always require `f` to result in a function: for example
+
+    (ADD 1, 2)
+
+is wrong, since it matches `f=ADD`, `e1=1` and `e2=2`: but `f` should be a complete expression, while `ADD` is not complete if not followed by two expressions in turn. But also writing 
+
+    (ADD 1 2)
+
+will result in an error, since the interpreter evaluates `ADD 1 2` getting 3 and tries to interpret is as a function, which is not.
+
+The moral is: use parentheses only to evaluate functions, not to improve readibility of code. Awful code is awful.
+
 ## Niceful: an NICE FUnctional Language
 
 Niceful provides a ML-like formalism to encode values and expressions.
+
+### Using the interpreter
+
+Currently two interpreters are available: a Python version, written in a non idiomatic Python aimed at portability, and a C version, that should be considered the reference implementation.
+
+#### Python version
+
+The Python prototype is simple to use: you'll need the Python environment set up, version 3; no packages other than the built-in ones are used.
+
+Just store the folder [python/](python/) somewhere in the PATH and launch
+
+    python3 niceful
+
+In the first place, you can launch this command from inside the folder [python/](python/) itself.
+
+#### C version
+
+The C interpreter ought to be compiled before being used: you'll need a C compiler such as `clang` or the one coming with `MS Visual Studio` etc. Some compilers, such as `clang`, explicitly need to load math libraries when compiling.
+
+The [c/] folder contains all source files needed to compile the interpreter: see the [c/README.md] for instructions.
+
+For example you could type, inside the [c/src/]:
+
+    clang -lm *.c -o niceful
+
+to create an executable for the Niceful language (of course, add all compiler options you like). The executable awful can now be launched to execute the interpreter:
+
+    ./niceful
+
+### Interacting with the interpreter
+
+After launching the interpreter, a prompt will appear:
+
+    NICEFUL - NICE FUnctional Language
+    (c) 2023 by Paolo Caressa <github.com/pcaressa/awful>
+
+    Type: 'bye' to leave, 'batch FILENAME' to process a file
+    Lines starting with backslash or empty are skipped
+    A line ending with backslash is joined to the following one
+
+    niceful 1: 
+
+Now you can type an Awful expression and get the result computed: if the expression needs to span over multiple lines then add a final backslash to the line and the interpreter will ask for more, as in
+
+    niceful 1: 1 +\
+    niceful 2|     2 * 3
+    7
+    niceful 3: 
+
+To leave the interpreter type `bye`, to evaluate a file whose lines contain single Awful expressions use `batch FILENAME`; text after a backslash will be ignored, so that one can insert comments in a batch file in this way.
+
+For example suppose the `sample.nfl` text file contains
+
+    \ Example of function application
+    let inc = fun x: x + 1 in inc(10)
+
+    19\
+    +\
+    21
+
+Then, we could write
+
+    niceful 1: batch sample.nfl
+    11
+    40
+    niceful 2:
+
+Inside a script one can use the `bye` and the `batch` directives, too.
 
 ### Niceful syntax
 
@@ -207,7 +291,7 @@ We can express Niceful syntax by means of the following grammar written in the o
     
     power = term [\^\ term]
     
-    term = atom | string | list | \-\ term | \1st\ term | \rest\ term |
+    term = atom | string | list | \-\ term | \1st\ term | \rest\ term | \empty\ term
         \(\ expression \)\ | term { \(\ [expr-list] \)\ } |
         \fun\ {\!\ atom} \:\ expression
     
@@ -236,13 +320,14 @@ We will define T on all possible expressions as defined by the previous grammar:
 - T(`-` *e*) = `SUB 0 ` T(*e*)
 - T(`1st` *e*) = `TOS` *e*
 - T(`rest` *e*) = `BOS` *e*
+- T(`empty` *e*) = `ISNIL` *e*
 - T(`(`*e*`)`) = T(*e*)
 - T(*e1* `^` *e2*) = `POW` T(*e1*) T(*e2*)
 - T(*e1* `*` *e2*) = `MUL` T(*e1*) T(*e2*)
 - T(*e1* `/` *e2*) = `DIV` T(*e1*) T(*e2*)
 - T(*e1* `+` *e2*) = `ADD` T(*e1*) T(*e2*)
 - T(*e1* `-` *e2*) = `SUB` T(*e1*) T(*e2*)
-- T(*e1* `:` *e2*) = `PUSH` T(*e1*) T(*e2*)
+- T(*e1* `:` *e2*) = `PUSH` T(*e1*) `PUSH` T(*e2*) `NIL`
 - T(`NOT` *e*) = `SUB 1` T(*e*)
 - T(*e1* `=` *e2*) = `EQ` T(*e1*) T(*e2*)
 - T(*e1* `<>` *e2*) = `NE` T(*e1*) T(*e2*)
@@ -252,7 +337,7 @@ We will define T on all possible expressions as defined by the previous grammar:
 - T(*e1* `>=` *e2*) = `LE` T(*e2*) T(*e1*)
 - T(*e1* `and` *e2*) = `MIN` T(*e1*) T(*e2*)
 - T(*e1* `or` *e2*) = `MAX` T(*e1*) T(*e2*)
-- T(`if` *e1* `then` *e2* `else` *e3*) = `((COND` T(*e1*) `{:`T(*e2*)`}` `{:`T(*e3*)`}` `))`
+- T(`if` *e1* `then` *e2* `else` *e3*) = `(COND` T(*e1*) `{:`T(*e2*)`}` `{:`T(*e3*)`}` `)`
 - T(`let` *x1* `=` *e1* `,` ... `,` *xn* `=` *en* `in` *e*) = `({` *x1* ... *xn* `:` T(*e*) `}` T(*e1*) `,` ... `,` T(*en*) `)`
 - T(`letrec` *x1* `=` *e1* `,` ... `,` *xn* `=` *en* `in` *e*) = `({` `!`*x1* ... `!`*xn* `:` T(*e*) `}` T(*e1*) `,` ... `,` T(*en*) `)`
 
@@ -260,50 +345,28 @@ We will define T on all possible expressions as defined by the previous grammar:
 
 The only care one has to take when implementing the translator function T from Niceful expressions to Awful expressions are priorities of Niceful binary operators, expressed in the BNF grammar.
 
-## Implementation
+## Examples
 
-Let us describe how to implement the Awful interpreter. We will assume to use a language that can represent the following data types:
+Some examples of programs follows: I will show Niceful examples and their translations in Awful.
 
-- floating point numbers.
-- strings.
-- stacks whose items can be numbers, strings and stacks.
+### Some list functions
 
-We'll write stacks as: [*tos,2os,3os, ...*] being *tos* the topmost elements etc.
+(I omit the backslashes at the end of each line: a future version of the language will allow to continue a line with no backslash and use a end-of-line token such as `;`)
 
-The interpreter will be described by words but using only the values available in the language itself: we will use the Json notation [x1,...,xn] for stacks, as already stated, and we will write {k1:v1,...,kn:vn} as an abbreviation for the stack [[k1,v1],...,[kn:vn]].
+```
+    letrec
+    / len(L) returns the length of list L
+    len = fun L:
+        if L = NIL then 0
+        else 1 + len(rest L)
+    ,
+    / nth(L,n) returns the n-th element of L
+    nth = fun L n:
+        if L = NIL or n < 0 then "ERROR"
+        else
+        if n = 0 then 1st L
+        else nth(rest L, n - 1)
 
-### Afwul interpreter
-
-The interpreter exposes a function/method *s = awful(t)* that accepts a string and returns a stack of one of the following forms:
-
-- {"NUMBER": *n*}
-- {"STRING", *t*}
-- {"STACK", *s*}
-- {"CLOSURE", *p, b, e*} where:
-    - *p* is the stack [*x1,...,xn*] of formal parameter names;
-    - *b* is a stack of tokens containing the body of the funciton;
-    - *e* is stack of stacks, the environment in which the function has been defined.
-
-To do that, *awul(t)* does the following:
-
-- scans the string *t* transforming it in a list *c* of tokens [*t1,...,tn*]: each token is a pair [*type, value*] where:
-    - aaa
-- instantiates an empty *e* environment stack.
-- calls the function *eval(c,e)* and, after discarding both *c* and *e*, returns its result. 
-
-### Eval function
-
-TODO
-
-### Closures definitions
-
-TODO
-
-### Closures evaluations
-
-TODO
+```
 
 
-### Niceful interpreter
-
-TODO

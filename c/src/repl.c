@@ -3,11 +3,39 @@
 //#define AWFUL
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include "../header/awful.h"
 #include "../header/nice.h"
 #include "../header/repl.h"
+
+/** Current file line counter. */
+static int repl_line = 0;
+
+// Forward declaration
+static char *repl_eval(FILE *in, FILE *out,
+    int (*eval)(char*, FILE*), char *prompt);
+
+/** Apply the eval evaluator to the lines of a text file
+    whose name is filename. File out is needed by eval. */
+static void repl_batch(char *filename, int (*eval)(char*, FILE*), FILE *out)
+{
+    filename += strspn(filename, " \t\n\r");    // skip spacesù
+    char *p = strrchr(filename, '\n');
+    if (p != NULL) *p = '\0'; // strip ending '\n'
+    
+    FILE *f = fopen(filename, "r");
+    if (f == NULL) perror(filename);
+    else {
+        int saved = repl_line;
+        repl_line = 0;
+        while (repl_eval(f, out, eval, NULL))
+            ;
+        fclose(f);
+        repl_line = saved;
+    }
+}
 
 /** Scan from file in a line of text (possibly asking for more
     if the line ends with a backslash), apply to the result the
@@ -16,19 +44,24 @@
     a line from in.
     On error NULL is returned, else a hidden text with the line
     just interpreted. */
-static char *rep(FILE *in, FILE *out, int (*eval)(char*, FILE*), char *prompt)
+static char *repl_eval(FILE *in, FILE *out,
+                       int (*eval)(char*, FILE*), char *prompt)
 {
     static char buf[BUFSIZ];
-    static int line_count = 0;
 
     *buf = '\0';
-    ++ line_count;
-    if (prompt) fprintf(out, "\n%s %i: ", prompt, line_count);
+    ++ repl_line;
+    if (prompt) fprintf(out, "\n%s %i: ", prompt, repl_line);
     if (fgets(buf, sizeof(buf), in) == NULL) return NULL;
 
     char *p;
     while ((p = strchr(buf, '\\')) != NULL) {
-        if (prompt) fprintf(out, "\n%s %i| ", prompt, line_count);
+        // Strip spaces on the right
+        while (p > buf && isspace(p[-1]))
+            -- p;
+        *p++ = ' ';   // transforms the backslash into a space
+        ++ repl_line;
+        if (prompt) fprintf(out, "\n%s %i| ", prompt, repl_line);
         if ((p = fgets(p, sizeof(buf) - (p - buf), in)) == NULL)
             return NULL;
     }
@@ -38,23 +71,10 @@ static char *rep(FILE *in, FILE *out, int (*eval)(char*, FILE*), char *prompt)
 
     if (strcmp(text, "bye") == 0) return NULL;
     if (memcmp(text, "batch ", 6) == 0) {
-        text += 6;  // skip "batch "
-        text += strspn(text, " \t\n\r");        // skip spaces
-        (p = strrchr(text, '\n')) && (*p = '\0'); // strip ending '\n'
-        
-        FILE *f = fopen(text, "r");
-        if (f == NULL) perror(text);
-        else {
-            int saved = line_count;
-            line_count = 0;
-            while (rep(f, out, eval, NULL))
-                ;
-            fclose(f);
-            line_count = saved;
-        }
+        repl_batch(text + 6, eval, out);
     } else {
         if (*text != '\0' && eval(text, out))
-           fprintf(out, " @ line %i\n", line_count);
+           fprintf(out, ": line %i\n", repl_line);
     }
 //stack_status();
     return buf;
@@ -74,11 +94,11 @@ int main(int argc, char **argv)
         "A line ending with backslash is joined to the following one\n"
     );
 #   ifdef AWFUL
-    while (rep(stdin, stdout, awful, "awful"))
+    while (repl_eval(stdin, stdout, awful, "awful"))
 #   else
-    while (rep(stdin, stderr, nice, "niceful"))
+    while (repl_eval(stdin, stdout, nice, "niceful"))
 #   endif
         ;
-    fputs("Goodbye\n", stdout);
+    puts("Goodbye");
     return 0;
 }

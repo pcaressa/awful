@@ -29,16 +29,16 @@ static val_t BOS(stack_t *tokens, stack_t env)
 {
     val_t x = awful_eval(tokens, env);
     except_on(x.type != STACK, "BOS x needs x to be a stack");
-    x.val.s = x.val.s->next;
+    x.val.s = (x.val.s == NULL) ? NULL : x.val.s->next;
     return x;
 }
 
 static val_t COND(stack_t *tokens, stack_t env)
 {
     val_t x = awful_eval(tokens, env);
+    except_on(x.type != NUMBER, "Number expected in COND");
     val_t y = awful_eval(tokens, env);
     val_t z = awful_eval(tokens, env);
-    except_on(x.type != NUMBER, "Number expected in COND");
     return (x.val.n) ? y : z;
 }
 
@@ -80,6 +80,14 @@ static val_t GT(stack_t *tokens, stack_t env)
 {
     GETXY();
     x.val.n = x.val.n > y.val.n;
+    return x;
+}
+
+static val_t ISNIL(stack_t *tokens, stack_t env)
+{
+    val_t x = awful_eval(tokens, env);
+    x.val.n = x.type == STACK && x.val.s == NULL;
+    x.type = NUMBER;
     return x;
 }
 
@@ -156,6 +164,7 @@ static val_t TOS(stack_t *tokens, stack_t env)
 {
     val_t x = awful_eval(tokens, env);
     except_on(x.type != STACK, "TOS x needs x to be a stack");
+    except_on(x.val.s == NULL, "TOS applied to an empty stack");
     return x.val.s->val;
 }
 
@@ -169,6 +178,7 @@ void *awful_key_find(char *t)
         (strcmp(t, "EQ") == 0) ? EQ:
         (strcmp(t, "GE") == 0) ? GE:
         (strcmp(t, "GT") == 0) ? GT:
+        (strcmp(t, "ISNIL") == 0) ? ISNIL:
         (strcmp(t, "LE") == 0) ? LE:
         (strcmp(t, "LT") == 0) ? LT:
         (strcmp(t, "MAX") == 0) ? MAX:

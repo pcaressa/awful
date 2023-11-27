@@ -7,12 +7,48 @@
 #include "../header/str.h"
 #include "../header/val.h"
 
+/*
+    Implementare gli elementi degli stack
+    come degli array concatenati che
+    vengono allocati ogni tanto: alla
+    fine di una valutazione si chiama
+    una funzione stack_reset() che li
+    mette tutti quanti nella freelist.
+*/
+
+
+
 /** Free stack: this contains a list of free stack items
     that can be used to construct other stacks. An item
     in stack_free has type NONE. */
 static stack_t stack_free = NULL;
 
 static int stack_obj_count = 0;
+
+stack_t stack_concat(stack_t s1, stack_t s2)
+{
+    if (s1 == NULL) return s2;
+    if (s2 == NULL) return s1;
+    stack_t s = s1;
+    while (s->next != NULL)
+        s = s->next;
+    // Now s points the bottomest item in s1
+    s->next = s2;
+    return s1;
+}
+
+stack_t stack_clone(stack_t s)
+{
+    stack_t c = NULL;
+    while (s != NULL) {
+        stack_t e = stack_new();
+        memcpy(e, s, sizeof(struct stack_s));
+        e->next = c;
+        c = e;
+        s = s->next;
+    }
+    return stack_reverse(c);
+}
 
 void stack_delete(stack_t s)
 {
@@ -59,15 +95,12 @@ stack_t stack_new(void)
 
 stack_t stack_push(stack_t s, val_t v)
 {
-    stack_t tos = stack_new();
-    tos->val.type = v.type;
-    if (v.type >= 0 && v.type < 32) {
-        tos->val.val = v.val;
-    } else
     if (v.type < 0 || v.type > 127) {
         fprintf(stderr, "t = %i", v.type);
         assert(!"BUG!");
     }
+    stack_t tos = stack_new();
+    tos->val = v;
     tos->next = s;
     return tos;
 }

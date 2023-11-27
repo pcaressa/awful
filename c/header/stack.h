@@ -11,6 +11,13 @@ typedef struct stack_s {
     val_t val;              //< value of data stored in this item
 } *stack_t;
 
+/** Create and return a copy of a stack. */
+stack_t stack_clone(stack_t s);
+
+/** Concatenate stack s1 to stack s2, thus pushe all
+    elements of s1, preserving order, to s2. */
+extern stack_t stack_concat(stack_t s1, stack_t s2);
+
 /** Dispose a stack s and delete also stacks figuring
     as its elements. */
 extern void stack_delete(stack_t s);

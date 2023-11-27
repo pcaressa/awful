@@ -1,0 +1,6 @@
+\ Example of function application
+({x:ADD x 1} 10)
+
+ADD\
+19\
+21

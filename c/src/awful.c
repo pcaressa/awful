@@ -35,10 +35,12 @@ static stack_t awful_parse(stack_t *r_tokens)
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text in actual parameter");
     int parentheses = 0;    // '('-')' match counter
+    int braces = 0;         // '{'-'}' match counter
     stack_t body = NULL;
     int type;
-    while (tokens != NULL && ((type = tokens->val.type) != ')' && type != ',' || parentheses > 0)) {
-        parentheses = (type == '(') - (type == ')');
+    while (tokens != NULL && ((type = tokens->val.type) != ')' && type != ',' || parentheses > 0 /*|| braces > 0*/)) {
+        parentheses += (type == '(') - (type == ')');
+        braces += (type == '{') - (type == '}');
         body = stack_dup(tokens, body);
         tokens = tokens->next;
     }
@@ -53,7 +55,7 @@ static stack_t awful_parse(stack_t *r_tokens)
 static int __indent_ = 0;
 #define RESET __indent_ = 0;
 #define ENTER for (int i=0;i<__indent_;++i)putchar(' ');printf("> %s: tokens = ", __func__); stack_printf(stdout, *r_tokens); fputs(", env = ", stdout);stack_printf(stdout, env); putchar('\n'); fflush(stdout); ++ __indent_;
-#define EXIT --__indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: ", __func__);val_printf(stdout, retval); putchar('\n'); fflush(stdout);
+#define EXIT --__indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: ", __func__);val_printf(stdout, retval); printf("\ttokens = "); stack_printf(stdout, tokens); printf("\tenv = "); stack_printf(stdout, env); putchar('\n'); fflush(stdout);
 #else
 #define RESET
 #define ENTER
@@ -87,7 +89,10 @@ ENTER
         is marked as NONE, the actual parameter is not
         parsed but evaluated, else it'll be evaluated after
         all actual parameters have been parsed. In any case,
-        the result is pushed in assoc. */
+        the result is pushed in assoc.
+        Remember that fparams is a list t1->a1->t2->a2->...
+        where ti is NONE or '!' and ai is the formal
+        parameter name. */
     stack_t assoc = NULL;
     for (stack_t p = fparams; p != NULL; p = p->next) {
         if (p->val.type == NONE) {
@@ -97,34 +102,48 @@ ENTER
                 "')' or ',' expected after actual parameters");
             tokens = tokens->next;  // skip ')' or ','
             assoc = stack_push(assoc, v);
-            p = p->next;    // skip the NONE item
-            assoc = stack_push(assoc, p->val);
         } else {
             stack_t actual = awful_parse(r_tokens);
             assoc = stack_push_s(assoc, actual);
-            p = p->next;
-            assoc = stack_push(assoc, p->val);
         }
+        p = p->next;    // skip the NONE/'!' item
+        assoc = stack_push(assoc, p->val);
     }
-    /*  Evaluates all expressions in the environment assoc
-        corresponding to formal parameters marked by '!'. */
-    for (stack_t ap = assoc, fp = fparams;
-            ap != NULL;
-                ap = ap->next->next, fp = fp->next->next) {
+    /*  Evaluates all expressions, corresponding to formal
+        parameters marked by '!', in the environment env
+        with assoc pushed in front of it. */
+    stack_t new_env = (assoc == NULL) ? env : stack_push_s(env, assoc);
+//~ printf("\naparams = "); stack_printf(stdout, assoc);
+    for (stack_t ap = assoc, fp = fparams; ap != NULL;
+    ap = ap->next->next, fp = fp->next->next) {
         if (fp->val.type == '!') {
             stack_t to_eval = ap->next->val.val.s;
             /*  Evaluate to_eval and substitute it with the
                 resulting value. */
+//~ printf("\nnew_env: "); stack_printf(stdout, new_env);
+//~ printf("\nto_eval = "); stack_printf(stdout, to_eval);
             stack_t saved = to_eval;
-            val_t retval = awful_eval(&to_eval, env);
-            ap->next->val = retval;
+            val_t retval = awful_eval(&to_eval, new_env);
             stack_delete(saved);
+            ap->next->val = retval;
+//~ printf("\nfparams = "); stack_printf(stdout, retval.val.s->val.val.s);
+//~ printf("\nfbody = "); stack_printf(stdout, retval.val.s->next->val.val.s);
         }
     }
-    stack_t new_env = stack_push_s(fenv, assoc);
+    // The environment in which to evaluate the
+    // closure is [assoc] + fenv.
+    new_env = (assoc == NULL) ? fenv : stack_push_s(fenv, assoc);
 
+//~ printf("\nf: "); val_printf(stdout, f);
+//~ printf("\nenv: "); stack_printf(stdout, env);
+//~ printf("\nassoc: "); stack_printf(stdout, assoc);
+//~ printf("\nbody"); stack_printf(stdout, body);
+//~ printf("\nnew_env: "); stack_printf(stdout, new_env);
+//~ printf("\nEVALUATE BODY "); stack_printf(stdout, body); fputc('\n', stdout);
     val_t retval = awful_eval(&body, new_env);
-    val_delete(f);
+    // val_delete(f);
+    // stack_delete(assoc);
+//~ puts("OK!");
     
     *r_tokens = tokens;
 EXIT
@@ -153,6 +172,8 @@ ENTER
     stack_t params = NULL;
     while (tokens->val.type != ':') {
         // A formal parameter can be an atom or !atom
+        // Push NONE or '!' depending on the parameter being
+        // evaluated immediately or delayed.
         val_t v = {.type = NONE};
         if (tokens->val.type == '!') {
             v.type = '!';
@@ -223,7 +244,8 @@ ENTER
         retval = awful_application(&tokens, env);
         break;
     default:
-        except_on(1, "Unknown token");
+        val_printf(stderr, tokens->val);
+        except_on(1, " unexpected here");
     }
     *r_tokens = tokens;
 EXIT
@@ -244,5 +266,6 @@ int awful(char *text, FILE *file)
         fputc('\n', file);
     }
     stack_delete(tokens);   // also in case of exception
+stack_status();
     return v.type == NONE;
 }

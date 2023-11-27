@@ -53,7 +53,7 @@ void val_printf(FILE *f, val_t v)
         }
         fputc('|', f);
         s = s->next;
-        val_list_printf(f, s->val.val.s);
+        //~ val_list_printf(f, s->val.val.s);
         fputc('}', f);
         break;
     }
