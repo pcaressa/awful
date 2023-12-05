@@ -16,20 +16,15 @@ The language comes in two layers:
 - Awful, the *representation language*;
 - Niceful, the *publication language*.
 
-The latter is addressed to humans wanting to use the language, the former is addressed to machines to execute it.
+The latter is addressed to humans wanting to use the language, the former is addressed to machines to execute it. Of course you can enjoy programming directly in Afwul and keep in mind that Niceful is easily translated to Awful, indeed the interpreter does that to interpret it.
 
 One may thinks to representation language as the "inner form" and to publication language as "syntactic sugar" built on top of the inner form.
 
 Currently the status of the project is the following:
 
-- Documentation: this reference file plus a tutorial in [doc/](doc/).
-- Python implementation: [python/](python/) folder containing a series of Python scripts with a complete implementation: see below for the usage (see also [python/README.md](python/README.md)).
-- C implementation: [c/](c/) folder folontaining C headers and sources to be compiled into a single executable; see [c/README.md](c/README.md/) for usage.
-
-TODO:
-
-- Niceful implementation in Niceful, used to self-implement Niceful using the Awful interpreter.
-- Afwul to C translator.
+- Documentation: this reference file plus a gentle introduction to the language and to functional programming concepts: [doc/awful_intro_fl.md](doc/awful_intro_fl.md).
+- C implementation: [c/](c/) folder contains C headers and sources to be compiled into a single executable that is the "official" implementation of the language; see [c/README.md](c/README.md/).
+- Python implementation: [python/](python/) folder containing a series of Python scripts with a prototypal implementation: see [python/README.md](python/README.md).
 
 Enjoy!
 Paolo
@@ -38,74 +33,6 @@ Paolo
 
 Awful provides a Lisp-like (but parentheses-less) formalism to encode values and expressions.
 
-### Using the interpreter
-
-Currently two interpreters are available: a Python version, written in a non idiomatic Python aimed at portability, which served for prototyping purposes and a C version, that should be considered *the* implementation.
-
-#### Python version
-
-The Python prototype is simple to use: you'll need the Python environment set up, version 3; no packages other than the built-in ones are used.
-
-Just store the folder [py] somewhere in the PATH and launch
-
-    python3 awful
-
-In the first place, you can launch this command from inside the folder [py/] itself.
-
-#### C version
-
-The C interpreter ought to be compiled before being used: you'll need a C compiler such as `clang` or the one coming with `MS Visual Studio` etc. Some compilers, such as `clang`, explicitly need to load math libraries when compiling.
-
-The [c/] folder contains all source files needed to compile the interpreter: see the [c/README.md] for instructions.
-
-For example you could type, inside the [c/src/]:
-
-    clang -lm -DAWFUL *.c -o awful
-
-to create an executable for the Awful language (of course, add all compiler options you like). The executable awful can now be launched to execute the interpreter:
-
-    ./awful
-
-### Interacting with the interpreter
-
-After launching the interpreter, a prompt will appear:
-
-    AWFUL - AWful FUnctional Language
-    (c) 2023 by Paolo Caressa <github.com/pcaressa/awful>
-
-    Type: 'bye' to leave, 'batch FILENAME' to process a file
-    Lines starting with backslash or empty are skipped
-    A line ending with backslash is joined to the following one
-
-    awful 1:
-
-Now you can type an Awful expression and get the result computed: if the expression needs to span over multiple lines then add a final backslash to the line and the interpreter will ask for more, as in
-
-    awful 1: ADD 1       \
-    awful 2|     MUL 2 3
-    7
-    awful 3: 
-
-To leave the interpreter type `bye`, to evaluate a file whose lines contain single Awful expressions use `batch FILENAME`; text after a backslash will be ignored, so that one can insert comments in a batch file in this way.
-
-For example suppose the `sample.awf` text file contains
-
-    \ Example of function application
-    ({x:ADD x 1} 10)
-
-    ADD\
-    19\
-    21
-
-Then, we could write
-
-    awful 1: batch sample.awf
-    11
-    40
-    awful 2:
-
-Inside a script one can use the `bye` and the `batch` directives, too.
-
 ### Awful syntax
 
 An expression is just a sequence of token: a token can be
@@ -113,7 +40,7 @@ An expression is just a sequence of token: a token can be
 - a number: a decimal/exponential notation representing a floating point number.
 - a string: an immutable character sequence enclosed between double quotes and not containing double quotes or enclosed between quotes and not containing quotes.
 - a delimiter: parentheses, braces, comma and colon.
-- a keyword: one of the symbols `ADD BOS COND DIV EQ GE GT LE LT MAX MIN MUL NE POW PUSH SUB TOS`.
+- a keyword: one of the symbols `ADD BOS COND DIV EQ GE GT ISNIL LE LT MAX MIN MUL NE NIL POW PUSH SUB TOS`.
 - an atom: a contiguous sequence of non space characters and non delimiter characters which is neither a number nor a keyword.
 
 An expression is a sequence of token matching one of the following rules:
@@ -125,6 +52,7 @@ An expression is a sequence of token matching one of the following rules:
 
 The number of expressions that need to follow a keyword is:
 
+- 0 for `NIL`.
 - 1 for `BOS ISNIL TOS`.
 - 2 for `ADD DIV EQ GE GT LE LT MAX MIN MUL NE POW PUSH SUB`.
 - 3 for `COND`.
@@ -147,6 +75,7 @@ The behavior of keywords when they are executed is the following: by *e* we mean
 - the value of `MIN` *n1 n2* is *n1* if *n1 < n2*, else *n2*
 - the value of `MUL` *n1 n2* is *n1 / n2*;
 - the value of `NE` *e1 e2* is 0 if *e1 = e2*, else 1;
+- the value of `NIL` is the empty stack;
 - the value of `POW` *n1 n2* is *n1* raised to *n2*;
 - the value of `PUSH` *e s* is the stack obtained by *s* by pushing *e* on top of it;
 - the value of `TOS` *s* is the top of the stack *s*.
@@ -196,77 +125,9 @@ The moral is: use parentheses only to evaluate functions, not to improve readibi
 
 Niceful provides a ML-like formalism to encode values and expressions.
 
-### Using the interpreter
-
-Currently two interpreters are available: a Python version, written in a non idiomatic Python aimed at portability, and a C version, that should be considered the reference implementation.
-
-#### Python version
-
-The Python prototype is simple to use: you'll need the Python environment set up, version 3; no packages other than the built-in ones are used.
-
-Just store the folder [python/](python/) somewhere in the PATH and launch
-
-    python3 niceful
-
-In the first place, you can launch this command from inside the folder [python/](python/) itself.
-
-#### C version
-
-The C interpreter ought to be compiled before being used: you'll need a C compiler such as `clang` or the one coming with `MS Visual Studio` etc. Some compilers, such as `clang`, explicitly need to load math libraries when compiling.
-
-The [c/] folder contains all source files needed to compile the interpreter: see the [c/README.md] for instructions.
-
-For example you could type, inside the [c/src/]:
-
-    clang -lm *.c -o niceful
-
-to create an executable for the Niceful language (of course, add all compiler options you like). The executable awful can now be launched to execute the interpreter:
-
-    ./niceful
-
-### Interacting with the interpreter
-
-After launching the interpreter, a prompt will appear:
-
-    NICEFUL - NICE FUnctional Language
-    (c) 2023 by Paolo Caressa <github.com/pcaressa/awful>
-
-    Type: 'bye' to leave, 'batch FILENAME' to process a file
-    Lines starting with backslash or empty are skipped
-    A line ending with backslash is joined to the following one
-
-    niceful 1: 
-
-Now you can type an Awful expression and get the result computed: if the expression needs to span over multiple lines then add a final backslash to the line and the interpreter will ask for more, as in
-
-    niceful 1: 1 +\
-    niceful 2|     2 * 3
-    7
-    niceful 3: 
-
-To leave the interpreter type `bye`, to evaluate a file whose lines contain single Awful expressions use `batch FILENAME`; text after a backslash will be ignored, so that one can insert comments in a batch file in this way.
-
-For example suppose the `sample.nfl` text file contains
-
-    \ Example of function application
-    let inc = fun x: x + 1 in inc(10)
-
-    19\
-    +\
-    21
-
-Then, we could write
-
-    niceful 1: batch sample.nfl
-    11
-    40
-    niceful 2:
-
-Inside a script one can use the `bye` and the `batch` directives, too.
-
 ### Niceful syntax
 
-We can express Niceful syntax by means of the following grammar written in the old good BNF style symbols of the language are enclosed between backslashes, that are not part of the language alphabet:
+We can express Niceful syntax by means of the following grammar written in the old good BNF style symbols of the language (keywords, delimiters etc.) are enclosed between backslashes, that are not part of the language alphabet:
 
     expression =
         conditional |
@@ -299,11 +160,11 @@ We can express Niceful syntax by means of the following grammar written in the o
 
     bool-op = \and\ | \or\
     rel-op = \=\ | \<>\ | \<\ | \>\ | \<=\ | \>=\
-    add-op = \+\ | \-\ | \:\
-    mul-op = \*\ | \/\
+    add-op = \+\ | \-\
+    mul-op = \*\ | \/\ | \:\
 
     string = \"\{character}\"\ | \'\{character}\'\
-    list = \[\ \[\ | \[\ [expr-list] \]\
+    list = \nil\ | \[\ [expr-list] \]\
 
 Each Niceful syntactic construction can be translated into a corresponding Awful expression or part of expression: thus Niceful is just a different form in which to express Awful expressions.
 
@@ -314,20 +175,20 @@ For each kind of Niceful construct we will now specify the corresponding Awful e
 We will define T on all possible expressions as defined by the previous grammar:
 
 - If *x* is a number, string or atom then T(*x*) = *x*.
-- T(`[]`) = `NIL`
+- T(`nil`) = `NIL`
 - T(`[`*e1* `,` ... `,` *en* `]`) = `PUSH` T(*e1*) `PUSH` T(*e2*) ... `PUSH` T(*en*) `NIL`
-- T(`fun` *x1 ... xn* `:` *e*) = `{` *x1 ... xn* `:` *e* `}` 
+- T(`fun` *x1 ... xn* `:` *e*) = `{` *x1 ... xn* `:` T(*e*) `}` 
 - T(`-` *e*) = `SUB 0 ` T(*e*)
-- T(`1st` *e*) = `TOS` *e*
-- T(`rest` *e*) = `BOS` *e*
-- T(`empty` *e*) = `ISNIL` *e*
+- T(`1st` *e*) = `TOS` T(*e*)
+- T(`rest` *e*) = `BOS` T(*e*)
+- T(`empty` *e*) = `ISNIL` T(*e*)
 - T(`(`*e*`)`) = T(*e*)
 - T(*e1* `^` *e2*) = `POW` T(*e1*) T(*e2*)
 - T(*e1* `*` *e2*) = `MUL` T(*e1*) T(*e2*)
 - T(*e1* `/` *e2*) = `DIV` T(*e1*) T(*e2*)
 - T(*e1* `+` *e2*) = `ADD` T(*e1*) T(*e2*)
 - T(*e1* `-` *e2*) = `SUB` T(*e1*) T(*e2*)
-- T(*e1* `:` *e2*) = `PUSH` T(*e1*) `PUSH` T(*e2*) `NIL`
+- T(*e1* `:` *e2*) = `PUSH` T(*e1*) T(*e2*)
 - T(`NOT` *e*) = `SUB 1` T(*e*)
 - T(*e1* `=` *e2*) = `EQ` T(*e1*) T(*e2*)
 - T(*e1* `<>` *e2*) = `NE` T(*e1*) T(*e2*)
@@ -344,29 +205,3 @@ We will define T on all possible expressions as defined by the previous grammar:
 ### Grammar priorities
 
 The only care one has to take when implementing the translator function T from Niceful expressions to Awful expressions are priorities of Niceful binary operators, expressed in the BNF grammar.
-
-## Examples
-
-Some examples of programs follows: I will show Niceful examples and their translations in Awful.
-
-### Some list functions
-
-(I omit the backslashes at the end of each line: a future version of the language will allow to continue a line with no backslash and use a end-of-line token such as `;`)
-
-```
-    letrec
-    / len(L) returns the length of list L
-    len = fun L:
-        if L = NIL then 0
-        else 1 + len(rest L)
-    ,
-    / nth(L,n) returns the n-th element of L
-    nth = fun L n:
-        if L = NIL or n < 0 then "ERROR"
-        else
-        if n = 0 then 1st L
-        else nth(rest L, n - 1)
-
-```
-
-
