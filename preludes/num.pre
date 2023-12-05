@@ -1,0 +1,59 @@
+\ Numerical prelude
+
+letrec
+
+abs = fun x: if x < 0 then - x else x,
+
+sgn = fun x:
+    if x < 0 then -1
+        else
+     if x = 0 then 0
+        else
+    1,
+
+int-near = fun n x:
+    if n > x then int-near(n - 1, x)
+        else
+    if n + 1 < x then int-near(n + 1, x)
+        else
+    n,
+
+floor = fun x: int-near(0, x),
+
+round = fun x: int-near(0, x + 0.5),
+
+\ compute the Taylor series by Horner scheme up to the n-th element
+exp-n = fun x n N:
+    if n = N then 1 + x / n
+    else 1 + (x / n) * exp-n(x,n + 1,N),
+
+exp = fun x: exp-n(x, 1, 50),
+
+square = fun n: n * n,
+
+map = fun f x:
+    if empty x then nil
+    else f(1st x) : map(f, rest x),
+
+filter = fun f x:
+    if empty x then nil
+        else
+    if f(1st x) then 1st x : filter(f, rest x)
+         else
+    filter(f, rest x),
+
+even = fun n:
+    if n < 0 then even(- n)
+        else
+    if n = 0 then 1
+        else
+    odd(n - 1),
+
+odd = fun n:
+    if n < 0 then odd(- n)
+        else
+    if n = 0 then 0
+        else
+    even(n - 1)
+
+in filter(odd, [1,2,3,4,5,6,7,8,9,10])

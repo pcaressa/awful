@@ -32,11 +32,7 @@ typedef struct val_s {
     } val;
 } val_t;
 
-/** Delete the contents of a val_t: this only does anything
-    if v contains a stack or a closure. */
-extern void val_delete(val_t v);
-
 /** Print a value on a file. */
-extern void val_printf(FILE *f, val_t v);
+extern void val_fprint(FILE *f, val_t v);
 
 #endif

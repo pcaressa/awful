@@ -1,0 +1,44 @@
+\   List prelude: some basic list tools
+
+letrec
+
+\ len(x) = length of list x
+len = fun x:
+    if empty x then 0
+    else 1 + len(rest x)
+,
+\ nth(x,n) = n-th element of list x
+nth = fun x n:
+    if empty x or n < 0 then "Index out of range"
+        else
+    if n = 0 then 1st x
+        else
+    nth(rest x, n - 1)
+,
+\ append(x1,x2) = push elements of x1 to x2
+append = fun x1 x2:
+    if empty x1 then x2
+        else
+    if empty rest x1 then 1st x1 : x2
+        else
+    1st x1 : append(rest x1, x2),
+
+reverse = fun x:
+    if empty x then nil
+    else append(reverse(rest x), [1st x]),
+
+filter = fun f x:
+    if empty x then nil
+        else
+    if f(1st x) then 1st x : filter(f, rest x)
+        else
+    filter(f, rest x),
+
+quicksort = fun x:
+    if empty x then nil
+        else
+    let a = 1st x, r = rest x
+    in  append(quicksort(filter(fun y: y < a, r)),
+               append([a], quicksort(filter(fun y: a <= y, r))))
+
+in quicksort([3,2,1,4])

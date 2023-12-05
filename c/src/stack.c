@@ -1,104 +1,75 @@
 /** \file stack.c */
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../header/except.h"
 #include "../header/stack.h"
 #include "../header/str.h"
 #include "../header/val.h"
 
-/*
-    Implementare gli elementi degli stack
-    come degli array concatenati che
-    vengono allocati ogni tanto: alla
-    fine di una valutazione si chiama
-    una funzione stack_reset() che li
-    mette tutti quanti nella freelist.
+/**
+    A chunk is an array of CHUNKSIZ stack items:
+    each stack in the program takes its items
+    from a chunk. The function stack_reset() is
+    used to free all chunks for future reuse.
 */
 
+#define CHUNKSIZ (1024)
 
+typedef struct stack_chunk_s {
+    struct stack_chunk_s *next;
+    unsigned here;  ///< Index of 1ft free item in chunk
+    struct stack_s chunk[CHUNKSIZ];
+} *stack_chunk_t;
 
-/** Free stack: this contains a list of free stack items
-    that can be used to construct other stacks. An item
-    in stack_free has type NONE. */
-static stack_t stack_free = NULL;
-
-static int stack_obj_count = 0;
-
-stack_t stack_concat(stack_t s1, stack_t s2)
-{
-    if (s1 == NULL) return s2;
-    if (s2 == NULL) return s1;
-    stack_t s = s1;
-    while (s->next != NULL)
-        s = s->next;
-    // Now s points the bottomest item in s1
-    s->next = s2;
-    return s1;
-}
-
-stack_t stack_clone(stack_t s)
-{
-    stack_t c = NULL;
-    while (s != NULL) {
-        stack_t e = stack_new();
-        memcpy(e, s, sizeof(struct stack_s));
-        e->next = c;
-        c = e;
-        s = s->next;
-    }
-    return stack_reverse(c);
-}
-
-void stack_delete(stack_t s)
-{
-    while (s != NULL) {
-        s = stack_drop(s);
-    }
-}
-
-stack_t stack_drop(stack_t s)
-{
-    assert(s != NULL);
-    stack_t next = s->next;
-    s->next = stack_free;
-    stack_free = s;
-    if (s->val.type == STACK || s->val.type == CLOSURE) {
-        stack_delete(s->val.val.s);
-    }
-    s->val.type = NONE;
-    return next;
-}
+/** First chunk of stack items. */
+static stack_chunk_t stack_chunks = NULL;
 
 stack_t stack_dup(stack_t s1, stack_t s2)
 {
-    assert(s1 != NULL);
+    except_on(s1 == NULL, "Cannot pop from empty stack");
     stack_t s = stack_new();
-    memcpy(s, s1, sizeof(struct stack_s));
+    s->val = s1->val;
     s->next = s2;
     return s;
+}
+
+void stack_fprint(FILE *f, stack_t s)
+{
+    val_t v = {.type = STACK, .val.s = s};
+    val_fprint(f, v);
 }
 
 stack_t stack_new(void)
 {
-    stack_t s;
-    if (stack_free == NULL) {
-        s = malloc(sizeof(struct stack_s));
-        assert(s != NULL);
-        ++ stack_obj_count;
-    } else {
-        s = stack_free;
-        stack_free = stack_free->next;
+    stack_t s = NULL;
+    for (stack_chunk_t c = stack_chunks; c != NULL; c = c->next)
+        if (c->here < CHUNKSIZ) {
+            s = c->chunk + c->here++;
+            break;
+        }
+    // If s == NULL no free chunk was found.
+    if (s == NULL) {
+        stack_chunk_t new_chunk = malloc(sizeof(struct stack_chunk_s));
+        except_on(new_chunk == NULL, "Fatal allocation error"
+            " @%s:%i", __FILE__, __LINE__);
+        new_chunk->next = stack_chunks;
+        s = new_chunk->chunk;
+        new_chunk->here = 1;
+        stack_chunks = new_chunk;
     }
     return s;
 }
 
+stack_t stack_next(stack_t s)
+{
+    return s == NULL ? NULL : s->next;
+}
+
 stack_t stack_push(stack_t s, val_t v)
 {
-    if (v.type < 0 || v.type > 127) {
-        fprintf(stderr, "t = %i", v.type);
-        assert(!"BUG!");
-    }
+    except_on(v.type < 0 || v.type > 127, "BUG!"
+        " @%s:%i [t = %i", __FILE__, __LINE__, v.type);
     stack_t tos = stack_new();
     tos->val = v;
     tos->next = s;
@@ -111,6 +82,14 @@ stack_t stack_push_s(stack_t s, stack_t s1)
     return stack_push(s, v);
 }
 
+void stack_reset(void)
+{
+    for (stack_chunk_t c = stack_chunks; c != NULL; c = c->next) {
+        c->here = 0;
+    }
+    str_reset();
+}
+
 stack_t stack_reverse(stack_t s)
 {
     if (s != NULL) {
@@ -121,21 +100,19 @@ stack_t stack_reverse(stack_t s)
             prev = s;
             s = next;
             next = next->next;
-            s->next = prev; }}
+            s->next = prev;
+        }
+    }
     return s;
 }
 
-void stack_printf(FILE *f, stack_t s)
+void stack_status(FILE *dump)
 {
-    val_t v = {.type = STACK, .val.s = s};
-    val_printf(f, v);
-}
-
-void stack_status(void)
-{
-    int n = 0;
-    for (stack_t p = stack_free; p != NULL; p = p->next)
-        ++ n;
-    fprintf(stderr, "\nStack: #objects = %i, #free = %i\n",
-        stack_obj_count, n);
+    unsigned mem = 0;
+    unsigned n = 0;
+    for (stack_chunk_t c = stack_chunks; c != NULL; c = c->next) {
+        mem += sizeof(struct stack_chunk_s);
+        n += c->here;
+    }
+    fprintf(dump, "\n%u stack items (%u Kbytes)\n", n, mem / 1024);
 }

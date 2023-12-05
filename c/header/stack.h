@@ -11,20 +11,13 @@ typedef struct stack_s {
     val_t val;              //< value of data stored in this item
 } *stack_t;
 
-/** Create and return a copy of a stack. */
-stack_t stack_clone(stack_t s);
+/** Returns 1 if stack s is empty, else 0. */
+#define stack_empty(s) ((s) == NULL)
 
-/** Concatenate stack s1 to stack s2, thus pushe all
-    elements of s1, preserving order, to s2. */
-extern stack_t stack_concat(stack_t s1, stack_t s2);
-
-/** Dispose a stack s and delete also stacks figuring
-    as its elements. */
-extern void stack_delete(stack_t s);
-
-/** Discard the top of a stack passed by reference;
-    the new stack pointer is returned as value. */
-extern stack_t stack_drop(stack_t s);
+/** Returns a pointer to the stack resulting from s by
+    dropping its topmost element. If s is NULL no error
+    is raised but NULL is returned. */
+extern stack_t stack_next(stack_t s);
 
 /** Duplicate the top of stack s1 and pushes the result on
     s2, which is returned as value */
@@ -41,13 +34,19 @@ extern stack_t stack_push(stack_t s, val_t v);
     Return the updated value of s. */
 extern stack_t stack_push_s(stack_t s, stack_t s1);
 
+/** Delete all stack items allocated so far. */
+extern void stack_reset(void);
+
 /** Reverse the order of elements in a stack s:
     the new stack pointer is returned. */
 extern stack_t stack_reverse(stack_t s);
 
+/** Logs on a file the current stack status. */
+extern void stack_status(FILE *dump);
+
 #include <stdio.h>
 
 /** Prints the contents of a stack on a file. */
-extern void stack_printf(FILE *f, stack_t s);
+extern void stack_fprint(FILE *f, stack_t s);
 
 #endif

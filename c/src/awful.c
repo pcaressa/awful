@@ -11,7 +11,10 @@
 #include "../header/repl.h"
 #include "../header/scan.h"
 #include "../header/stack.h"
+#include "../header/str.h"
 #include "../header/val.h"
+
+static int awful_eval_count = 0;
 
 /** Look for an atom inside a stack of environments: if found,
     then return a clone of the value of the variable. */
@@ -38,13 +41,14 @@ static stack_t awful_parse(stack_t *r_tokens)
     int braces = 0;         // '{'-'}' match counter
     stack_t body = NULL;
     int type;
-    while (tokens != NULL && ((type = tokens->val.type) != ')' && type != ',' || parentheses > 0 /*|| braces > 0*/)) {
+    while (((type = tokens->val.type) != ')' && type != ',' || parentheses > 0 || braces > 0)) {
         parentheses += (type == '(') - (type == ')');
         braces += (type == '{') - (type == '}');
         body = stack_dup(tokens, body);
         tokens = tokens->next;
+        except_on(tokens == NULL,
+            "Unexpected end of text in actual parameter");
     }
-    except_on(tokens == NULL, "Unexpected end of text in actual parameter");
     tokens = tokens->next;          // skip ')' or ','
     *r_tokens = tokens;
     return stack_reverse(body);
@@ -54,8 +58,8 @@ static stack_t awful_parse(stack_t *r_tokens)
 // Debug stuff
 static int __indent_ = 0;
 #define RESET __indent_ = 0;
-#define ENTER for (int i=0;i<__indent_;++i)putchar(' ');printf("> %s: tokens = ", __func__); stack_printf(stdout, *r_tokens); fputs(", env = ", stdout);stack_printf(stdout, env); putchar('\n'); fflush(stdout); ++ __indent_;
-#define EXIT --__indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: ", __func__);val_printf(stdout, retval); printf("\ttokens = "); stack_printf(stdout, tokens); printf("\tenv = "); stack_printf(stdout, env); putchar('\n'); fflush(stdout);
+#define ENTER for (int i=0;i<__indent_;++i)putchar(' ');printf("> %s: tokens = ", __func__); stack_fprint(stdout, *r_tokens); fputs(", env = ", stdout);stack_fprint(stdout, env); putchar('\n'); fflush(stdout); ++ __indent_;
+#define EXIT --__indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: ", __func__);val_fprint(stdout, retval); printf("\ttokens = "); stack_fprint(stdout, tokens); printf("\tenv = "); stack_fprint(stdout, env); putchar('\n'); fflush(stdout);
 #else
 #define RESET
 #define ENTER
@@ -103,7 +107,8 @@ ENTER
             tokens = tokens->next;  // skip ')' or ','
             assoc = stack_push(assoc, v);
         } else {
-            stack_t actual = awful_parse(r_tokens);
+            stack_t actual = awful_parse(&tokens);
+            // awful_parse skip the ending ',' or ')'
             assoc = stack_push_s(assoc, actual);
         }
         p = p->next;    // skip the NONE/'!' item
@@ -113,38 +118,21 @@ ENTER
         parameters marked by '!', in the environment env
         with assoc pushed in front of it. */
     stack_t new_env = (assoc == NULL) ? env : stack_push_s(env, assoc);
-//~ printf("\naparams = "); stack_printf(stdout, assoc);
     for (stack_t ap = assoc, fp = fparams; ap != NULL;
     ap = ap->next->next, fp = fp->next->next) {
         if (fp->val.type == '!') {
             stack_t to_eval = ap->next->val.val.s;
             /*  Evaluate to_eval and substitute it with the
                 resulting value. */
-//~ printf("\nnew_env: "); stack_printf(stdout, new_env);
-//~ printf("\nto_eval = "); stack_printf(stdout, to_eval);
             stack_t saved = to_eval;
             val_t retval = awful_eval(&to_eval, new_env);
-            stack_delete(saved);
             ap->next->val = retval;
-//~ printf("\nfparams = "); stack_printf(stdout, retval.val.s->val.val.s);
-//~ printf("\nfbody = "); stack_printf(stdout, retval.val.s->next->val.val.s);
         }
     }
     // The environment in which to evaluate the
     // closure is [assoc] + fenv.
     new_env = (assoc == NULL) ? fenv : stack_push_s(fenv, assoc);
-
-//~ printf("\nf: "); val_printf(stdout, f);
-//~ printf("\nenv: "); stack_printf(stdout, env);
-//~ printf("\nassoc: "); stack_printf(stdout, assoc);
-//~ printf("\nbody"); stack_printf(stdout, body);
-//~ printf("\nnew_env: "); stack_printf(stdout, new_env);
-//~ printf("\nEVALUATE BODY "); stack_printf(stdout, body); fputc('\n', stdout);
     val_t retval = awful_eval(&body, new_env);
-    // val_delete(f);
-    // stack_delete(assoc);
-//~ puts("OK!");
-    
     *r_tokens = tokens;
 EXIT
     return retval;
@@ -181,7 +169,7 @@ ENTER
         }
         params = stack_push(params, v);
         except_on(tokens->val.type != ATOM,
-                  "Atom expected as closure formal parameter");
+            "Atom expected as closure formal parameter");
         params = stack_push(params, tokens->val);
         tokens = tokens->next;
     }
@@ -211,6 +199,9 @@ EXIT
 
 val_t awful_eval(stack_t *r_tokens, stack_t env)
 {
+    ++ awful_eval_count;
+    except_on(awful_eval_count > MAX_EVAL,
+        "Evaluation too nested: max %i allowed", MAX_EVAL);
 ENTER
     stack_t tokens = *r_tokens;
     except_on(tokens == NULL, "Unexpected end of text");
@@ -244,28 +235,26 @@ ENTER
         retval = awful_application(&tokens, env);
         break;
     default:
-        val_printf(stderr, tokens->val);
-        except_on(1, " unexpected here");
+        val_fprint(stderr, tokens->val);
+        except_on(1, " not expected");
     }
     *r_tokens = tokens;
 EXIT
+    -- awful_eval_count;
     return retval;
 }
 
 int awful(char *text, FILE *file)
 {
+    stack_t tokens = NULL;
     val_t v = {.type = NONE};
-    stack_t tokens = scan(text, "(){},:!", awful_key_find);
-    if (tokens != NULL && setjmp(except_buf) == 0) {
-        stack_t tokens_saved = tokens;
-        v = awful_eval(&tokens_saved, NULL);
-        if (v.type != NONE) {
-            val_printf(file, v);
-            val_delete(v);
-        }
+    if (setjmp(except_buf) == 0) {
+        tokens = scan(text, "(){},:!", awful_key_find);
+        awful_eval_count = 0;
+        v = awful_eval(&tokens, NULL);
+        if (v.type != NONE) val_fprint(file, v);
         fputc('\n', file);
     }
-    stack_delete(tokens);   // also in case of exception
-stack_status();
+    stack_reset();
     return v.type == NONE;
 }

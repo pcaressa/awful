@@ -4,24 +4,17 @@
 #include "../header/stack.h"
 #include "../header/val.h"
 
-void val_delete(val_t v)
-{
-    if (v.type == STACK || v.type == CLOSURE)
-        // A closure is a stack of stacks [params, body, env]
-        stack_delete(v.val.s);
-}
-
-static void val_list_printf(FILE *f, stack_t s)
+static void val_list_fprint(FILE *f, stack_t s)
 {
     while (s != NULL) {
-        val_printf(f, s->val);
+        val_fprint(f, s->val);
         if (s->next == NULL) break;
         fputc(',', f);
         s = s->next;
     }
 }
 
-void val_printf(FILE *f, val_t v)
+void val_fprint(FILE *f, val_t v)
 {
     switch (v.type) {
     case NONE: fputs("NONE", f); break;
@@ -31,7 +24,7 @@ void val_printf(FILE *f, val_t v)
     case KEYWORD: fprintf(f, "<keyword %p>", v.val.p); break;
     case STACK: {
         fputc('[', f);
-        val_list_printf(f, v.val.s);
+        val_list_fprint(f, v.val.s);
         fputc(']', f);
         break;
     }
@@ -49,11 +42,11 @@ void val_printf(FILE *f, val_t v)
         // The body is printed with no commas to separate items
         for (stack_t b = s->val.val.s; b != NULL; b = b->next) {
             fputc(' ', f);
-            val_printf(f, b->val);
+            val_fprint(f, b->val);
         }
         fputc('|', f);
         s = s->next;
-        //~ val_list_printf(f, s->val.val.s);
+        //val_list_fprint(f, s->val.val.s);
         fputc('}', f);
         break;
     }

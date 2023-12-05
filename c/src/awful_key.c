@@ -4,6 +4,7 @@
     functions, aka keywords. */
 
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 #include "../header/awful.h"
 #include "../header/awful_key.h"
@@ -61,6 +62,8 @@ static val_t EQ(stack_t *tokens, stack_t env)
         } else
         if (type == STRING || type == ATOM) {
             flag = strcmp(x.val.t, y.val.t) == 0;
+            free(x.val.t);
+            free(y.val.t);
         } else {
             except_on(1, "EQ applies only to atoms");
         }
@@ -168,26 +171,34 @@ static val_t TOS(stack_t *tokens, stack_t env)
     return x.val.s->val;
 }
 
-void *awful_key_find(char *t)
+void *awful_key_find(char *t, unsigned n)
 {
+    // Silly and baroque statement replacing a for loop
+    // through a table of pairs (string, addr) or its
+    // unfolding as a sequence of if (memcmp...)
     return
-        (strcmp(t, "ADD") == 0) ? ADD:
-        (strcmp(t, "BOS") == 0) ? BOS:
-        (strcmp(t, "COND") == 0) ? COND:
-        (strcmp(t, "DIV") == 0) ? DIV:
-        (strcmp(t, "EQ") == 0) ? EQ:
-        (strcmp(t, "GE") == 0) ? GE:
-        (strcmp(t, "GT") == 0) ? GT:
-        (strcmp(t, "ISNIL") == 0) ? ISNIL:
-        (strcmp(t, "LE") == 0) ? LE:
-        (strcmp(t, "LT") == 0) ? LT:
-        (strcmp(t, "MAX") == 0) ? MAX:
-        (strcmp(t, "MIN") == 0) ? MIN:
-        (strcmp(t, "MUL") == 0) ? MUL:
-        (strcmp(t, "NE") == 0) ? NE:
-        (strcmp(t, "NIL") == 0) ? NIL:
-        (strcmp(t, "POW") == 0) ? POW:
-        (strcmp(t, "PUSH") == 0) ? PUSH:
-        (strcmp(t, "SUB") == 0) ? SUB:
-        (strcmp(t, "TOS") == 0) ? TOS: NULL;
+        (n == 2) ? (
+            (t[0] == 'E' && t[1] == 'Q') ? EQ:
+            (t[0] == 'G' && t[1] == 'E') ? GE:
+            (t[0] == 'G' && t[1] == 'T') ? GT:
+            (t[0] == 'L' && t[1] == 'E') ? LE:
+            (t[0] == 'L' && t[1] == 'T') ? LT:
+            (t[0] == 'N' && t[1] == 'E') ? NE: NULL) :
+        (n == 3) ? (
+            (t[0] == 'A' && t[1] == 'D' && t[2] == 'D') ? ADD:
+            (t[0] == 'B' && t[1] == 'O' && t[2] == 'S') ? BOS:
+            (t[0] == 'D' && t[1] == 'I' && t[2] == 'V') ? DIV:
+            (t[0] == 'M' && t[1] == 'A' && t[2] == 'X') ? MAX:
+            (t[0] == 'M' && t[1] == 'I' && t[2] == 'N') ? MIN:
+            (t[0] == 'M' && t[1] == 'U' && t[2] == 'L') ? MUL:
+            (t[0] == 'N' && t[1] == 'I' && t[2] == 'L') ? NIL:
+            (t[0] == 'P' && t[1] == 'O' && t[2] == 'W') ? POW:
+            (t[0] == 'S' && t[1] == 'U' && t[2] == 'B') ? SUB:
+            (t[0] == 'T' && t[1] == 'O' && t[2] == 'S') ? TOS: NULL) :
+        (n == 4) ? (
+            (t[0] == 'C' && t[1] == 'O' && t[2] == 'N' && t[3] == 'D') ? COND:
+            (t[0] == 'P' && t[1] == 'U' && t[2] == 'S' && t[3] == 'H') ? PUSH: NULL) :
+        (n == 5) ? (
+            (t[0] == 'I' && t[1] == 'S' && t[2] == 'N' && t[3] == 'I' && t[4] == 'L') ? ISNIL: NULL)
+        : NULL;
 }

@@ -11,6 +11,10 @@
 #include "../header/str.h"
 #include "../header/val.h"
 
+/** Delimiters of the Niceful language: they are token in
+    themselves, not ATOMs. */
+#define DELIMITERS "()[]{},:"
+
 /** Constants used to denote Niceful keywords: since scan()
     assumes a keyword is represented by a void* we cast these
     enumerated values to void*. Since NULL is (void*)0 we
@@ -41,75 +45,60 @@
 #define FIRST (void*)24
 #define REST (void*)25
 
-/** This function is neede by scan() to retrieve a unique code
+/** This function is needed by scan() to retrieve a unique code
     associated to each keyword of the language. */
-static void *nice_key_find(char *t)
+static void *nice_key_find(char *t, unsigned n)
 {
+    // Silly and baroque statement replacing a for loop
+    // through a table of pairs (string, addr) or its
+    // unfolding as a sequence of if (memcmp...)
     return
-        (strcmp(t, "let") == 0) ? LET:
-        (strcmp(t, "letrec") == 0) ? LETREC:
-        (strcmp(t, "in") == 0) ? IN:
-        (strcmp(t, "fun") == 0) ? FUN:
-        (strcmp(t, "if") == 0) ? IF:
-        (strcmp(t, "then") == 0) ? THEN:
-        (strcmp(t, "else") == 0) ? ELSE:
-        (strcmp(t, "and") == 0) ? AND:
-        (strcmp(t, "or") == 0) ? OR:
-        (strcmp(t, "not") == 0) ? NOT:
-        //(strcmp(t, "=") == 0) ? EQ:
-        (strcmp(t, "==") == 0) ? EQ:
-        (strcmp(t, "<>") == 0) ? NE:
-        (strcmp(t, "<") == 0) ? LT:
-        (strcmp(t, "<=") == 0) ? LE:
-        (strcmp(t, ">") == 0) ? GT:
-        (strcmp(t, ">=") == 0) ? GE:
-        (strcmp(t, "+") == 0) ? PLUS:
-        (strcmp(t, "-") == 0) ? MINUS:
-        (strcmp(t, "*") == 0) ? TIMES:
-        (strcmp(t, "/") == 0) ? SLASH:
-        (strcmp(t, "^") == 0) ? HAT:
-        (strcmp(t, "nil") == 0) ? NNIL:
-        (strcmp(t, "empty") == 0) ? EMPTY:
-        (strcmp(t, "1st") == 0) ? FIRST:
-        (strcmp(t, "rest") == 0) ? REST: NULL;
+        (n == 1) ? (
+            (t[0] == '+') ? PLUS:
+            (t[0] == '-') ? MINUS:
+            (t[0] == '*') ? TIMES:
+            (t[0] == '/') ? SLASH:
+            (t[0] == '<') ? LT:
+            (t[0] == '>') ? GT:
+            (t[0] == '^') ? HAT: NULL) :
+        (n == 2) ? (
+            (t[0] == '<' && t[1] == '=') ? LE:
+            (t[0] == '<' && t[1] == '>') ? NE:
+            (t[0] == '=' && t[1] == '=') ? EQ:
+            (t[0] == '>' && t[1] == '=') ? GE:
+            (t[0] == 'i' && t[1] == 'f') ? IF:
+            (t[0] == 'i' && t[1] == 'n') ? IN:
+            (t[0] == 'o' && t[1] == 'r') ? OR: NULL) :
+        (n == 3) ? (
+            (t[0] == '1' && t[1] == 's' && t[2] == 't') ? FIRST:
+            (t[0] == 'a' && t[1] == 'n' && t[2] == 'd') ? AND:
+            (t[0] == 'f' && t[1] == 'u' && t[2] == 'n') ? FUN:
+            (t[0] == 'l' && t[1] == 'e' && t[2] == 't') ? LET:
+            (t[0] == 'n' && t[1] == 'i' && t[2] == 'l') ? NNIL:
+            (t[0] == 'n' && t[1] == 'o' && t[2] == 't') ? NOT: NULL) :
+        (n == 4) ? (
+            (t[0] == 'e' && t[1] == 'l' && t[2] == 's' && t[3] == 'e') ? THEN:
+            (t[0] == 't' && t[1] == 'h' && t[2] == 'e' && t[3] == 'n') ? THEN:
+            (t[0] == 'r' && t[1] == 'e' && t[2] == 's' && t[3] == 't') ? REST: NULL) :
+        (n == 5) ? (
+            (t[0] == 'e' && t[1] == 'm' && t[2] == 'p' && t[3] == 't' && t[4] == 'y') ? EMPTY: NULL) :
+        (n == 6) ? (
+            (t[0] == 'l' && t[1] == 'e' && t[2] == 't' && t[3] == 'r' && t[4] == 'e' && t[5] == 'c') ? LETREC: NULL)
+        : NULL;
 }
 
-/** Expands a string by the size number. */
-static char *str_exp(char *s, unsigned size)
-{
-    char *r = (s == NULL) ? malloc(size + 1)
-                          : realloc(s, strlen(s) + size + 1);
-    except_on(r == NULL, "String cannot be expanded anymore");
-    return r;
-}
-
-/** Concatenates two strings: the s1 is expanded to make space
-    for a copy of s2 that is appended to s1. The address of the
-    new string (possibly still s1) is returned. */
-static char *str_cat(char *s1, const char *s2)
-{
-    return strcat(str_exp(s1, strlen(s2)), s2);
-}
-
-/** Same as str_cat, but s2 is deallocated after
-    being appended to s1. */
-static char *str_catd(char *s1, char *s2)
-{
-    s1 = strcat(str_exp(s1, strlen(s2)), s2);
-    str_del(s2);
-    return s1;
-}
-
-/** Raise an error if s is empty, else parse its top and
-    check that its type matches t. The stack with the top
+/** Raise an error if s is empty, else pop its top and
+    check that its type matches t if t is a delimiter,
+    else that its type is ATOM and its value the string
+    with the single character t. The stack with the top
     dropped is returned. */
 static stack_t nice_expect(stack_t s, char t)
 {
-    if (s != NULL && (s->val.type == ATOM && s->val.val.t[0] == t
-    && s->val.val.t[1] == '\0' || s->val.type == t))
-        return stack_drop(s);
-    fputc(t, stderr);
-    except_on(1, " expected");
+    except_on(s == NULL || (strchr(DELIMITERS, t) != NULL
+            ? s->val.type != t : s->val.type != ATOM
+            || s->val.val.t[0] != t || s->val.val.t[1] != '\0'),
+        "%c expected", t);
+    return stack_next(s);
 }
 
 /** Raise an error if s is empty, else parse its top and
@@ -117,11 +106,12 @@ static stack_t nice_expect(stack_t s, char t)
     dropped is returned. */
 static stack_t nice_expect_key(stack_t s, char *k)
 {
-    if (s != NULL && s->val.type == KEYWORD
-    && s->val.val.p == nice_key_find(k))
-        return stack_drop(s);
-    fputs(k, stderr);
-    except_on(1, " expected");
+    if (s == NULL || s->val.type != KEYWORD
+    || s->val.val.p != nice_key_find(k, strlen(k))) {
+        fputs(k, stderr);
+        except_on(1, " expected");
+    }
+    return stack_next(s);
 }
 
 /** Raise an error if s is empty, else returns the value on
@@ -134,7 +124,7 @@ static val_t nice_more(stack_t s)
 
 /** If s is NULL return NONE else the type of the item on top
     of the stack. */
-static int nice_next(stack_t s)
+static inline int nice_next(stack_t s)
 {
     return (s != NULL) ? s->val.type : NONE;
 }
@@ -188,8 +178,8 @@ static char *nice_expression(stack_t *r_nice);
 // Debug stuff
 static int __indent_ = 0;
 #define RESET __indent_ = 0;
-#define ENTER for (int i=0;i<__indent_;++i)putchar(' ');printf("> %s: ", __func__); stack_printf(stdout, *r_nice); putchar('\n'); fflush(stdout); ++ __indent_;
-#define EXIT -- __indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: %s, ", __func__, awful);stack_printf(stdout, *r_nice); putchar('\n'); fflush(stdout);
+#define ENTER for (int i=0;i<__indent_;++i)putchar(' ');printf("> %s: ", __func__); stack_fprint(stdout, *r_nice); putchar('\n'); fflush(stdout); ++ __indent_;
+#define EXIT -- __indent_; for (int i=0;i<__indent_;++i)putchar(' ');printf("< %s: %s, ", __func__, awful);stack_fprint(stdout, *r_nice); putchar('\n'); fflush(stdout);
 #else
 #define RESET
 #define ENTER
@@ -201,20 +191,20 @@ static int __indent_ = 0;
 static char *nice_list(stack_t *r_nice)
 {
 ENTER
-    stack_t nice = stack_drop(*r_nice);
+    stack_t nice = stack_next(*r_nice);
     char *awful = NULL;
     if (nice_next(nice) != ']') {
         // [e1,...,en] -> PUSH e1 PUSH e2 ... PUSH en NIL
         for (;;) {
             awful = str_cat(awful, " PUSH "); // 1st space important!
-            awful = str_catd(awful, nice_expression(&nice));
+            awful = str_cat(awful, nice_expression(&nice));
             if (nice_next(nice) == ']')
                 break;
             nice = nice_expect(nice, ',');
         }
     }
     awful = str_cat(awful, " NIL");
-    nice = stack_drop(nice);    // skip ']'
+    nice = stack_next(nice);    // skip ']'
     *r_nice = nice;
 EXIT
     return awful;
@@ -232,15 +222,14 @@ ENTER
         except_on(nice_next(nice) != ATOM,
             "Atom expected as function formal parameter");
         awful = str_cat(awful, nice->val.val.t);    // xi
-        nice = stack_drop(nice);
+        nice = stack_next(nice);
         if (nice_next(nice) == ':')
             break;
         awful = str_cat(awful, " ");
     }
-    nice = stack_drop(nice);    // skip ':'
+    nice = stack_next(nice);    // skip ':'
     awful = str_cat(awful, ":");
-    char *e = nice_expression(&nice);   // e
-    awful = str_catd(awful, e);
+    awful = str_cat(awful, nice_expression(&nice)); // e
     awful = str_cat(awful, "}");
     
     *r_nice = nice;
@@ -257,15 +246,15 @@ static char *nice_aparams(stack_t *r_nice, char *awful)
 ENTER
     stack_t nice = *r_nice;
     while (nice_next(nice) == '(') {
-        nice = stack_drop(nice);    // skip '('
+        nice = stack_next(nice);    // skip '('
         // Inserts a "(" on the left of awful
         char *body = str_new("(", 1);
-        body = str_catd(body, awful);
+        body = str_cat(body, awful);
         body = str_cat(body, " ");
         for (;;) {
-            body = str_catd(body, nice_expression(&nice));
+            body = str_cat(body, nice_expression(&nice));
             if (nice_next(nice) == ')') {
-                nice = stack_drop(nice);    // skip ')'
+                nice = stack_next(nice);    // skip ')'
                 body = str_cat(body, ")");
                 break;
             } else {
@@ -284,38 +273,37 @@ EXIT
     the value pointer by r_nice is updated. */
 static char *nice_term(stack_t *r_nice)
 {
-    static char buf[BUFSIZ];
+    static char buf[128];
     char *awful = NULL;
 ENTER
     stack_t nice = *r_nice;
-    except_on(nice == NULL, "Unexpected end of text");
+    except_on(nice == NULL, "Term expected");
     switch (nice->val.type) {
         case NUMBER: {
             sprintf(buf, "%g", nice->val.val.n);
             awful = str_new(buf, strlen(buf));
-            nice = stack_drop(nice);
+            nice = stack_next(nice);
             break;
         }
         case STRING: {
-            char q[2];
-            q[0] = (strchr(nice->val.val.t, '"') == NULL) ? '"' : '\'';
-            q[1] = '\0';
-            awful = str_new(q, 1);
+            buf[0] = (strchr(nice->val.val.t, '"') == NULL) ? '"' : '\'';
+            buf[1] = '\0';
+            awful = str_new(buf, 1);
             awful = str_cat(awful, nice->val.val.t);
-            awful = str_cat(awful, q);
-            nice = stack_drop(nice);
+            awful = str_cat(awful, buf);
+            nice = stack_next(nice);
             break;
         }
         case ATOM: {
-            awful = str_new(nice->val.val.t, strlen(nice->val.val.t));
-            nice = stack_drop(nice);
+            awful = nice->val.val.t;
+            nice = stack_next(nice);
             break;
         }
         case '[': {
             awful = nice_list(&nice);
             break;
         case '(': {
-            nice = stack_drop(nice);
+            nice = stack_next(nice);
             awful = nice_expression(&nice);
             nice = nice_expect(nice, ')');
             break;
@@ -323,26 +311,25 @@ ENTER
         default:
             except_on(nice->val.type != KEYWORD, "Syntax error");
             void *p = nice->val.val.p;
-            nice = stack_drop(nice);
+            nice = stack_next(nice);
             if (p == MINUS) {
                 awful = str_new("SUB 0 ", 6);
-                awful = str_catd(awful, nice_term(&nice));
+                awful = str_cat(awful, nice_term(&nice));
             } else
             if (p == FIRST) {
                 awful = str_new("TOS ", 4);
-                awful = str_catd(awful, nice_term(&nice));
+                awful = str_cat(awful, nice_term(&nice));
             } else
             if (p == REST) {
                 awful = str_new("BOS ", 4);
-                awful = str_catd(awful, nice_term(&nice));
+                awful = str_cat(awful, nice_term(&nice));
             } else
             if (p == EMPTY) {
                 awful = str_new("ISNIL ", 6);
-                awful = str_catd(awful, nice_term(&nice));
+                awful = str_cat(awful, nice_term(&nice));
             } else
             if (p == NNIL) {
                 awful = str_new("NIL", 3);
-                nice = stack_drop(nice);
             } else
             if (p == FUN) {
                 awful = nice_fun(&nice);
@@ -365,15 +352,15 @@ static char *nice_power(stack_t *r_nice)
 {
 ENTER
     stack_t nice = *r_nice;
-    char *awful = NULL;
+    char *awful;
     char *e = nice_term(&nice);
     if (nice == NULL || nice->val.val.p != HAT) awful = e;
     else {
-        nice = stack_drop(nice);    // skip the operator
+        nice = stack_next(nice);    // skip the operator
         awful = str_new("POW ", 4);
-        awful = str_catd(awful, e);
+        awful = str_cat(awful, e);
         awful = str_cat(awful, " ");
-        awful = str_catd(awful, nice_term(&nice));
+        awful = str_cat(awful, nice_term(&nice));
     }
     *r_nice = nice;
 EXIT
@@ -387,15 +374,14 @@ static char *nice_product(stack_t *r_nice)
 {
 ENTER
     stack_t nice = *r_nice;
-    char *awful = NULL;
+    char *awful;
     char *e = nice_power(&nice);
     if (nice_next(nice) == ':') {
-        nice = stack_drop(nice);    // skip the operator
+        nice = stack_next(nice);    // skip the operator
         awful = str_new("PUSH ", 5);
-        awful = str_catd(awful, e);
-        awful = str_cat(awful, " PUSH ");
-        awful = str_catd(awful, nice_product(&nice));
-        awful = str_cat(awful, " NIL");
+        awful = str_cat(awful, e);
+        awful = str_cat(awful, " ");
+        awful = str_cat(awful, nice_product(&nice));
     } else {
         int is_key = nice_next(nice) == KEYWORD;
         char *opt =
@@ -403,11 +389,11 @@ ENTER
             (is_key && nice->val.val.p == SLASH) ? "DIV " : NULL;
         if (opt == NULL) awful = e;
         else {
-            nice = stack_drop(nice);    // skip the operator
+            nice = stack_next(nice);    // skip the operator
             awful = str_new(opt, strlen(opt));
-            awful = str_catd(awful, e);
+            awful = str_cat(awful, e);
             awful = str_cat(awful, " ");
-            awful = str_catd(awful, nice_product(&nice));
+            awful = str_cat(awful, nice_product(&nice));
         }
     }
     *r_nice = nice;
@@ -422,7 +408,7 @@ static char *nice_sum(stack_t *r_nice)
 {
 ENTER
     stack_t nice = *r_nice;
-    char *awful = NULL;
+    char *awful;
     char *e = nice_product(&nice);
     int is_key = nice_next(nice) == KEYWORD;
     char *opt =
@@ -430,11 +416,11 @@ ENTER
         (is_key && nice->val.val.p == MINUS) ? "SUB " : NULL;
     if (opt == NULL) awful = e;
     else {
-        nice = stack_drop(nice);    // skip the operator
+        nice = stack_next(nice);    // skip the operator
         awful = str_new(opt, strlen(opt));
-        awful = str_catd(awful, e);
+        awful = str_cat(awful, e);
         awful = str_cat(awful, " ");
-        awful = str_catd(awful, nice_sum(&nice));
+        awful = str_cat(awful, nice_sum(&nice));
     }
     *r_nice = nice;
 EXIT
@@ -448,10 +434,10 @@ static char *nice_relation(stack_t *r_nice)
 {
 ENTER
     stack_t nice = *r_nice;
-    char *awful = NULL;
+    char *awful;
     if (nice_more(nice).val.p == NOT) {
         awful = str_new("EQ 0 ", 5);
-        awful = str_catd(awful, nice_relation(&nice));
+        awful = str_cat(awful, nice_relation(&nice));
     } else {
         char *e = nice_sum(&nice);
         int is_key = nice_next(nice) == KEYWORD;
@@ -465,11 +451,11 @@ ENTER
             (is_key && nice->val.val.p == GE) ? "GE ": NULL;
         if (opt == NULL) awful = e;
         else {
-            nice = stack_drop(nice);    // skip the operator
+            nice = stack_next(nice);    // skip the operator
             awful = str_new(opt, strlen(opt));
-            awful = str_catd(awful, e);
+            awful = str_cat(awful, e);
             awful = str_cat(awful, " ");
-            awful = str_catd(awful, nice_sum(&nice));
+            awful = str_cat(awful, nice_sum(&nice));
         }
     }
     *r_nice = nice;
@@ -484,7 +470,7 @@ static char *nice_proposition(stack_t *r_nice)
 {
 ENTER
     stack_t nice = *r_nice;
-    char *awful = NULL;
+    char *awful;
     char *e = nice_relation(&nice);
     int is_key = nice_next(nice) == KEYWORD;
     char *opt =
@@ -492,11 +478,11 @@ ENTER
         (is_key && nice->val.val.p == AND) ? "MIN " : NULL;
     if (opt == NULL) awful = e;
     else {
-        nice = stack_drop(nice);    // skip the operator
+        nice = stack_next(nice);    // skip the operator
         awful = str_new(opt, strlen(opt));
-        awful = str_catd(awful, e);
+        awful = str_cat(awful, e);
         awful = str_cat(awful, " ");
-        awful = str_catd(awful, nice_proposition(&nice));
+        awful = str_cat(awful, nice_proposition(&nice));
     }
     *r_nice = nice;
 EXIT
@@ -510,20 +496,20 @@ static char *nice_conditional(stack_t *r_nice)
 {
 ENTER
     stack_t nice = *r_nice;
-    char *awful = NULL;
+    char *awful;
     if (nice_more(nice).type != KEYWORD || nice->val.val.p != IF)
         awful = nice_proposition(&nice);
     else {
         // Transform "IF e1 e2 e3" into (COND e1{:e2}{:e3})
-        nice = stack_drop(nice);    // skip IF
-        awful = str_cat(awful, "(COND ");
-        awful = str_catd(awful, nice_proposition(&nice));  // e1
+        nice = stack_next(nice);    // skip IF
+        awful = str_new("(COND ", 6);
+        awful = str_cat(awful, nice_proposition(&nice));  // e1
         nice = nice_expect_key(nice, "then");
         awful = str_cat(awful, "{:");
-        awful = str_catd(awful, nice_expression(&nice));  // e2
+        awful = str_cat(awful, nice_expression(&nice));  // e2
         awful = str_cat(awful, "}{:");
         nice = nice_expect_key(nice, "else");
-        awful = str_catd(awful, nice_expression(&nice));  // e3
+        awful = str_cat(awful, nice_expression(&nice));  // e3
         awful = str_cat(awful, "})");
     }
     *r_nice = nice;
@@ -541,7 +527,24 @@ EXIT
 static char *nice_let(stack_t *r_nice, int rec)
 {
 ENTER
-    stack_t nice = stack_drop(*r_nice); // skip let/letrec
+    stack_t nice = stack_next(*r_nice); // skip let/letrec
+    
+    /*  POSSIBILE OTTIMIZZAZIONE: DEFINISCI UN TIPO DI DATO
+        buf CHE CONTIENE STRINGHE TEMPORANEE: LO USI PER LE
+        STRINGHE awful COSI' NON HAI BISOGNO DI ALLOCARE
+        SPAZIO NELLA TAVOLA DELLE STRINGHE.
+    
+        ALLOCHI UN BUFFER CON buf_new(s) DOVE s E' UNA
+        STRINGA C. CON LA FUNZIONE
+    
+            s = buf_add(s, t)
+        
+        SI CONCATENA t IN FONDO A s.
+    
+        QUANDO SI È FINITO, SI USA buf_del(s) PER
+        CANCELLARE LA STRINGA.
+    */
+    
     char *awful = str_new("({", 2);
     char *values = NULL;    // actual parameters list
     for (;;) {
@@ -549,10 +552,10 @@ ENTER
             "Variables in let/letrec should be atoms");
         if (rec) awful = str_cat(awful, "!");
         awful = str_cat(awful, nice->val.val.t);   // variable xi
-        nice = nice_expect(stack_drop(nice), '=');
-        values = str_catd(values, nice_conditional(&nice));
+        nice = nice_expect(stack_next(nice), '=');
+        values = str_cat(values, nice_conditional(&nice));
         if (nice_more(nice).val.p == IN) {
-            nice = stack_drop(nice);
+            nice = stack_next(nice);
             break;
         }
         nice = nice_expect(nice, ',');
@@ -564,11 +567,10 @@ ENTER
         actual parameters dumped on value: we close it by ')' */
     //values = str_cat(values, ")");
     awful = str_cat(awful, ":");
-    awful = str_catd(awful, nice_expression(&nice));    // body
+    awful = str_cat(awful, nice_expression(&nice));    // body
     awful = str_cat(awful, "}");
-    awful = str_catd(awful, values);
+    awful = str_cat(awful, values);         // actual parameters
     awful = str_cat(awful, ")");
-
     *r_nice = nice;
 EXIT
     return awful;
@@ -593,27 +595,29 @@ EXIT
 
 int nice(char *text, FILE *file)
 {
-    stack_t tokens = scan(text, "()[]{},:", nice_key_find);
-    int err = (tokens == NULL);
-    if (!err && setjmp(except_buf) == 0) {
-RESET   char *t = nice_expression(&tokens);
-        // notice that nice_expression deletes the stack
-        // tokens but allocates the string t.
+RESET
+    int err = 1;
+    if (setjmp(except_buf) == 0) {
+        stack_t tokens = scan(text, DELIMITERS, nice_key_find);
+        /* If the text starts with "awful" then the user is asking
+            not to evaluate it but to translate it into awful. */
+        int translate = tokens != NULL && tokens->val.type == ATOM
+        && strcmp(tokens->val.val.t, "awful") == 0;
+        if (translate) tokens = tokens->next;   // skip "awful"
+        char *t = nice_expression(&tokens);
         if (tokens != NULL) {
             fprintf(stderr, "Warning: text after expression shall be ignored:");
             while (tokens != NULL) {
                 fputc(' ', stderr);
-                val_printf(stderr, tokens->val);
-                tokens = stack_drop(tokens); }
+                val_fprint(stderr, tokens->val);
+                tokens = stack_next(tokens); }
             fputc('\n', stderr);
         }
-        err = t == NULL;
+        err = (t == NULL);
         if (!err) {
-fprintf(stderr, "\nAwful: %s\n", t);
-            err = awful(t, file);
-            str_del(t);
+            if (translate) fprintf(file, "%s\n", t);
+            else err = awful(t, file);
         }
     }
-    stack_delete(tokens);   // also in case of exception
     return err;
 }

@@ -7,6 +7,9 @@
 #include "../header/stack.h"
 #include "../header/val.h"
 
+/// Max depth of recursion for the awful_eval function
+#define MAX_EVAL (1024)
+
 /** Interpret a token list, thus a stack whose elements are
     items representing an Awful text, w.r.t. an environment,
     both passed by reference, and return the value with the

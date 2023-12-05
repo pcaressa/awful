@@ -29,6 +29,6 @@
     - {type:KEYWORD, val:p}
     - {type:d} if d is a delimiter (val is ignored)
 */
-stack_t scan(char *text, char *delims, void *key_find(char *text));
+stack_t scan(char *text, char *delims, void *key_find(char*,unsigned));
 
 #endif

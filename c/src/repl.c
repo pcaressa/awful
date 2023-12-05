@@ -1,104 +1,208 @@
 /** \file repl.c */
 
-//#define AWFUL
+#define VERSION "0.2312"
 
+#undef NDEBUG
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "../header/awful.h"
 #include "../header/nice.h"
-#include "../header/repl.h"
+#include "../header/str.h"
+
+#define repl_BUFSIZ (65536)
+
+/** Buffer used to join lines ending with '\\' */
+static char repl_buf[repl_BUFSIZ];
+
+/** File where output is printed. */
+static FILE *repl_out = NULL;
 
 /** Current file line counter. */
 static int repl_line = 0;
 
+/** Current evaluation function: awful or niceful. */
+static int (*repl_eval)(char*, FILE*) = nice;
+
+/** Gets a line from a file. If prompt != NULL then it is
+    printed on repl_out: the scanned line is stored at repl_buf
+    if cat == 0, else it is appended to the string already
+    in repl_buf. In any case, the address of the last inserted
+    line is returned; if an error, or the end of the file,
+    occurs, NULL is returned. */
+static char *repl_get(FILE *in, const char *prompt, int cat)
+{
+    char *p;
+    char c = ':';       // becomes '|' in multiple lines
+    if (cat == 0) repl_buf[0] = '\0';
+    // Set r to the address where to store the line to scan
+    char *r = repl_buf + strlen(repl_buf);
+    for (;;) {
+        if (prompt)
+            printf("%s %i%c ", prompt, repl_line, c);
+        r = fgets(r, repl_BUFSIZ - (r - repl_buf), in);
+        if (r == NULL) return r;
+        if (r - repl_buf >= repl_BUFSIZ - 2) {
+            fputs("Line too long!\n", stderr);
+            return r;
+        }
+        if ((p = strrchr(r, '\\')) == NULL) return r;
+        // Strip spaces on the right
+        while (p > r && isspace(p[-1]))
+            -- p;
+        *p = ' ';   // transforms the backslash into a space
+        ++ repl_line;
+        r = p + 1;
+        c = '|';
+    }
+}
+
 // Forward declaration
-static char *repl_eval(FILE *in, FILE *out,
-    int (*eval)(char*, FILE*), char *prompt);
+static void repl(FILE *in, char *prompt);
 
 /** Apply the eval evaluator to the lines of a text file
-    whose name is filename. File out is needed by eval. */
-static void repl_batch(char *filename, int (*eval)(char*, FILE*), FILE *out)
+    whose name is at s. */
+static void repl_batch(char *s)
 {
-    filename += strspn(filename, " \t\n\r");    // skip spacesù
-    char *p = strrchr(filename, '\n');
-    if (p != NULL) *p = '\0'; // strip ending '\n'
+    s = str_strip(s);
+    char *name = malloc(strlen(s) + 1);
+    assert(name || !fputs("Malloc error (this is weird)", stderr));
+    strcpy(name, s);
     
-    FILE *f = fopen(filename, "r");
-    if (f == NULL) perror(filename);
+    FILE *f = fopen(name, "r");
+    if (f == NULL) perror(name);
     else {
         int saved = repl_line;
         repl_line = 0;
-        while (repl_eval(f, out, eval, NULL))
-            ;
+        repl(f, name);
         fclose(f);
         repl_line = saved;
     }
+    free(name);
+}
+
+/** Prints a help message. */
+static void repl_help(void)
+{
+    fputs(
+    "Interactive mode: type the expression to evaluate on a single\n"
+    "   line: to continue the expression on another line end it by\n"
+    "   a backslash. Anything after the backslash will be ignored\n"
+    "   (so you can use them as comments).\n\n"
+    "REPL commmands: type them instead of an expression, they are:\n"
+    "   'awful': switch to Awful interpreter.\n"
+    "   'batch FILENAME': the FILENAME text file is opened for\n"
+    "      reading and each line of it is evaluated as a single\n"
+    "      line typed in the interactive mode.\n"
+    "   'bye' ends the session and closes the interpreter.\n"
+    "   'help' prints this message.\n"
+    "   'niceful': switch to Niceful interpreter.\n"
+    "   'output': redirect output to terminal screen.\n"
+    "   'output FILENAME': redirect output to file FILENAME (in"
+    "      append mode).\n"
+    "   'prelude FILENAME ...' the FILENAME text file is opened for\n"
+    "      reading and its lines are joined in a single line to\n"
+    "      which the next input line is appended: the resulting\n"
+    "      string is evaluated.\n"
+    "Warning: a preluded file cannot exceed 64Kbytes.\n" 
+    , repl_out);
+}
+
+/** Read from s a file name which is opened for appending and
+    assigned to the repl_out variable. If s is the empty string
+    (after being stripped) then repl_out is set to stdout. */
+static void repl_output(char *s)
+{
+    s = str_strip(s);
+    if (*s == '\0') {
+        if (repl_out != stdout) fclose(repl_out);
+        repl_out = stdout;
+    } else {
+        FILE *f = fopen(s, "a");
+        if (f == NULL) perror(s);
+        else {
+            if (repl_out != stdout) fclose(repl_out);
+            repl_out = f;
+        }
+    }
+}
+
+/** Read the file whose name is at filename in repl_buf and
+    append to it a line from the in file: next evaluate
+    the result and print the result on repl_out. */
+static void repl_prelude(char *filename, FILE *in, char *prompt)
+{
+    filename = str_strip(filename);
+    char *name = malloc(strlen(filename) + 1);
+    assert(name || !"Malloc error (this is weird)");
+    strcpy(name, filename);
+    
+    FILE *f = fopen(name, "r");
+    if (f == NULL) perror(name);
+    else {
+        unsigned len = fread(repl_buf, 1, repl_BUFSIZ, f);
+        fclose(f);
+        if (len >= repl_BUFSIZ - 2) {
+            fprintf(stderr, "Prelude %s too long (max %u bytes)",
+                name, repl_BUFSIZ);
+        } else {
+            repl_buf[len] = ' ';
+            repl_buf[len + 1] = '\0';
+            if (repl_get(in, prompt, 1) && *repl_buf != '\0'
+            && repl_eval(repl_buf, repl_out))
+                printf(": line %i\n", repl_line);
+        }
+    }
+    free(name);
 }
 
 /** Scan from file in a line of text (possibly asking for more
     if the line ends with a backslash), apply to the result the
     interpret function and print on the out file the result.
     If prompt is not NULL it is printed on out before reading
-    a line from in.
-    On error NULL is returned, else a hidden text with the line
-    just interpreted. */
-static char *repl_eval(FILE *in, FILE *out,
-                       int (*eval)(char*, FILE*), char *prompt)
+    a line from in. */
+static void repl(FILE *in, char *prompt)
 {
-    static char buf[BUFSIZ];
-
-    *buf = '\0';
-    ++ repl_line;
-    if (prompt) fprintf(out, "\n%s %i: ", prompt, repl_line);
-    if (fgets(buf, sizeof(buf), in) == NULL) return NULL;
-
+    int n;
     char *p;
-    while ((p = strchr(buf, '\\')) != NULL) {
-        // Strip spaces on the right
-        while (p > buf && isspace(p[-1]))
-            -- p;
-        *p++ = ' ';   // transforms the backslash into a space
-        ++ repl_line;
-        if (prompt) fprintf(out, "\n%s %i| ", prompt, repl_line);
-        if ((p = fgets(p, sizeof(buf) - (p - buf), in)) == NULL)
-            return NULL;
+    for (repl_line = 1; repl_get(in, prompt, 0); ++ repl_line) {
+        char *text = str_strip(repl_buf);
+        if (strcmp(text, "awful") == 0) {
+            fputs("Awful interpreter\n", stderr);
+            prompt = "awful";
+            repl_eval = awful;
+        } else if (memcmp(text, "batch ", 6) == 0) {
+            repl_batch(text + 6);
+        } else if (strcmp(text, "bye") == 0) {
+            break;
+        } else if (strcmp(text, "help") == 0) {
+            repl_help();
+        } else if (strcmp(text, "niceful") == 0) {
+            fputs("Niceful interpreter\n", stderr);
+            prompt = "niceful";
+            repl_eval = nice;
+        } else if (memcmp(text, "output", 6) == 0) {
+            repl_output(text + 6);
+        } else if (memcmp(text, "prelude ", 8) == 0) {
+            repl_prelude(text + 8, in, prompt);
+        } else {
+            if (*text != '\0' && repl_eval(text, repl_out))
+               printf(": line %i\n", repl_line);
+        }
     }
-    // Strip initial spaces and ending newline
-    char *text = buf + strspn(buf, " \t\n\r");
-    if ((p = strrchr(text, '\n')) != NULL) *p = '\0';
-
-    if (strcmp(text, "bye") == 0) return NULL;
-    if (memcmp(text, "batch ", 6) == 0) {
-        repl_batch(text + 6, eval, out);
-    } else {
-        if (*text != '\0' && eval(text, out))
-           fprintf(out, ": line %i\n", repl_line);
-    }
-//stack_status();
-    return buf;
 }
 
 int main(int argc, char **argv)
 {
     puts(
-#   ifdef AWFUL
         "AWFUL - A Weird FUnctional Language\n"
-#   else
-        "NICEFUL - a NICE FUnctional Language\n"
-#   endif
-        "(c) 2023 by Paolo Caressa\n\n"
-        "Type: 'bye' to leave, 'batch FILENAME' to process a file\n"
-        "Lines starting with backslash or empty are skipped\n"
-        "A line ending with backslash is joined to the following one\n"
+        "(c) 2023 by Paolo Caressa <github.com/pcaressa/awful>\n"
+        "[v." VERSION ". Type 'help' for... guess what?]\n"
     );
-#   ifdef AWFUL
-    while (repl_eval(stdin, stdout, awful, "awful"))
-#   else
-    while (repl_eval(stdin, stdout, nice, "niceful"))
-#   endif
-        ;
+    repl_out = stdout;  // cannot initialize at global scope
+    repl(stdin, "niceful");
     puts("Goodbye");
     return 0;
 }

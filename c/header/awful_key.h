@@ -12,7 +12,8 @@ typedef val_t (*awful_key_t)(stack_t*, stack_t);
 
 /** Check whether the string text is a keyword and if it is
     then return the pointer of the corresponding routine,
-    casted to void*, else NULL. */
-extern void *awful_key_find(char *text);
+    casted to void*, else NULL. The string to check starts
+    at text and is n characters long. */
+extern void *awful_key_find(char *text, unsigned n);
 
 #endif

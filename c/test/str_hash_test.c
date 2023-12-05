@@ -1,12 +1,12 @@
-#include "str.c"    // YES! .c
+#include "../src/str.c"    // YES! .c
 
 #include <math.h>
 #include <stdio.h>
 
 #define MAXSIZ (31)
 
-//int main(void)
-int fake(void)
+int main(void)
+//int fake(void)
 {
     int collisions[TABSIZE] = {0};
     char buffer[MAXSIZ + 1];
@@ -19,7 +19,7 @@ int fake(void)
         for (int i = 0; i < len; ++ i)
             buffer[i] = ((double) rand() / RAND_MAX) * (127-32) + 32;
         buffer[len] = '\0';
-        ++ collisions[hash(buffer, len)];
+        ++ collisions[str_hash(buffer, len)];
     }
     double mean = (double) N / TABSIZE;
     double min = N;

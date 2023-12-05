@@ -1,23 +1,34 @@
-# Awful: A Weird FUnctional Language
+# An Awful Introduction to Functional Programming
 
 ## Paolo Caressa
 
-### v.2023-11
+### v.2023-12
 
 ## Foreword
 
-Awful is a simple (perhaps the simplest) functional language designed and implemented for didactic purposes: I described it at the Codemotion Milan 2023 conference.
+Awful (A Weird FUnctional Language) is a simple (perhaps the simplest) functional language designed and implemented for didactic purposes: I described a draft version of it and shown its prototypal implementation in Python at the Codemotion Milan 2023 conference.
 
-This document is a gentle introduction to it and to the concepts of functional programming it conveys (which is the purpose I designed the language for).
+This document is a gentle introduction to some basic concepts of functional programming through Awful (which is the purpose I designed the language for). Awful, at least in its current version, by no means represents a valid choice to develop serious functional programs, even if it is possible to do that, but it shows some basic devices and how they can be naively implemented.
 
 The implementation consists in a prototype written in Python and in a more robust implementation written in C: both are stored in the repository [https://github.com/pcaressa/awful](https://github.com/pcaressa/awful).
 
 To set up the interpreter and use it please see the [../README.md](../README.md) file in the interpreter distribution.
 
-Enjoy,
+Enjoy,   
 Paolo
 
 ## What is a function?
+
+>*A function of a variable quantity is an analytic expression composed in any way whatsoever of the variable quantity and numbers or constant quantities.*
+>
+>Leonhard Euler
+>
+
+Functional languages, as the word suggests, are programming languages in which algorithms are expressed by functions: instead of method execution of most languages, the purpose of a program in a functional language is to evaluate a function, or a set of functions, combining their input parameters and output results to get, in the end, a final result of the computation.
+
+This is the approach to the concept of algorithm as developed by Alonzo Church in the 30s, while the other one was Alan Turing approach via abstract machines (there are more of course: Markov systems, Post systems, register machines, while-programs etc.).
+
+So we need to ask: what is a function? In this notes I will deal with loosely typed functional languages, not with strictly typed ones, since I want to focus on the basic devices of function evaluation.
 
 ### Functions as intensional objects
 
@@ -50,7 +61,7 @@ Thus `s(x)` is the squared root of `x`: if `y = s(x)` then `y^2 = x`. But both `
 The golden rule is
 
 
-- *A function is a correspondence between input parameters and output value such that a same input corresponds at most to one and only one output.*
+> *A function is a correspondence between input parameters and output value such that a same input corresponds at most to one and only one output.*
 
 For us, functions are always computed by algorithms, thus a function is a black box accepting inputs and returning outputs such that the black box contains an algorithm, for example a computer program.
 
@@ -128,10 +139,26 @@ Now the time has come to define our Afwul language.
 
 ## The Awful notation for functions
 
+>*Progress is possible only if we train ourselves to think about programs without thinking of them as pieces of executable code.*
+>
+>EW Dijkstra
+>
+
 Awful is essentially a computer-friendly notation for intensional functions. Its approach to express intensional function stems directly from Church's ideas:
 
 - to provide a set of "primitive" built-in functions;
 - to provide a notation to build new functions from primitive or already defined ones.
+
+**Notice.** Awful comes with almost no syntax: the interpreter breaks the source text into *tokens* that can be:
+
+- A single character among `( ) { } :` called *delimiter*: this is always parsed as a single character, thus `({:})` are five tokens.
+- A string, which is any sequence of characters enclosed between quotes or double quotes: in the former case double quotes can appear inside the string, in the latter quotes can appear. No escape characters are provided.
+- A number, which is the usual integer/decimal/exponential notation of all programming languages from C on, e.g. `-.001`, `-.001e23`, `123.0` etc.
+- An atom that is any consecutive sequence of non space characters that is neither a delimiter, nor a string, nor a number. For example: `atom0`, `0000a0000`, `0x01`, `++` etc.
+
+Atoms and numbers are separated by spaces, delimiters or strings.
+
+**Keep in mind that** `1+2` is a single atom while `1 + 2` is a number, followed by the atom `+` followed by another number.
 
 ### Awful native data types
 
@@ -477,6 +504,11 @@ It remains just one concept to be considered, but before that, let us switch to 
 
 ## A nice functional language
 
+>*Syntactic sugar causes cancer of the semicolons.*
+>
+>Alan J. Perlis
+>
+
 The Awful syntax is ugly and cumbersome: let us express the same concepts in a nicer form, by means of Niceful (NICE FUnctional Language).
 
 I've could introduced this language directly, rather than describing Awful first, but the reader will discover why I did it: I do not spoil it now.
@@ -485,7 +517,7 @@ Awful let us express functions and expressions but it does not seems to be a pro
 
 Niceful is a pure functional language which is used to write expressions that can be evaluated to a value.
 
-Again, we have numbers, strings, stacks and functions as primitive data types and expressions to deal with them.
+Again, we have numbers, strings, stacks and functions as primitive data types and expressions to deal with them and, again, there is no grammar, but the source text is a sequence of tokens: delimiters, strings, numbers or atoms, the latter separated by spaces or delimiters.
 
 ### Numerical expressions
 
@@ -493,7 +525,7 @@ Niceful provides the usual algebraic infix notation for arithmetical operations 
 
 While numerical constants are the same, we have operators `+ - * / ^` instead of `ADD SUB MUL DIV POW`, relations `= < > <> >= <=` instead of `EQ LT GT NE GE LE` (one can also use `==` instead of `=`). Moreover we have the prefix unary `-` negation operator and the Boolean `not and or` operators.
 
-Operator priorities are as expected, and they can be altered by means of parentheses
+Operator priorities are as expected, and they can be altered by means of parentheses.
 
 Examples:
 
@@ -591,34 +623,36 @@ that returns `2` as result.
 
 ### Conditionals
 
-Conditional expressions are provided by Niceful in the classic "if-then-else" form:
+Conditional expressions are provided by Niceful by means of the classic "if-then-else" form:
 
     if e1 then e2 else e3
 
 For example
 
-    if x < 0 then "Negative" else if x = 0 then "Zero" else "Positive"
+    if x < 0 then "Negative"
+    else if x = 0 then "Zero"
+                    else "Positive"
 
 The nice fact, which does not occur in Awful, is that only one among `e2` and `e3` is evaluated. For example
 
     if x = 0 then "Error" else 1 / x
 
-won't result in any error if `x = 0` but will return the string `"Error"`. Thus, `if` only evaluates one of the expressions after `then` and `else`, according to the value of the expression after `if`. Namely:
+won't raise any error if `x = 0` but will return the string `"Error"`. Thus, `if` only evaluates one of the expressions after `then` and `else`, according to the value of the expression after `if`. Namely:
 
 - if `e1` evaluates to zero then `e1` is ignored and `e3` is evaluated and its value returned as value of the all conditional expression;
 - if `e1` evaluates to a value different from zero then `e3` is ignored and `e2` is evaluated and its value returned as value of the all conditional expression.
 
 ### Recursion
 
-Someone said: "to iterate is human, to recurse is divine".
+Someone said: *to iterate is human, to recurse is divine*"*.
 
 Recursion is the theoretical device, indeed possible by theorems due to Kleene (and some decades earlier by Dedekind), by which a function is defined in terms of itself.
 
-Actually, recursion works as induction in elementary arithmetics: both techniques relies on the fact that natural numbers are generated by 0 just adding 1: from 0 we get 1; from 1 we get 2; and so on.
+Actually, recursion works as induction in elementary arithmetics: the latter relies on the fact that natural numbers are generated by 0 just adding 1: from 0 we get 1; from 1 we get 2; and so on. Recursion can be applied to any situation in which we want to perform a computation on some data, we know how to do that in some simple and particular cases and we can break the general case in subcases which at last will reduce to the simple ones.
 
 So, a recursive function should settle a trivial case in which its value is stated explicitly for certain values, and a general case in which the value is computed in terms of simpler values applied to the same function.
 
-As an example, let us write a recursive function to compute the length of a stack:
+As an example, let us write a recursive function to compute the length of a stack `x`: the trivial case is when the stack is empty, `x = nil`, since then its length is `0`. If `x` is not `nil` it will be formed by a topmost element and a stack of remaining elements: the latter is intuitively shorter than `x`, so that we suppose to know its length by a recursive call and increase it by one to take into account the first element of `x`.
 
     fun x: if empty x then 0
            else 1 + "recursive call"(rest x)
@@ -631,13 +665,13 @@ To write this definition in Niceful we need to give a name to our function: the 
                      else 1 + len(rest x)
     in len([1,2,3])
 
-But if you try to type this in the Niceful interpreter you'll get an "Unbounded variable" error: in fact, `len` is not yet defined when the function is under definition.
+But if you try to type this in the Niceful interpreter you'll get an `Unbounded variable` error: in fact, `len` is not yet defined when the function is under definition!
 
 Recall that `let x1 = e1, ..., xn = en in e` defines all variables simultaneously: thus the expressions `e1,...,en` are evaluated before any of the variables `x1,...,xn` are assigned.
 
-Thus it is impossible to write a recursive definition by means of a let-clause.
+Thus, it is impossible to write a recursive definition by means of a let-clause.
 
-But Niceful is nice enough to provide an alternative: 'letrec`. Try to type (recall that the interpreter expects an expression on a single line, or in multiple lines terminated by backslashes)
+But Niceful is nice enough to provide an alternative: `letrec`. Try to type (beware that the interpreter expects an expression on a single line, or in multiple lines terminated by backslashes, I omit the latter here for readability)
 
     letrec len = fun x: if empty x then 0
                         else 1 + len(rest x)
@@ -657,6 +691,8 @@ Indeed, the expression `len([1,2,3])` is converted into the following:
 
 Notice that at each recursive call, a `1` summand is added plus `len` applied to a shorter list; when `len` is applied to the empty list the `then` branch of the function is evaluated returning `0`.
 
+To prevent to smash the runtime stack by an infinite loop of recursive calls, Awful has an inner counter that raises an error `Evaluation too nested` when nested evaluations inside an expressions exceed a given amount, by default 1024 (you can change this in the code): this is a feature of the C interpreter only.
+
 ### Surprise ending
 
 It seems that Niceful is not only a true programming language, with a familiar and easy syntax, but that it is actually more powerful than Awful. But this is false.
@@ -667,9 +703,12 @@ To describe such a translation is the purpose of the next section.
 
 ## Niceful translations
 
-Let us define a function `T:S->S` from the set of legal Niceful expressions into the set of legal Afwul expressions. We have not defined formally what an Awful or Niceful expression is, see the appendix for that.
+>*To iterate is human, to recurse divine.*
+>
+>LP Deutsch
+>
 
-However we can list all possible forms of Niceful expression.
+Let us define a function `T:S->S` from the set of strings to the set of strings that, when applied to a legal Niceful expression, returns the corresponding Afwul expression. We have not defined formally what an Awful or Niceful expression is, however we can easily list all possible forms of Niceful expression.
 
 ### Patterns of Niceful expressions
 
@@ -700,7 +739,7 @@ The bare list of all possible Niceful expressions follows: notice that this is a
 - `1st e`
 - `rest e`
 - `e(e1,...,en)`, the evaluation of the function resulting from `e` on `e1,...,en`.
-- `(e)`
+- `(e)`, this has the same value of `e` but is needed to force operator priorities.
 - `if e1 then e2 else e3`
 - `let x1 = e1, ..., xn = en in e`
 - `letrec x1 = e1, ..., xn = en in e`
@@ -719,7 +758,7 @@ Now let us define `T(s)` for each string of one of the previous forms.
 - `T(e1 * e2) = MUL T(e1) T(e2)`
 - `T(e1 / e2) = DIV T(e1) T(e2)`
 - `T(e1 ^ e2) = POW T(e1) T(e2)`
-- `T(e1 : e2) = PUSH T(e1) PUSH T(e2) NIL`
+- `T(e1 : e2) = PUSH T(e1) T(e2)`
 - `T(e1 = e2) = EQ T(e1) T(e2)`
 - `T(e1 <> e2) = NE T(e1) T(e2)`
 - `T(e1 < e2) = LT T(e1) T(e2)`
@@ -748,13 +787,13 @@ Let us come back to Awful function evaluations:
 
     ({x1 ... xn: e} e1, ..., en)
 
-The algorithm of evaluation is:
+Recall the algorithm of evaluation:
 
 - Parse the list `[x1, ..., xn]`.
 - Set the stack `A` to `NIL`.
 - For `i = 1` to `n`:
     - Evaluate `ei` in the current environment to get a value `vi` and push the pair `[xi,vi]` into `A`.
-- Add `A` to the current environment to form a new environment `N`.
+- Push `A` to the current environment to form a new environment `N`.
 - Evaluate `e` w.r.t. `N` getting the result `v` which is the value of the function on the given actual parameters.
 
 Therefore, when evaluating `e1, ..., en` the variables `x1, ..., xn` are still not defined (unless some variables with the same name are already in the current environment).
@@ -772,11 +811,10 @@ So the evaluation algorithm changes to:
 - For `i = 1` to `n`:
     - If `xi` was marked by a `!` in the function definition then parse `ei` without evaluating it getting a token list (just a stack of symbols) `ti`, next push the pair `[xi,ti]` on `A`.
     - Else evaluate `ei` in the current environment to get a value `vi`, next push the pair `[xi,vi]` on `A`.
-- Add `A` to the current environment to form a new environment `N`.
+- Push `A` to the current environment to form a new environment `N`.
 - For `i = 1` to `n`:
     - If `xi` was marked by a `!` in the function definition then evaluate `ti` w.r.t. environment `N` getting a value `vi` which is overwritten to `ti` in the pair `[xi,ti]` in environment `A`.
 - Evaluate `e` w.r.t. `N` getting the result `v` which is the value of the function on the given actual parameters.
-
 
 For example let us evaluate
 
@@ -822,28 +860,358 @@ Since the formal parameter `len` is marked, it can appear inside the actual para
 
 ## Examples
 
-To conclude this introduction let me show some examples of Niceful programs, and the corresponding Awful ones.
+>*Programs must be written for people to read, and only incidentally for machines to execute.*
+>
+>H Abelson, JH Sussman
+>
 
-Most of these examples are taken from classic papers and books on functional programming.
+To conclude this introduction let me show some examples of Niceful programs. Most of these examples are taken from classic papers and books on functional programming.
 
-### List utilities
+### Using the interpreter
 
-I will show here a set of list utilities: each function is in the form `let f = e in f(e1,...,en)` to provide its definition and an example of application: however they could be put into 
+To try the examples and build more you'll need to use the interpreter: you may choose either the Python or the C one, the previous easier to set up (see folders [../python/](../python/) and [../c/](../c/)).
 
+Once an interpreter has been set up and launched, you'll see somthing as
 
-## Odds and ends
+    AWFUL - A Weird FUnctional Language
+    (c) 2023 by Paolo Caressa <github.com/pcaressa/awful>
+    [v.0.2312. Type 'help' for... guess what?]
 
-The pure functional language I defined in these notes, Niceful, rests on a formalism to express stacks and closures, Awful, which is very simple.
+    niceful 1: 
 
-However we can develop some interesting consideration still with this limited equipment (and in the end I'll suggest some improvements that can be done on the language itself).
+Then you can type the expression to be evaluated on on line and the interpreter will translate it into Awful and call the Awful interpreter to evaluate it, printing the result (you could use directly the Awful interpreter in the same way, here I show example of Niceful programs).
 
-parametri per valore, nome e lazy evaluation
+For example
 
-tecniche di implementazione degli ambienti
+    niceful 1: let x = 10, f = fun x: x + 1 in f(x)
+    11
 
-input e output
+If you want to see the translation from Niceful into Awful just start the expression with `awful` word:
 
-## Awful implementation
+    niceful 2: awful let x = 10, f = fun x: x + 1 in f(x)
+    ({x f:(f x)}10,{x:ADD x 1})
+    niceful 3:
 
-## Niceful implementation
+If you want to write directly in Awful, type just
 
+    niceful 3: awful
+    Awful interpreter
+    awful 4: 
+
+From now on only Awful expressions will be interpreted: to switch back to Niceful, type `niceful` at the prompt.
+
+Notice that a progressive integer is shown by the prompt: this is useful in batch files. Indeed, instead of typing lines you could put them into a text file `foo.nfl` (or whatever you want to name it) and type
+
+    batch foo.nfl
+
+Each line of the file will be evaluated and its result printed on the terminal. For example suppose `foo.nfl` to contain
+
+    1
+    4 / 2
+    4 - 1
+    4 + 0.0000000000000001
+
+and that the file is in the same folder where you are running Niceful; then 
+
+    niceful 5: batch foo.nfl
+    foo.nfl 1: 1
+    foo.nfl 2: 2
+    foo.nfl 3: 3
+    foo.nfl 4: 4
+
+If you want the output of the interpreter to be redirected on a file, just use
+
+    niceful 6: output foo.log
+
+After that, file `foo.log` is opened in the append mode (if the file does not exist then it is created) and outputs are printed on it. For example consider
+
+    niceful 6: output foo.log
+    niceful 7: batch foo.nfl
+    foo.nfl 1: foo.nfl 2: foo.nfl 3: foo.nfl 4: foo.nfl 5: niceful 8: output
+    niceful 9: 
+
+After the `output foo.log` command has been issued, no prompt is printed anymore: however, the interpreter still asks for a text, and we insert `batch foo.nfl`. Next the interpreter prints the prompts of the lines evaluated in the batch file, but not theirs results, that are dumped on the file `foo.nfl`. Finally, we just state `output` with no parameter which switch back the output to the terminal.
+
+Another way to use script files is by means of *preludes*: a prelude is a script whose lines are considered to be a single expression which is usually not completed; after the processing of the prelude, the interpreter asks for a text to complete the expression.
+
+Consider for example the file `foo.pre` whose content is
+
+    let inc = fun x: x + 1,
+        dec = fun x: x - 1,
+        twice = fun x: x * 2,
+        half = fun x: x / 2
+    in
+
+`foo.pre` doesn't contain a legal Niceful expression since the interpreter expects something after `in`. Still, you can use this file as in
+
+    niceful 6: prelude foo.nfl
+    niceful 6: inc(twice(dec(half(10))))
+    9
+    niceful 7:
+
+Notice that the line of the prelude and the line that follows it are considered a single line (same progressive number).
+
+To use examples hereafter put them in preludes.
+
+To leave the interpreter use `bye`.
+
+### Numeric examples
+
+Some simple arithmetical functions:
+
+    abs = fun x: if x < 0 then - x else x,
+    sgn = fun x: if x < 0 then -1 else
+                 if x = 0 then 0 else 1
+
+To keep the language as simple as possible (but not simpler) I didn't include many usual arithmetical and numerical functions which it would be easy to include. Let us program some of them.
+
+Consider the `floor` function which should take a number `n` and return the largest integer `<= n`. This is provided by hardware, but we can crazily program it as follows: 
+
+    int-near = fun n x:
+        if n > x then int-near(n - 1, x)
+            else
+        if n + 1 < x then int-near(n + 1, x)
+            else
+        n
+
+Thus, `int-near(n,x)` does the job if we call it with `n` any integer and we can define
+
+    floor = fun x: int-near(0,x),
+    round = fun x: int-near(0, x + 0.5)
+
+This technique of using more parameters than needed to provide a sort of local variables for a function is common in functional languages.
+
+Let us implement, by an inefficient but well-known method, the exponential function: we will use the series
+
+    exp(x) = 1 + x + (x^2)/2 + (x^3)/6 + (x^4)/24 + (x^5)/120 + ...
+
+To evaluate the polynomial `1 + x + (x^2)/2 + (x^3)/6 + (x^4)/24 + (x^5)/120` we use the Horner scheme, thus we rearrange terms by a cleverly using the distributive property:
+
+    1 + x + (x^2)/2 + (x^3)/6 + (x^4)/24 + (x^5)/120 =
+    1 + x*(1 + x/2 + (x^2)/6 + (x^3)/24 + (x^4)/120) =
+    1 + x*(1 + x/2)*(1 + x/3 + (x^2)/12 + (x^3)/60)) =
+    1 + x*(1 + (x/2)*(1 + (x/3)*(1 + x/4 + (x^2)/20))) =
+    1 + x*(1 + (x/2)*(1 + (x/3)*(1 + (x/4)*(1 + x/5))))
+
+We could define
+
+    exp-bad x = fun x: 1 + x * (1 + (x / 2)*(1 + (x / 3)*(1 + (x / 4)*(1 + x / 5))))
+
+but, as the function name suggests, for numbers not near to 1 this function won't work properly: for example
+
+    niceful 10: exp-bad(10)
+    1477.67
+
+while we should get something as `22026.4657948`. The problem is that we should consider a longer segment of the Taylor series.
+
+Let's write a recursive function to compute the approximation up to the `n`-th power for a given `n > 0`:
+
+    exp-n = fun x n N:
+        if n = N then 1 + x / n
+        else 1 + (x / n) * exp-n(x,n + 1,N),
+        
+    exp = fun x : exp-n(x,1,50)
+
+Notice that function `exp-n` recurs from the last term of the Taylor series: since the higher term in Horner scheme is the more nested one, we start by computing it and going downward until the first term. 
+
+To do that, the simple case of the recursion correspond to the maximum value for the power `x^n` which is for `n = N`. For example evaluate `exp-n(10,1,3)`:
+
+    exp-n(10,1,3) -> 1 + (10 / 1) * exp-n(10,2,3)
+    exp-n(10,2,3) -> 1 + (10 / 2) * exp-n(10,3,3)
+    exp-n(10,3,3) -> 1 + (10 / 3)
+
+Therefore
+
+    exp-n(10,1,3) = 1 + (10 / 1) * exp-n(10,2,3)
+        = 1 + (10 / 1) * (1 + (10 / 2) * exp-n(10,3,3))
+        = 1 + (10 / 1) * (1 + (10 / 2) * 1 + (10 / 3))
+
+thus exactly the computation of the Horner scheme.
+
+With these definitions we get the value `22026.5` for `exp(10)`. Not bad.
+
+### Stack examples
+
+Let me shown some simple function definitions providing useful list tools: they are collected in the `list.pre` prelude (check the [../preludes/](../preludes/) folder). So, in each definition I'll show, imagine a `letrec` preceding it and a `in ...` following it.
+
+The following computes the length of a list.
+
+    len = fun x:
+        if empty x then 0
+        else 1 + len(rest x)
+
+To get the n-th element of a list (with indexing from `0` to `n-1` being `n` the length of the list), use
+
+    nth = fun x n:
+        if empty x or n < 0 then "Index out of range"
+            else
+        if n = 0 then 1st x
+            else
+        nth(rest x, n - 1)
+
+Notice that an error message is returned instead of the actual value in case of error.
+
+An important operation among lists is *append*: remember that our lists are actually stacks, so that we'll need to get to the last element of the first list.
+
+    append = fun x1 x2:
+        if empty x1 then x2
+            else
+        if empty rest x1 then 1st x1 : x2
+            else
+        1st x1 : append(rest x1, x2)
+
+Here we deal "by hands" with the case `x1 = []` and `x1 = [a]`; if `x1 = [a,b,...]` then we reduce to the simpler case `x1 = [b,...]` and push `a` in front of the result.
+
+**Notice.** Most functional languages provide pattern matching to express these `if-else` implicitly: often one could write
+
+    append = fun [] x2:  x2
+           |     [a] x2: a:x2
+           |     a:x1 x2: a:append(x1, x2)
+
+This would be a nice improvement to `Awful` :-).
+
+By means of `append` let us write a function to invert the order of elements in a list:
+
+    reverse = fun x:
+        if empty x then nil
+        else append(reverse(rest x), [1st x])
+
+### Miscellaneous examples
+
+Let us consider an example of *mutual recursion*: consider the following pair of functions implementing a test for even and odd numbers:
+
+    even = fun n:
+        if n < 0 then even(- n)
+            else
+        if n = 0 then 1
+            else
+        odd(n - 1),
+
+    odd = fun n:
+        if n < 0 then odd(- n)
+            else
+        if n = 0 then 0
+            else
+        even(n - 1)
+
+These will work only for non negative numbers: for example, the evaluation of `odd(3)` proceeds as follows:
+
+    odd(3) -> even(2) -> odd(1) -=> even(0) -> 1
+
+Of course one could directly write in this case
+
+    even = fun n:
+        if n = 0 then 1
+            else
+        if n = 1 then 0
+            else
+        even(n - 2)
+
+But I wanted to make a simple example of mutual recursion.
+
+Let me finally consider some functions that may improve somehow the language itself.
+
+First we have the function `map(f,x)` that applies a function `f` to each element of a list `x` returning the resulting list:
+
+    map = fun f x:
+        if empty x then nil
+        else f(1st x) : map(f, rest x)
+
+For example consider
+
+    letrec
+    map = fun f x:
+        if empty x then nil
+        else f(1st x) : map(f, rest x)
+    in
+        map(fun x: x * x, [1,2,3,4,5])
+
+whose result is `[1,4,9,16,25]`.
+
+We can also select elements from a stack according to a condition, encoded in function returning 0 if we want to discard an element, 1 (or also non zero) if we want to keep it:
+
+    filter = fun f x:
+        if empty x then nil
+            else
+        if f(1st x) then 1st x : filter(f, rest x)
+            else
+        filter(f, rest x)
+
+For example the evaluation of
+
+    letrec
+    append = fun x1 x2:
+        if empty x1 then x2
+            else
+        if empty rest x1 then 1st x1 : x2
+            else
+        1st x1 : append(rest x1, x2),
+    filter = fun f x:
+        if empty x then nil
+            else
+        if f(1st x) then 1st x : filter(f, rest x)
+            else
+        filter(f, rest x),
+    even = fun n:
+        if n < 0 then even(- n)
+            else
+        if n = 0 then 1
+            else
+        odd(n - 1),
+    odd = fun n:
+        if n < 0 then odd(- n)
+            else
+        if n = 0 then 0
+            else
+        even(n - 1)
+    L = [1,2,3,4,5,6,7,8,9,10]
+    in
+        append(filter(odd,L), filter(even,L))
+
+will result in
+
+    [1,3,5,7,9,2,4,6,8,10]
+
+Just for curiosity, the Awful expression corresponding to this Niceful one is:
+
+    ({!append !filter !even !odd !L:(append (filter odd,L),(filter even,L))}{x1 x2:(COND ISNIL x1{:x2}{:(COND ISNIL BOS x1{:PUSH TOS x1 x2}{:PUSH TOS x1 (append BOS x1,x2)})})},{f x:(COND ISNIL x{:NIL}{:(COND (f TOS x){:PUSH TOS x (filter f,BOS x)}{:(filter f,BOS x)})})},{n:(COND LT n 0{:(even SUB 0 n)}{:(COND EQ n 0{:1}{:(odd SUB n 1)})})},{n:(COND LT n 0{:(odd SUB 0 n)}{:(COND EQ n 0{:0}{:(even SUB n 1)})})}, PUSH 1 PUSH 2 PUSH 3 PUSH 4 PUSH 5 PUSH 6 PUSH 7 PUSH 8 PUSH 9 PUSH 10 NIL)
+
+As a final example, let us see how the `filter` function is powerful, in letting us to express very easily the classic Quicksort algorithm:
+
+    letrec
+    @ = fun x1 x2:              \ append
+        if empty x1 then x2
+            else
+        if empty rest x1 then 1st x1 : x2
+            else
+        1st x1 : @(rest x1, x2),
+
+    ? = fun f x:                \ filter
+        if empty x then nil
+            else
+        if f(1st x) then 1st x : ?(f, rest x)
+            else
+        ?(f, rest x),
+
+    quicksort = fun x:
+        if empty x then nil
+            else
+        let a = 1st x, r = rest x
+            in @(quicksort(?(fun y: y < a, r)),
+                  @([a], quicksort(?(fun y: a <= y, r))))
+
+    in quicksort([3,2,1,4])
+
+Notica that, by a nested `let`, we defined two "local variables" `a` and `r` to avoid repeated evaluation of `1st x` anf `rest x` inside the quicksort recursive definition.
+
+## Odds and ends (mostly ends)
+
+The pure functional language I defined in these notes, Niceful, relies upon a formalism to express stacks and closures, Awful, which is very simple although quite obfuscated.
+
+To let the language somewhat useful one should add at least input/output, string manipulation and a device to catch exceptions that extends inner errors: actually the language should be completed so that an interpreter for it could be programmed in itself.
+
+Next, one could explore other techniques in functional programming such as tail-recursion, lazy evaluation, continuations, more environment implementations etc.
+
+But for the moment I stop here.
+
+(c) 2023 by Paolo Caressa [<github.com/pcaressa/awful>]([<github.com/pcaressa/awful>)
