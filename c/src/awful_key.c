@@ -59,15 +59,12 @@ static val_t EQ(stack_t *tokens, stack_t env)
     if (type == y.type) {
         if (type == NUMBER) {
             flag = x.val.n == y.val.n;
-        } else
-        if (type == STRING || type == ATOM) {
-            flag = strcmp(x.val.t, y.val.t) == 0;
-            free(x.val.t);
-            free(y.val.t);
         } else {
-            except_on(1, "EQ applies only to atoms");
+            except_on(type != STRING, "Can only compare atoms");
+            flag = x.val.t == y.val.t;
         }
     }
+    x.type = NUMBER;
     x.val.n = flag;
     return x;
 }

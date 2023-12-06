@@ -148,7 +148,7 @@ static val_t awful_closure(stack_t *r_tokens, stack_t env)
 {
 ENTER
     stack_t tokens = *r_tokens;
-    except_on(tokens == NULL, "Unexpected end of text");
+    except_on(tokens == NULL, "Closure expected");
 
     // tokens = [a1 ... an] ":" ... "}"
     /*  A formal parameter is actually a couple of consecutive
@@ -183,7 +183,7 @@ ENTER
         body = stack_dup(tokens, body);
         tokens = tokens->next;
     }
-    except_on(tokens == NULL, "Unexpected end of text");
+    except_on(tokens == NULL, "'}' expected to end closure body");
     tokens = tokens->next;  // skip the '}'
     body = stack_reverse(body);
     // Creates the closure as a stack [params, body, env]
@@ -204,7 +204,7 @@ val_t awful_eval(stack_t *r_tokens, stack_t env)
         "Evaluation too nested: max %i allowed", MAX_EVAL);
 ENTER
     stack_t tokens = *r_tokens;
-    except_on(tokens == NULL, "Unexpected end of text");
+    except_on(tokens == NULL, "Expression expected");
     
     val_t retval;
     switch (tokens->val.type) {

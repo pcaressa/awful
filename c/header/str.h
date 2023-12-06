@@ -5,12 +5,11 @@
 
 #include <stdio.h>
 
-/** Concatenates two strings: s1 is expanded to make space
-    for a copy of s2 that is appended to s1. The address of
-    the new string (possibly still s1) is returned.
-    WARNING: s1 should not be a literal string, but it
-    can be NULL!!! */
-extern char *str_cat(char *s1, const char *s2);
+/** Concatenates two strings: a new string is created to
+    contain the concatenation and its address is returned.
+    If s1 == NULL then s2 is returned; if s2 == NULL then
+    s1 is returned. s1 and s2 cannot be both NULL. */
+extern char *str_cat(const char *s1, const char *s2);
 
 /** Create a new string from a text starting at s and
     with length n and returns its address. */

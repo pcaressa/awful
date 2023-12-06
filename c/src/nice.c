@@ -237,15 +237,17 @@ EXIT
     return awful;
 }
 
-/** Parse a possible actual parameter list from *r_nice into a
-    string which is returned appended to the left parameter,
-    that should contain the possible function just parsed;
-    the value pointer by r_nice is updated. */
+/** Parse an actual parameter list from *r_nice into a string
+    which is returned appended to the left parameter, that
+    should contain the possible function just parsed; the value
+    pointed by r_nice is updated. It is assumed that the opening
+    '(' has already been parsed. The closing ')' is parsed
+    before returning. */
 static char *nice_aparams(stack_t *r_nice, char *awful)
 {
 ENTER
     stack_t nice = *r_nice;
-    while (nice_next(nice) == '(') {
+    do {
         nice = stack_next(nice);    // skip '('
         // Inserts a "(" on the left of awful
         char *body = str_new("(", 1);
@@ -263,7 +265,7 @@ ENTER
             }
         }
         awful = body;
-    }
+    } while (nice_next(nice) == '(');
     *r_nice = nice;
 EXIT
     return awful;
@@ -339,7 +341,8 @@ ENTER
     }
     // A term may be followed by a list of actual parameters
     // enclosed between parentheses.
-    awful = nice_aparams(&nice, awful);
+    if (nice_next(nice) == '(')
+        awful = nice_aparams(&nice, awful);
     *r_nice = nice;
 EXIT
     return awful;

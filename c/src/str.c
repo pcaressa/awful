@@ -17,20 +17,34 @@
 
 #define TABSIZE (1024)  /* Need to be a power of 2 */
 
-typedef struct str_list_s {
-    struct str_list_s *next;
+typedef struct str_table_s {
+    struct str_table_s *next;
     char *s;    // immutable string
-} *str_list_t;
+    unsigned l; // its length
+} *str_table_t;
 
 /** The string table is an array indexed by string hashes:
-    each item points to a str_list_t with the list of all
+    each item points to a str_table_t with the list of all
     strings with that same hash. */
-static str_list_t str_table[TABSIZE] = {0};
+static str_table_t str_table[TABSIZE] = {0};
 
-/** Simple minded hash function. **/
-static unsigned str_hash(const char *s, size_t n)
+/** Allocate a new item in the h-th element of the string
+    table and return its address. */
+static str_table_t str_table_new(unsigned h)
 {
-    unsigned h = 0;
+    str_table_t item = malloc(sizeof(struct str_table_s));
+    except_on(item == NULL, "Cannot allocate string %s:%i",
+        __FILE__, __LINE__);
+    // Push item in front of the list str_table[h]
+    item->next = str_table[h];
+    return str_table[h] = item;
+}
+
+/** Simple minded hash function. The h parameter is used to
+    compute the hash of a concatenation of strings s1 + s2:
+    call str_hash(str_hash(0,s1,strlen(s1)),s2, strlen(s2). */
+static unsigned str_hash(unsigned h, const char *s, size_t n)
+{
     while (n > 0) {
         h += ((unsigned)*s++) * 257;
         h &= TABSIZE - 1;
@@ -39,16 +53,28 @@ static unsigned str_hash(const char *s, size_t n)
     return h;
 }
 
-char *str_cat(char *s1, const char *s2)
+char *str_cat(const char *s1, const char *s2)
 {
-    if (s1 == NULL) return s2;
-    if (s2 == NULL) return s1;
-    /* Create the concatenated string and next invoke
-        str_new on it: we cannot extend s1 since
-        it would change its hash! */
-    char *s3 = malloc(strlen(s1) + strlen(s2) + 1);
-    except_on(s3 == NULL, "Cannot allocate string");
-    return str_new(strcat(strcpy(s3, s1), s2), 0);
+    size_t l1 = (s1 == NULL) ? -1 : strlen(s1);
+    size_t l2 = (s2 == NULL) ? -1 : strlen(s2);
+    except_on(l1 == -1 && l2 == -1, "BUG: %s:%n", __FILE__, __LINE__);
+    if (l1 == -1) return str_new(s2, l2);
+    if (l2 == -1) return str_new(s1, l1);
+    size_t l3 = l1 + l2;
+    // Looks for s1 + s2 inside the table
+    unsigned h = str_hash(str_hash(0, s1, l1), s2, l2);
+    for (str_table_t p = str_table[h]; p != NULL; p = p->next)
+        // Compare character-wise including the final '\0'.
+        if (p->l == l3 && memcmp(p->s, s1, l1) == 0
+        && memcmp(p->s + l1, s2, l2) == 0)
+            return p->s;
+    // The string is new: allocate it.
+    char *s3 = malloc(l3 + 1);
+    except_on(s3 == NULL, "Cannot allocate string %s:%i",
+        __FILE__, __LINE__);
+    str_table_t item = str_table_new(h);
+    item->l = l3;
+    return item->s = strcat(strcpy(s3, s1), s2);
 }
 
 char *str_new(const char *s, size_t n)
@@ -56,46 +82,27 @@ char *str_new(const char *s, size_t n)
     /*  Insert a string into the table and return its address:
         if the string already is in, retrieves its address.
         If n = 0 don't allocate the string but use s. */
-    str_list_t item;
-    unsigned h;
-    if (n == 0) {
-        n = strlen(s);
-        h = str_hash(s, n);
-        for (str_list_t p = str_table[h]; p != NULL; p = p->next)
-            // Compare character-wise including the final '\0'.
-            if (strcmp(p->s, s) == 0)
-                return p->s;
-        // The string is not in the stack: create and insert it
-        item = malloc(sizeof(struct str_list_s));
-        except_on(item == NULL, "Cannot allocate string");
-        item->s = s;
-    } else {
-        h = str_hash(s, n);
-        for (str_list_t p = str_table[h]; p != NULL; p = p->next)
-            // Compare character-wise including the final '\0'.
-            if (memcmp(p->s, s, n) == 0 && p->s[n] == '\0')
-                return p->s;
-        // The string is not in the stack: create and insert it
-        item = malloc(sizeof(struct str_list_s));
-        char *t = malloc(n + 1);
-        except_on(item == NULL || t == NULL, "Cannot allocate string");
-        memcpy(t, s, n);
-        t[n] = 0;
-        item->s = t;
-    }
-    // Push item in front of the list str_table[h]
-    item->next = str_table[h];
-    str_table[h] = item;
-    return item->s;
+    unsigned h = str_hash(0, s, n);
+    for (str_table_t p = str_table[h]; p != NULL; p = p->next)
+        // Compare character-wise including the final '\0'.
+        if (p->l == n && memcmp(p->s, s, n) == 0)
+            return p->s;
+    str_table_t item = str_table_new(h);
+    item->s = malloc(n + 1);
+    item->l = n;
+    except_on(item->s == NULL, "Cannot allocate string %s:%i",
+        __FILE__, __LINE__);
+    item->s[n] = '\0';
+    return memcpy(item->s, s, n);
 }
 
 void str_reset(void)
 {
     // Free all strings in the table
     for (unsigned h = 0; h < TABSIZE; ++ h) {
-        str_list_t p = str_table[h];
+        str_table_t p = str_table[h];
         while (p != NULL) {
-            str_list_t next = p->next;
+            str_table_t next = p->next;
             free(p->s);
             free(p);
             p = next;
@@ -109,7 +116,7 @@ void str_status(FILE *dump)
     int n = 0;
     unsigned size = 0;
     for (int i = 0; i < TABSIZE; ++ i)
-        for (str_list_t p = str_table[i]; p != NULL; p = p->next) {
+        for (str_table_t p = str_table[i]; p != NULL; p = p->next) {
             ++ n;
             size += strlen(p->s);
         }

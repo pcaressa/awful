@@ -39,7 +39,8 @@ stack_t scan(char *text, char *delims, void *key_find(char*,unsigned))
             // Scans up to the following space or delimiter.
             char *p = text++;
             while (*text != '\0' && !isspace(*text)
-            && strchr(delims, *text) == NULL)
+            && strchr(delims, *text) == NULL && *text != '\''
+            && *text != '"')
                 ++ text;
             // The atom starts at p and its length is text - p.
             // Check against a number.
