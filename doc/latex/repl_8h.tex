@@ -1,0 +1,25 @@
+\hypertarget{repl_8h}{}\doxysection{c/header/repl.h File Reference}
+\label{repl_8h}\index{c/header/repl.h@{c/header/repl.h}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=175pt]{repl_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{repl_8h_abd81411e9bc64c71dbad7bc34eebfada}{repl}} (FILE $\ast$in, FILE $\ast$out, int($\ast$interpret)(char $\ast$, FILE $\ast$), char $\ast$prompt)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{repl_8h_abd81411e9bc64c71dbad7bc34eebfada}\label{repl_8h_abd81411e9bc64c71dbad7bc34eebfada}} 
+\index{repl.h@{repl.h}!repl@{repl}}
+\index{repl@{repl}!repl.h@{repl.h}}
+\doxysubsubsection{\texorpdfstring{repl()}{repl()}}
+{\footnotesize\ttfamily int repl (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{in,  }\item[{FILE $\ast$}]{out,  }\item[{int($\ast$)(char $\ast$, FILE $\ast$)}]{interpret,  }\item[{char $\ast$}]{prompt }\end{DoxyParamCaption})}
+
+Activates a REPL by applying the interpret function to each string introduced by the user. Input lines are read from the in file, and results and error messages are printed on the out file. If not NULL, the prompt is printed each time a line is read from in. The interpret function should have signature int interpret(char$\ast$,\+FILE$\ast$) it takes a string in input, evaluates it and prints the result (or an error message) on the file. 

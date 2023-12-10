@@ -1,0 +1,229 @@
+\hypertarget{repl_8c}{}\doxysection{c/src/repl.c File Reference}
+\label{repl_8c}\index{c/src/repl.c@{c/src/repl.c}}
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/awful.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/nice.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/str.\+h\char`\"{}}\newline
+Include dependency graph for repl.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{repl_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{repl_8c_a1c6d5de492ac61ad29aec7aa9a436bbf}{VERSION}}~\char`\"{}0.\+2312\char`\"{}
+\item 
+\#define \mbox{\hyperlink{repl_8c_a5996021106b0b76d420b1d9012a9874b}{repl\+\_\+\+BUFSIZ}}~(65536)
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static char $\ast$ \mbox{\hyperlink{repl_8c_ad2e97604bd3319e80aa9531bdd669070}{repl\+\_\+get}} (FILE $\ast$in, const char $\ast$prompt, int cat)
+\item 
+static void \mbox{\hyperlink{repl_8c_acb3dfa98a2928ee93dc53c0db75cdfb9}{repl}} (FILE $\ast$in, char $\ast$prompt)
+\item 
+static void \mbox{\hyperlink{repl_8c_afd4031dbb5b62187eb0e1c54dc3fd2e2}{repl\+\_\+batch}} (char $\ast$s)
+\item 
+static void \mbox{\hyperlink{repl_8c_a59576d0d995e73cc39fae5adff29e566}{repl\+\_\+help}} (void)
+\item 
+static void \mbox{\hyperlink{repl_8c_afef69eb4ea59416b8a09c156cb68198b}{repl\+\_\+output}} (char $\ast$s)
+\item 
+static void \mbox{\hyperlink{repl_8c_aa37bc3cbdd59e263ddd80f2561cb66de}{repl\+\_\+prelude}} (char $\ast$filename, FILE $\ast$in, char $\ast$prompt)
+\item 
+int \mbox{\hyperlink{repl_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char $\ast$$\ast$argv)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static char \mbox{\hyperlink{repl_8c_a3b6664c97218d557888acfeacbef3526}{repl\+\_\+buf}} \mbox{[}\mbox{\hyperlink{repl_8c_a5996021106b0b76d420b1d9012a9874b}{repl\+\_\+\+BUFSIZ}}\mbox{]}
+\item 
+static FILE $\ast$ \mbox{\hyperlink{repl_8c_a88ae99badda8794e89f1e3530b9bab87}{repl\+\_\+out}} = NULL
+\item 
+static int \mbox{\hyperlink{repl_8c_ae721d8420166744e9039d9c42cdfe78b}{repl\+\_\+line}} = 0
+\item 
+static int($\ast$ \mbox{\hyperlink{repl_8c_acd9959afc47f113dfc7a0fbc9fe6583b}{repl\+\_\+eval}} )(char $\ast$, FILE $\ast$) = \mbox{\hyperlink{nice_8h_a16d95e815ac221865d3e3bd931e6bd42}{nice}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{repl_8c_a5996021106b0b76d420b1d9012a9874b}\label{repl_8c_a5996021106b0b76d420b1d9012a9874b}} 
+\index{repl.c@{repl.c}!repl\_BUFSIZ@{repl\_BUFSIZ}}
+\index{repl\_BUFSIZ@{repl\_BUFSIZ}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_BUFSIZ}{repl\_BUFSIZ}}
+{\footnotesize\ttfamily \#define repl\+\_\+\+BUFSIZ~(65536)}
+
+\mbox{\Hypertarget{repl_8c_a1c6d5de492ac61ad29aec7aa9a436bbf}\label{repl_8c_a1c6d5de492ac61ad29aec7aa9a436bbf}} 
+\index{repl.c@{repl.c}!VERSION@{VERSION}}
+\index{VERSION@{VERSION}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{VERSION}{VERSION}}
+{\footnotesize\ttfamily \#define VERSION~\char`\"{}0.\+2312\char`\"{}}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{repl_8c_a3c04138a5bfe5d72780bb7e82a18e627}\label{repl_8c_a3c04138a5bfe5d72780bb7e82a18e627}} 
+\index{repl.c@{repl.c}!main@{main}}
+\index{main@{main}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{repl_8c_a3c04138a5bfe5d72780bb7e82a18e627_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{repl_8c_acb3dfa98a2928ee93dc53c0db75cdfb9}\label{repl_8c_acb3dfa98a2928ee93dc53c0db75cdfb9}} 
+\index{repl.c@{repl.c}!repl@{repl}}
+\index{repl@{repl}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl()}{repl()}}
+{\footnotesize\ttfamily static void repl (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{in,  }\item[{char $\ast$}]{prompt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Scan from file in a line of text (possibly asking for more if the line ends with a backslash), apply to the result the interpret function and print on the out file the result. If prompt is not NULL it is printed on out before reading a line from in. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{repl_8c_acb3dfa98a2928ee93dc53c0db75cdfb9_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=221pt]{repl_8c_acb3dfa98a2928ee93dc53c0db75cdfb9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{repl_8c_afd4031dbb5b62187eb0e1c54dc3fd2e2}\label{repl_8c_afd4031dbb5b62187eb0e1c54dc3fd2e2}} 
+\index{repl.c@{repl.c}!repl\_batch@{repl\_batch}}
+\index{repl\_batch@{repl\_batch}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_batch()}{repl\_batch()}}
+{\footnotesize\ttfamily static void repl\+\_\+batch (\begin{DoxyParamCaption}\item[{char $\ast$}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Apply the eval evaluator to the lines of a text file whose name is at s. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{repl_8c_afd4031dbb5b62187eb0e1c54dc3fd2e2_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=298pt]{repl_8c_afd4031dbb5b62187eb0e1c54dc3fd2e2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{repl_8c_ad2e97604bd3319e80aa9531bdd669070}\label{repl_8c_ad2e97604bd3319e80aa9531bdd669070}} 
+\index{repl.c@{repl.c}!repl\_get@{repl\_get}}
+\index{repl\_get@{repl\_get}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_get()}{repl\_get()}}
+{\footnotesize\ttfamily static char$\ast$ repl\+\_\+get (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{in,  }\item[{const char $\ast$}]{prompt,  }\item[{int}]{cat }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Gets a line from a file. If prompt != NULL then it is printed on repl\+\_\+out\+: the scanned line is stored at repl\+\_\+buf if cat == 0, else it is appended to the string already in repl\+\_\+buf. In any case, the address of the last inserted line is returned; if an error, or the end of the file, occurs, NULL is returned. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{repl_8c_ad2e97604bd3319e80aa9531bdd669070_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{repl_8c_a59576d0d995e73cc39fae5adff29e566}\label{repl_8c_a59576d0d995e73cc39fae5adff29e566}} 
+\index{repl.c@{repl.c}!repl\_help@{repl\_help}}
+\index{repl\_help@{repl\_help}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_help()}{repl\_help()}}
+{\footnotesize\ttfamily static void repl\+\_\+help (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Prints a help message. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=320pt]{repl_8c_a59576d0d995e73cc39fae5adff29e566_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{repl_8c_afef69eb4ea59416b8a09c156cb68198b}\label{repl_8c_afef69eb4ea59416b8a09c156cb68198b}} 
+\index{repl.c@{repl.c}!repl\_output@{repl\_output}}
+\index{repl\_output@{repl\_output}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_output()}{repl\_output()}}
+{\footnotesize\ttfamily static void repl\+\_\+output (\begin{DoxyParamCaption}\item[{char $\ast$}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Read from s a file name which is opened for appending and assigned to the repl\+\_\+out variable. If s is the empty string (after being stripped) then repl\+\_\+out is set to stdout. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=249pt]{repl_8c_afef69eb4ea59416b8a09c156cb68198b_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=331pt]{repl_8c_afef69eb4ea59416b8a09c156cb68198b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{repl_8c_aa37bc3cbdd59e263ddd80f2561cb66de}\label{repl_8c_aa37bc3cbdd59e263ddd80f2561cb66de}} 
+\index{repl.c@{repl.c}!repl\_prelude@{repl\_prelude}}
+\index{repl\_prelude@{repl\_prelude}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_prelude()}{repl\_prelude()}}
+{\footnotesize\ttfamily static void repl\+\_\+prelude (\begin{DoxyParamCaption}\item[{char $\ast$}]{filename,  }\item[{FILE $\ast$}]{in,  }\item[{char $\ast$}]{prompt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Read the file whose name is at filename in repl\+\_\+buf and append to it a line from the in file\+: next evaluate the result and print the result on repl\+\_\+out. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=255pt]{repl_8c_aa37bc3cbdd59e263ddd80f2561cb66de_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=337pt]{repl_8c_aa37bc3cbdd59e263ddd80f2561cb66de_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{repl_8c_a3b6664c97218d557888acfeacbef3526}\label{repl_8c_a3b6664c97218d557888acfeacbef3526}} 
+\index{repl.c@{repl.c}!repl\_buf@{repl\_buf}}
+\index{repl\_buf@{repl\_buf}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_buf}{repl\_buf}}
+{\footnotesize\ttfamily char repl\+\_\+buf\mbox{[}\mbox{\hyperlink{repl_8c_a5996021106b0b76d420b1d9012a9874b}{repl\+\_\+\+BUFSIZ}}\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+Buffer used to join lines ending with \textquotesingle{}\textbackslash{}\textquotesingle{} \mbox{\Hypertarget{repl_8c_acd9959afc47f113dfc7a0fbc9fe6583b}\label{repl_8c_acd9959afc47f113dfc7a0fbc9fe6583b}} 
+\index{repl.c@{repl.c}!repl\_eval@{repl\_eval}}
+\index{repl\_eval@{repl\_eval}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_eval}{repl\_eval}}
+{\footnotesize\ttfamily int($\ast$ repl\+\_\+eval) (char $\ast$, FILE $\ast$) (\begin{DoxyParamCaption}\item[{char $\ast$}]{,  }\item[{FILE $\ast$}]{ }\end{DoxyParamCaption}) = \mbox{\hyperlink{nice_8h_a16d95e815ac221865d3e3bd931e6bd42}{nice}}\hspace{0.3cm}{\ttfamily [static]}}
+
+Current evaluation function\+: awful or niceful. \mbox{\Hypertarget{repl_8c_ae721d8420166744e9039d9c42cdfe78b}\label{repl_8c_ae721d8420166744e9039d9c42cdfe78b}} 
+\index{repl.c@{repl.c}!repl\_line@{repl\_line}}
+\index{repl\_line@{repl\_line}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_line}{repl\_line}}
+{\footnotesize\ttfamily int repl\+\_\+line = 0\hspace{0.3cm}{\ttfamily [static]}}
+
+Current file line counter. \mbox{\Hypertarget{repl_8c_a88ae99badda8794e89f1e3530b9bab87}\label{repl_8c_a88ae99badda8794e89f1e3530b9bab87}} 
+\index{repl.c@{repl.c}!repl\_out@{repl\_out}}
+\index{repl\_out@{repl\_out}!repl.c@{repl.c}}
+\doxysubsubsection{\texorpdfstring{repl\_out}{repl\_out}}
+{\footnotesize\ttfamily FILE$\ast$ repl\+\_\+out = NULL\hspace{0.3cm}{\ttfamily [static]}}
+
+File where output is printed. 

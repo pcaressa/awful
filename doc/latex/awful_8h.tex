@@ -1,0 +1,93 @@
+\hypertarget{awful_8h}{}\doxysection{c/header/awful.h File Reference}
+\label{awful_8h}\index{c/header/awful.h@{c/header/awful.h}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/stack.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/val.\+h\char`\"{}}\newline
+Include dependency graph for awful.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=213pt]{awful_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{awful_8h_a51cc6c7012d4b1024e6367c13fbce3f3}{MAX\+\_\+\+EVAL}}~(1024)
+\begin{DoxyCompactList}\small\item\em Max depth of recursion for the awful\+\_\+eval function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful_8h_aaed2ba3c080e41c4db822886253cfa69}{awful\+\_\+eval}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+int \mbox{\hyperlink{awful_8h_ada469a00526c9f84e318d5fed847189a}{awful}} (char $\ast$text, FILE $\ast$file)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{awful_8h_a51cc6c7012d4b1024e6367c13fbce3f3}\label{awful_8h_a51cc6c7012d4b1024e6367c13fbce3f3}} 
+\index{awful.h@{awful.h}!MAX\_EVAL@{MAX\_EVAL}}
+\index{MAX\_EVAL@{MAX\_EVAL}!awful.h@{awful.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_EVAL}{MAX\_EVAL}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+EVAL~(1024)}
+
+
+
+Max depth of recursion for the awful\+\_\+eval function. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{awful_8h_ada469a00526c9f84e318d5fed847189a}\label{awful_8h_ada469a00526c9f84e318d5fed847189a}} 
+\index{awful.h@{awful.h}!awful@{awful}}
+\index{awful@{awful}!awful.h@{awful.h}}
+\doxysubsubsection{\texorpdfstring{awful()}{awful()}}
+{\footnotesize\ttfamily int awful (\begin{DoxyParamCaption}\item[{char $\ast$}]{text,  }\item[{FILE $\ast$}]{file }\end{DoxyParamCaption})}
+
+Interpret the string $\ast$text as an Awful expression and print the resulting value on the file. If an error occurs, a non zero error code is returned. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8h_ada469a00526c9f84e318d5fed847189a_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8h_ada469a00526c9f84e318d5fed847189a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful_8h_aaed2ba3c080e41c4db822886253cfa69}\label{awful_8h_aaed2ba3c080e41c4db822886253cfa69}} 
+\index{awful.h@{awful.h}!awful\_eval@{awful\_eval}}
+\index{awful\_eval@{awful\_eval}!awful.h@{awful.h}}
+\doxysubsubsection{\texorpdfstring{awful\_eval()}{awful\_eval()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} awful\+\_\+eval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})}
+
+Interpret a token list, thus a stack whose elements are items representing an Awful text, w.\+r.\+t. an environment, both passed by reference, and return the value with the result of the evaluation. On error, the returned value is NONE. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8h_aaed2ba3c080e41c4db822886253cfa69_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8h_aaed2ba3c080e41c4db822886253cfa69_icgraph}
+\end{center}
+\end{figure}

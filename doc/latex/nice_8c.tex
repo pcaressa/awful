@@ -1,0 +1,680 @@
+\hypertarget{nice_8c}{}\doxysection{c/src/nice.c File Reference}
+\label{nice_8c}\index{c/src/nice.c@{c/src/nice.c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/awful.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/except.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/nice.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/scan.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/stack.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/str.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/val.\+h\char`\"{}}\newline
+Include dependency graph for nice.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{nice_8c_ad740dfc826a6f447cf2c273f0fdfe74a}{DELIMITERS}}~\char`\"{}()\mbox{[}$\,$\mbox{]}\{\},\+:\char`\"{}
+\item 
+\#define \mbox{\hyperlink{nice_8c_a1c795be4f965e0348be0b1259a294163}{LET}}~(void$\ast$)1
+\item 
+\#define \mbox{\hyperlink{nice_8c_af26b90aaded85c22053fa174ba94ab32}{LETREC}}~(void$\ast$)2
+\item 
+\#define \mbox{\hyperlink{nice_8c_ac2bbd6d630a06a980d9a92ddb9a49928}{IN}}~(void$\ast$)3
+\item 
+\#define \mbox{\hyperlink{nice_8c_adcd6e626343371802eac2532827a0caa}{FUN}}~(void$\ast$)4
+\item 
+\#define \mbox{\hyperlink{nice_8c_ac138c68a0709c57bc5f7567abc1558eb}{IF}}~(void$\ast$)5
+\item 
+\#define \mbox{\hyperlink{nice_8c_ad9884c43f4f50a5852711a614f2343ac}{THEN}}~(void$\ast$)6
+\item 
+\#define \mbox{\hyperlink{nice_8c_a0a70ee0cbf5b1738be4c9463c529ce72}{ELSE}}~(void$\ast$)7
+\item 
+\#define \mbox{\hyperlink{nice_8c_acd1b97556dfbbac61063a63031d2f91d}{AND}}~(void$\ast$)8
+\item 
+\#define \mbox{\hyperlink{nice_8c_a3363ca4d6d3cc0230b2804280591c991}{OR}}~(void$\ast$)9
+\item 
+\#define \mbox{\hyperlink{nice_8c_ad3e9fe0ec59d2dbb3982ababa042720c}{NOT}}~(void$\ast$)10
+\item 
+\#define \mbox{\hyperlink{nice_8c_abaab8d42f075ee8ddc9b70951d3fd6cd}{EQ}}~(void$\ast$)11
+\item 
+\#define \mbox{\hyperlink{nice_8c_a5af9139e882aef6c820ae908589a40d6}{NE}}~(void$\ast$)12
+\item 
+\#define \mbox{\hyperlink{nice_8c_aaf56b99cbe34023f42ce5b7878c827d8}{LT}}~(void$\ast$)13
+\item 
+\#define \mbox{\hyperlink{nice_8c_aa4d6abc7b58eb11e517993df83b7f0f7}{LE}}~(void$\ast$)14
+\item 
+\#define \mbox{\hyperlink{nice_8c_ab89310b3f2f97e4e9415fc5a51549612}{GT}}~(void$\ast$)15
+\item 
+\#define \mbox{\hyperlink{nice_8c_a38a01c8e60e89c1d671a68259085288f}{GE}}~(void$\ast$)16
+\item 
+\#define \mbox{\hyperlink{nice_8c_a0ea7ff5947c5f5430a29fdd98391eb2a}{PLUS}}~(void$\ast$)17
+\item 
+\#define \mbox{\hyperlink{nice_8c_a5381a445a1e4bdc36460151d82eed95a}{MINUS}}~(void$\ast$)18
+\item 
+\#define \mbox{\hyperlink{nice_8c_ae50441ab9344ffbf8ce0f0851ea0ea19}{TIMES}}~(void$\ast$)19
+\item 
+\#define \mbox{\hyperlink{nice_8c_a69eb17477fd6f6af2c9ca2d5f4c7df3c}{SLASH}}~(void$\ast$)20
+\item 
+\#define \mbox{\hyperlink{nice_8c_a57e4737c5462d4503ffabf4486db1db1}{HAT}}~(void$\ast$)21
+\item 
+\#define \mbox{\hyperlink{nice_8c_a972753cf0ff779047849d6ea34764e0e}{NNIL}}~(void$\ast$)22
+\item 
+\#define \mbox{\hyperlink{nice_8c_a2b7cf2a3641be7b89138615764d60ba3}{EMPTY}}~(void$\ast$)23
+\item 
+\#define \mbox{\hyperlink{nice_8c_a492c6ccf2bde2bebcd32e73e0933ee92}{FIRST}}~(void$\ast$)24
+\item 
+\#define \mbox{\hyperlink{nice_8c_af61315e1c4a04436923a5c52196cdd3c}{REST}}~(void$\ast$)25
+\item 
+\#define \mbox{\hyperlink{nice_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}
+\item 
+\#define \mbox{\hyperlink{nice_8c_af4bced5cf8ed55746d4b5d34f9a0fe39}{ENTER}}
+\item 
+\#define \mbox{\hyperlink{nice_8c_ad111e603bbebe5d87f6bc39264ce4733}{EXIT}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void $\ast$ \mbox{\hyperlink{nice_8c_a322afe424abaf916d6567ac77f9f1ae4}{nice\+\_\+key\+\_\+find}} (char $\ast$t, unsigned n)
+\item 
+static \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{nice_8c_ae7b2cc7130bd8c0c4599b7679107a9b0}{nice\+\_\+expect}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s, char t)
+\item 
+static \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{nice_8c_a4581740ebf10404e42c7ef8880e65c01}{nice\+\_\+expect\+\_\+key}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s, char $\ast$k)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{nice_8c_aaadb08ffd1aec73e3cae9fce17afab79}{nice\+\_\+more}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s)
+\item 
+static int \mbox{\hyperlink{nice_8c_acb3bf92ff2857373c770a78676e1aee2}{nice\+\_\+next}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a66b7b4306ac632681fa49993972c0c06}{nice\+\_\+expression}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a84d7ff79452e495d5a62e67a6154b981}{nice\+\_\+list}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_ae255765785430d8ebb4659c97b6d3842}{nice\+\_\+fun}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_aca72f5e9bcae50324f0b791f454ef2d6}{nice\+\_\+aparams}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice, char $\ast$\mbox{\hyperlink{awful_8h_ada469a00526c9f84e318d5fed847189a}{awful}})
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a7f4d3aa26a5654839390f8aabc7767ee}{nice\+\_\+term}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a437706eeb3cd826b453f146497a97a2b}{nice\+\_\+power}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a809ce45401482c2873b99603631aabaa}{nice\+\_\+product}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a40810f1720ba83f377ab5f7fbac57151}{nice\+\_\+sum}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a79b8cb8c6045e2f6cb99d00b9a067f94}{nice\+\_\+relation}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_a0d2aae97ea331519e5350fd0884e3f85}{nice\+\_\+proposition}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_afab5d9e0b9497eab51cf955c7acae63e}{nice\+\_\+conditional}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice)
+\item 
+static char $\ast$ \mbox{\hyperlink{nice_8c_ab9722e8d71216953d471f9bbdc14302c}{nice\+\_\+let}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+nice, int rec)
+\item 
+int \mbox{\hyperlink{nice_8c_a16d95e815ac221865d3e3bd931e6bd42}{nice}} (char $\ast$text, FILE $\ast$file)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{nice_8c_acd1b97556dfbbac61063a63031d2f91d}\label{nice_8c_acd1b97556dfbbac61063a63031d2f91d}} 
+\index{nice.c@{nice.c}!AND@{AND}}
+\index{AND@{AND}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{AND}{AND}}
+{\footnotesize\ttfamily \#define AND~(void$\ast$)8}
+
+\mbox{\Hypertarget{nice_8c_ad740dfc826a6f447cf2c273f0fdfe74a}\label{nice_8c_ad740dfc826a6f447cf2c273f0fdfe74a}} 
+\index{nice.c@{nice.c}!DELIMITERS@{DELIMITERS}}
+\index{DELIMITERS@{DELIMITERS}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{DELIMITERS}{DELIMITERS}}
+{\footnotesize\ttfamily \#define DELIMITERS~\char`\"{}()\mbox{[}$\,$\mbox{]}\{\},\+:\char`\"{}}
+
+Delimiters of the Niceful language\+: they are token in themselves, not ATOMs. \mbox{\Hypertarget{nice_8c_a0a70ee0cbf5b1738be4c9463c529ce72}\label{nice_8c_a0a70ee0cbf5b1738be4c9463c529ce72}} 
+\index{nice.c@{nice.c}!ELSE@{ELSE}}
+\index{ELSE@{ELSE}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{ELSE}{ELSE}}
+{\footnotesize\ttfamily \#define ELSE~(void$\ast$)7}
+
+\mbox{\Hypertarget{nice_8c_a2b7cf2a3641be7b89138615764d60ba3}\label{nice_8c_a2b7cf2a3641be7b89138615764d60ba3}} 
+\index{nice.c@{nice.c}!EMPTY@{EMPTY}}
+\index{EMPTY@{EMPTY}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{EMPTY}{EMPTY}}
+{\footnotesize\ttfamily \#define EMPTY~(void$\ast$)23}
+
+\mbox{\Hypertarget{nice_8c_af4bced5cf8ed55746d4b5d34f9a0fe39}\label{nice_8c_af4bced5cf8ed55746d4b5d34f9a0fe39}} 
+\index{nice.c@{nice.c}!ENTER@{ENTER}}
+\index{ENTER@{ENTER}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{ENTER}{ENTER}}
+{\footnotesize\ttfamily \#define ENTER}
+
+\mbox{\Hypertarget{nice_8c_abaab8d42f075ee8ddc9b70951d3fd6cd}\label{nice_8c_abaab8d42f075ee8ddc9b70951d3fd6cd}} 
+\index{nice.c@{nice.c}!EQ@{EQ}}
+\index{EQ@{EQ}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{EQ}{EQ}}
+{\footnotesize\ttfamily \#define EQ~(void$\ast$)11}
+
+\mbox{\Hypertarget{nice_8c_ad111e603bbebe5d87f6bc39264ce4733}\label{nice_8c_ad111e603bbebe5d87f6bc39264ce4733}} 
+\index{nice.c@{nice.c}!EXIT@{EXIT}}
+\index{EXIT@{EXIT}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{EXIT}{EXIT}}
+{\footnotesize\ttfamily \#define EXIT}
+
+\mbox{\Hypertarget{nice_8c_a492c6ccf2bde2bebcd32e73e0933ee92}\label{nice_8c_a492c6ccf2bde2bebcd32e73e0933ee92}} 
+\index{nice.c@{nice.c}!FIRST@{FIRST}}
+\index{FIRST@{FIRST}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{FIRST}{FIRST}}
+{\footnotesize\ttfamily \#define FIRST~(void$\ast$)24}
+
+\mbox{\Hypertarget{nice_8c_adcd6e626343371802eac2532827a0caa}\label{nice_8c_adcd6e626343371802eac2532827a0caa}} 
+\index{nice.c@{nice.c}!FUN@{FUN}}
+\index{FUN@{FUN}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{FUN}{FUN}}
+{\footnotesize\ttfamily \#define FUN~(void$\ast$)4}
+
+\mbox{\Hypertarget{nice_8c_a38a01c8e60e89c1d671a68259085288f}\label{nice_8c_a38a01c8e60e89c1d671a68259085288f}} 
+\index{nice.c@{nice.c}!GE@{GE}}
+\index{GE@{GE}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{GE}{GE}}
+{\footnotesize\ttfamily \#define GE~(void$\ast$)16}
+
+\mbox{\Hypertarget{nice_8c_ab89310b3f2f97e4e9415fc5a51549612}\label{nice_8c_ab89310b3f2f97e4e9415fc5a51549612}} 
+\index{nice.c@{nice.c}!GT@{GT}}
+\index{GT@{GT}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{GT}{GT}}
+{\footnotesize\ttfamily \#define GT~(void$\ast$)15}
+
+\mbox{\Hypertarget{nice_8c_a57e4737c5462d4503ffabf4486db1db1}\label{nice_8c_a57e4737c5462d4503ffabf4486db1db1}} 
+\index{nice.c@{nice.c}!HAT@{HAT}}
+\index{HAT@{HAT}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{HAT}{HAT}}
+{\footnotesize\ttfamily \#define HAT~(void$\ast$)21}
+
+\mbox{\Hypertarget{nice_8c_ac138c68a0709c57bc5f7567abc1558eb}\label{nice_8c_ac138c68a0709c57bc5f7567abc1558eb}} 
+\index{nice.c@{nice.c}!IF@{IF}}
+\index{IF@{IF}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{IF}{IF}}
+{\footnotesize\ttfamily \#define IF~(void$\ast$)5}
+
+\mbox{\Hypertarget{nice_8c_ac2bbd6d630a06a980d9a92ddb9a49928}\label{nice_8c_ac2bbd6d630a06a980d9a92ddb9a49928}} 
+\index{nice.c@{nice.c}!IN@{IN}}
+\index{IN@{IN}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{IN}{IN}}
+{\footnotesize\ttfamily \#define IN~(void$\ast$)3}
+
+\mbox{\Hypertarget{nice_8c_aa4d6abc7b58eb11e517993df83b7f0f7}\label{nice_8c_aa4d6abc7b58eb11e517993df83b7f0f7}} 
+\index{nice.c@{nice.c}!LE@{LE}}
+\index{LE@{LE}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{LE}{LE}}
+{\footnotesize\ttfamily \#define LE~(void$\ast$)14}
+
+\mbox{\Hypertarget{nice_8c_a1c795be4f965e0348be0b1259a294163}\label{nice_8c_a1c795be4f965e0348be0b1259a294163}} 
+\index{nice.c@{nice.c}!LET@{LET}}
+\index{LET@{LET}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{LET}{LET}}
+{\footnotesize\ttfamily \#define LET~(void$\ast$)1}
+
+Constants used to denote Niceful keywords\+: since \mbox{\hyperlink{scan_8h_a69972104c1790e0e3fd681fbc57316e3}{scan()}} assumes a keyword is represented by a void$\ast$ we cast these enumerated values to void$\ast$. Since NULL is (void$\ast$)0 we start enumerating from 1. \mbox{\Hypertarget{nice_8c_af26b90aaded85c22053fa174ba94ab32}\label{nice_8c_af26b90aaded85c22053fa174ba94ab32}} 
+\index{nice.c@{nice.c}!LETREC@{LETREC}}
+\index{LETREC@{LETREC}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{LETREC}{LETREC}}
+{\footnotesize\ttfamily \#define LETREC~(void$\ast$)2}
+
+\mbox{\Hypertarget{nice_8c_aaf56b99cbe34023f42ce5b7878c827d8}\label{nice_8c_aaf56b99cbe34023f42ce5b7878c827d8}} 
+\index{nice.c@{nice.c}!LT@{LT}}
+\index{LT@{LT}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{LT}{LT}}
+{\footnotesize\ttfamily \#define LT~(void$\ast$)13}
+
+\mbox{\Hypertarget{nice_8c_a5381a445a1e4bdc36460151d82eed95a}\label{nice_8c_a5381a445a1e4bdc36460151d82eed95a}} 
+\index{nice.c@{nice.c}!MINUS@{MINUS}}
+\index{MINUS@{MINUS}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{MINUS}{MINUS}}
+{\footnotesize\ttfamily \#define MINUS~(void$\ast$)18}
+
+\mbox{\Hypertarget{nice_8c_a5af9139e882aef6c820ae908589a40d6}\label{nice_8c_a5af9139e882aef6c820ae908589a40d6}} 
+\index{nice.c@{nice.c}!NE@{NE}}
+\index{NE@{NE}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{NE}{NE}}
+{\footnotesize\ttfamily \#define NE~(void$\ast$)12}
+
+\mbox{\Hypertarget{nice_8c_a972753cf0ff779047849d6ea34764e0e}\label{nice_8c_a972753cf0ff779047849d6ea34764e0e}} 
+\index{nice.c@{nice.c}!NNIL@{NNIL}}
+\index{NNIL@{NNIL}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{NNIL}{NNIL}}
+{\footnotesize\ttfamily \#define NNIL~(void$\ast$)22}
+
+\mbox{\Hypertarget{nice_8c_ad3e9fe0ec59d2dbb3982ababa042720c}\label{nice_8c_ad3e9fe0ec59d2dbb3982ababa042720c}} 
+\index{nice.c@{nice.c}!NOT@{NOT}}
+\index{NOT@{NOT}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{NOT}{NOT}}
+{\footnotesize\ttfamily \#define NOT~(void$\ast$)10}
+
+\mbox{\Hypertarget{nice_8c_a3363ca4d6d3cc0230b2804280591c991}\label{nice_8c_a3363ca4d6d3cc0230b2804280591c991}} 
+\index{nice.c@{nice.c}!OR@{OR}}
+\index{OR@{OR}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{OR}{OR}}
+{\footnotesize\ttfamily \#define OR~(void$\ast$)9}
+
+\mbox{\Hypertarget{nice_8c_a0ea7ff5947c5f5430a29fdd98391eb2a}\label{nice_8c_a0ea7ff5947c5f5430a29fdd98391eb2a}} 
+\index{nice.c@{nice.c}!PLUS@{PLUS}}
+\index{PLUS@{PLUS}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{PLUS}{PLUS}}
+{\footnotesize\ttfamily \#define PLUS~(void$\ast$)17}
+
+\mbox{\Hypertarget{nice_8c_ab702106cf3b3e96750b6845ded4e0299}\label{nice_8c_ab702106cf3b3e96750b6845ded4e0299}} 
+\index{nice.c@{nice.c}!RESET@{RESET}}
+\index{RESET@{RESET}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{RESET}{RESET}}
+{\footnotesize\ttfamily \#define RESET}
+
+\mbox{\Hypertarget{nice_8c_af61315e1c4a04436923a5c52196cdd3c}\label{nice_8c_af61315e1c4a04436923a5c52196cdd3c}} 
+\index{nice.c@{nice.c}!REST@{REST}}
+\index{REST@{REST}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{REST}{REST}}
+{\footnotesize\ttfamily \#define REST~(void$\ast$)25}
+
+\mbox{\Hypertarget{nice_8c_a69eb17477fd6f6af2c9ca2d5f4c7df3c}\label{nice_8c_a69eb17477fd6f6af2c9ca2d5f4c7df3c}} 
+\index{nice.c@{nice.c}!SLASH@{SLASH}}
+\index{SLASH@{SLASH}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{SLASH}{SLASH}}
+{\footnotesize\ttfamily \#define SLASH~(void$\ast$)20}
+
+\mbox{\Hypertarget{nice_8c_ad9884c43f4f50a5852711a614f2343ac}\label{nice_8c_ad9884c43f4f50a5852711a614f2343ac}} 
+\index{nice.c@{nice.c}!THEN@{THEN}}
+\index{THEN@{THEN}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{THEN}{THEN}}
+{\footnotesize\ttfamily \#define THEN~(void$\ast$)6}
+
+\mbox{\Hypertarget{nice_8c_ae50441ab9344ffbf8ce0f0851ea0ea19}\label{nice_8c_ae50441ab9344ffbf8ce0f0851ea0ea19}} 
+\index{nice.c@{nice.c}!TIMES@{TIMES}}
+\index{TIMES@{TIMES}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{TIMES}{TIMES}}
+{\footnotesize\ttfamily \#define TIMES~(void$\ast$)19}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{nice_8c_a16d95e815ac221865d3e3bd931e6bd42}\label{nice_8c_a16d95e815ac221865d3e3bd931e6bd42}} 
+\index{nice.c@{nice.c}!nice@{nice}}
+\index{nice@{nice}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice()}{nice()}}
+{\footnotesize\ttfamily int nice (\begin{DoxyParamCaption}\item[{char $\ast$}]{text,  }\item[{FILE $\ast$}]{file }\end{DoxyParamCaption})}
+
+Interpret the string $\ast$text as a Niceful expression and print the resulting value on the file. If an error occurs, a non zero error code is returned. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a16d95e815ac221865d3e3bd931e6bd42_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=294pt]{nice_8c_a16d95e815ac221865d3e3bd931e6bd42_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_aca72f5e9bcae50324f0b791f454ef2d6}\label{nice_8c_aca72f5e9bcae50324f0b791f454ef2d6}} 
+\index{nice.c@{nice.c}!nice\_aparams@{nice\_aparams}}
+\index{nice\_aparams@{nice\_aparams}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_aparams()}{nice\_aparams()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+aparams (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice,  }\item[{char $\ast$}]{awful }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse an actual parameter list from $\ast$r\+\_\+nice into a string which is returned appended to the left parameter, that should contain the possible function just parsed; the value pointed by r\+\_\+nice is updated. It is assumed that the opening \textquotesingle{}(\textquotesingle{} has already been parsed. The closing \textquotesingle{})\textquotesingle{} is parsed before returning. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_aca72f5e9bcae50324f0b791f454ef2d6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_aca72f5e9bcae50324f0b791f454ef2d6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_afab5d9e0b9497eab51cf955c7acae63e}\label{nice_8c_afab5d9e0b9497eab51cf955c7acae63e}} 
+\index{nice.c@{nice.c}!nice\_conditional@{nice\_conditional}}
+\index{nice\_conditional@{nice\_conditional}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_conditional()}{nice\_conditional()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+conditional (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful conditional from $\ast$r\+\_\+nice and returns a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_afab5d9e0b9497eab51cf955c7acae63e_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_afab5d9e0b9497eab51cf955c7acae63e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_ae7b2cc7130bd8c0c4599b7679107a9b0}\label{nice_8c_ae7b2cc7130bd8c0c4599b7679107a9b0}} 
+\index{nice.c@{nice.c}!nice\_expect@{nice\_expect}}
+\index{nice\_expect@{nice\_expect}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_expect()}{nice\_expect()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} nice\+\_\+expect (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s,  }\item[{char}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Raise an error if s is empty, else pop its top and check that its type matches t if t is a delimiter, else that its type is ATOM and its value the string with the single character t. The stack with the top dropped is returned. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=263pt]{nice_8c_ae7b2cc7130bd8c0c4599b7679107a9b0_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_ae7b2cc7130bd8c0c4599b7679107a9b0_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a4581740ebf10404e42c7ef8880e65c01}\label{nice_8c_a4581740ebf10404e42c7ef8880e65c01}} 
+\index{nice.c@{nice.c}!nice\_expect\_key@{nice\_expect\_key}}
+\index{nice\_expect\_key@{nice\_expect\_key}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_expect\_key()}{nice\_expect\_key()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} nice\+\_\+expect\+\_\+key (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s,  }\item[{char $\ast$}]{k }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Raise an error if s is empty, else parse its top and check that it is keyword k. The stack with the top dropped is returned. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=302pt]{nice_8c_a4581740ebf10404e42c7ef8880e65c01_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a4581740ebf10404e42c7ef8880e65c01_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a66b7b4306ac632681fa49993972c0c06}\label{nice_8c_a66b7b4306ac632681fa49993972c0c06}} 
+\index{nice.c@{nice.c}!nice\_expression@{nice\_expression}}
+\index{nice\_expression@{nice\_expression}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_expression()}{nice\_expression()}}
+{\footnotesize\ttfamily static char $\ast$ nice\+\_\+expression (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful expression from $\ast$r\+\_\+nice and return a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a66b7b4306ac632681fa49993972c0c06_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a66b7b4306ac632681fa49993972c0c06_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_ae255765785430d8ebb4659c97b6d3842}\label{nice_8c_ae255765785430d8ebb4659c97b6d3842}} 
+\index{nice.c@{nice.c}!nice\_fun@{nice\_fun}}
+\index{nice\_fun@{nice\_fun}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_fun()}{nice\_fun()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+fun (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a function from $\ast$r\+\_\+nice into a string which is returned; the value pointer by r\+\_\+nice is updated. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_ae255765785430d8ebb4659c97b6d3842_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_ae255765785430d8ebb4659c97b6d3842_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a322afe424abaf916d6567ac77f9f1ae4}\label{nice_8c_a322afe424abaf916d6567ac77f9f1ae4}} 
+\index{nice.c@{nice.c}!nice\_key\_find@{nice\_key\_find}}
+\index{nice\_key\_find@{nice\_key\_find}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_key\_find()}{nice\_key\_find()}}
+{\footnotesize\ttfamily static void$\ast$ nice\+\_\+key\+\_\+find (\begin{DoxyParamCaption}\item[{char $\ast$}]{t,  }\item[{unsigned}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+This function is needed by \mbox{\hyperlink{scan_8h_a69972104c1790e0e3fd681fbc57316e3}{scan()}} to retrieve a unique code associated to each keyword of the language. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a322afe424abaf916d6567ac77f9f1ae4_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_ab9722e8d71216953d471f9bbdc14302c}\label{nice_8c_ab9722e8d71216953d471f9bbdc14302c}} 
+\index{nice.c@{nice.c}!nice\_let@{nice\_let}}
+\index{nice\_let@{nice\_let}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_let()}{nice\_let()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+let (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice,  }\item[{int}]{rec }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Transform \char`\"{}let x1 = v1, ..., xn = vn in e\char`\"{} into (\{x1 ... xn\+:e\} v1, ..., vn) and \char`\"{}letrec x1=v1, ..., xn = vn\char`\"{} into (\{!x1 ... !xn\+:e\} v1, ..., vn) Assume that the \char`\"{}let\char`\"{} or \char`\"{}letrec\char`\"{} keyword has NOT been parsed, (rec == 1 in case of \char`\"{}letrec\char`\"{}). Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_ab9722e8d71216953d471f9bbdc14302c_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_ab9722e8d71216953d471f9bbdc14302c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a84d7ff79452e495d5a62e67a6154b981}\label{nice_8c_a84d7ff79452e495d5a62e67a6154b981}} 
+\index{nice.c@{nice.c}!nice\_list@{nice\_list}}
+\index{nice\_list@{nice\_list}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_list()}{nice\_list()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a list from $\ast$r\+\_\+nice into a string which is returned; the value pointer by r\+\_\+nice is updated. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a84d7ff79452e495d5a62e67a6154b981_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a84d7ff79452e495d5a62e67a6154b981_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_aaadb08ffd1aec73e3cae9fce17afab79}\label{nice_8c_aaadb08ffd1aec73e3cae9fce17afab79}} 
+\index{nice.c@{nice.c}!nice\_more@{nice\_more}}
+\index{nice\_more@{nice\_more}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_more()}{nice\_more()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} nice\+\_\+more (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Raise an error if s is empty, else returns the value on the top item without popping it. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=253pt]{nice_8c_aaadb08ffd1aec73e3cae9fce17afab79_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_aaadb08ffd1aec73e3cae9fce17afab79_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_acb3bf92ff2857373c770a78676e1aee2}\label{nice_8c_acb3bf92ff2857373c770a78676e1aee2}} 
+\index{nice.c@{nice.c}!nice\_next@{nice\_next}}
+\index{nice\_next@{nice\_next}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_next()}{nice\_next()}}
+{\footnotesize\ttfamily static int nice\+\_\+next (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+If s is NULL return NONE else the type of the item on top of the stack. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_acb3bf92ff2857373c770a78676e1aee2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a437706eeb3cd826b453f146497a97a2b}\label{nice_8c_a437706eeb3cd826b453f146497a97a2b}} 
+\index{nice.c@{nice.c}!nice\_power@{nice\_power}}
+\index{nice\_power@{nice\_power}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_power()}{nice\_power()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+power (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful power from $\ast$r\+\_\+nice and return a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a437706eeb3cd826b453f146497a97a2b_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a437706eeb3cd826b453f146497a97a2b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a809ce45401482c2873b99603631aabaa}\label{nice_8c_a809ce45401482c2873b99603631aabaa}} 
+\index{nice.c@{nice.c}!nice\_product@{nice\_product}}
+\index{nice\_product@{nice\_product}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_product()}{nice\_product()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+product (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful product from $\ast$r\+\_\+nice and return a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a809ce45401482c2873b99603631aabaa_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a809ce45401482c2873b99603631aabaa_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a0d2aae97ea331519e5350fd0884e3f85}\label{nice_8c_a0d2aae97ea331519e5350fd0884e3f85}} 
+\index{nice.c@{nice.c}!nice\_proposition@{nice\_proposition}}
+\index{nice\_proposition@{nice\_proposition}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_proposition()}{nice\_proposition()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+proposition (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful proposition from $\ast$r\+\_\+nice and return a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a0d2aae97ea331519e5350fd0884e3f85_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a0d2aae97ea331519e5350fd0884e3f85_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a79b8cb8c6045e2f6cb99d00b9a067f94}\label{nice_8c_a79b8cb8c6045e2f6cb99d00b9a067f94}} 
+\index{nice.c@{nice.c}!nice\_relation@{nice\_relation}}
+\index{nice\_relation@{nice\_relation}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_relation()}{nice\_relation()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+relation (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful relation from $\ast$r\+\_\+nice and return a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a79b8cb8c6045e2f6cb99d00b9a067f94_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a79b8cb8c6045e2f6cb99d00b9a067f94_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a40810f1720ba83f377ab5f7fbac57151}\label{nice_8c_a40810f1720ba83f377ab5f7fbac57151}} 
+\index{nice.c@{nice.c}!nice\_sum@{nice\_sum}}
+\index{nice\_sum@{nice\_sum}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_sum()}{nice\_sum()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+sum (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a Niceful sum from $\ast$r\+\_\+nice and return a string containing the corresponding awful expression. Parsed token stack elements are deleted. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a40810f1720ba83f377ab5f7fbac57151_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a40810f1720ba83f377ab5f7fbac57151_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{nice_8c_a7f4d3aa26a5654839390f8aabc7767ee}\label{nice_8c_a7f4d3aa26a5654839390f8aabc7767ee}} 
+\index{nice.c@{nice.c}!nice\_term@{nice\_term}}
+\index{nice\_term@{nice\_term}!nice.c@{nice.c}}
+\doxysubsubsection{\texorpdfstring{nice\_term()}{nice\_term()}}
+{\footnotesize\ttfamily static char$\ast$ nice\+\_\+term (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+nice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a term from $\ast$r\+\_\+nice into a string which is returned; the value pointer by r\+\_\+nice is updated. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a7f4d3aa26a5654839390f8aabc7767ee_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nice_8c_a7f4d3aa26a5654839390f8aabc7767ee_icgraph}
+\end{center}
+\end{figure}

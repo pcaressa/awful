@@ -1,0 +1,236 @@
+\hypertarget{stack_8h}{}\doxysection{c/header/stack.h File Reference}
+\label{stack_8h}\index{c/header/stack.h@{c/header/stack.h}}
+{\ttfamily \#include \char`\"{}val.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+Include dependency graph for stack.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=181pt]{stack_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structstack__s}{stack\+\_\+s}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{stack_8h_afaee1dfd8a08c60dd1ab7da5f34b642f}{stack\+\_\+empty}}(s)~((s) == NULL)
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structstack__s}{stack\+\_\+s}} $\ast$ \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{stack_8h_a15d04c180f15032e8e83b54ae4ab1c41}{stack\+\_\+next}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s)
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{stack_8h_a141b39db697c1cf2172054fba1420625}{stack\+\_\+dup}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s1, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s2)
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{stack_8h_a6d57536ff33b5cf985bfea0e85e6ced2}{stack\+\_\+new}} (void)
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{stack_8h_a9f1f2d245a1130d4b0068660be6f9fab}{stack\+\_\+push}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s, \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} v)
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{stack_8h_a3fcf0119ddd166068ad8cc3b5d8504fd}{stack\+\_\+push\+\_\+s}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s1)
+\item 
+void \mbox{\hyperlink{stack_8h_a40264fa48696006f6219eb5731d5aa98}{stack\+\_\+reset}} (void)
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{stack_8h_ad4f71374a4f4add62005e1a762eead7d}{stack\+\_\+reverse}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s)
+\item 
+void \mbox{\hyperlink{stack_8h_a33755ae5cfb5b71d6999ffc28dda1d4c}{stack\+\_\+status}} (FILE $\ast$dump)
+\item 
+void \mbox{\hyperlink{stack_8h_a46ba14aca04f41b297148756fee4ab77}{stack\+\_\+fprint}} (FILE $\ast$f, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} s)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{stack_8h_afaee1dfd8a08c60dd1ab7da5f34b642f}\label{stack_8h_afaee1dfd8a08c60dd1ab7da5f34b642f}} 
+\index{stack.h@{stack.h}!stack\_empty@{stack\_empty}}
+\index{stack\_empty@{stack\_empty}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_empty}{stack\_empty}}
+{\footnotesize\ttfamily \#define stack\+\_\+empty(\begin{DoxyParamCaption}\item[{}]{s }\end{DoxyParamCaption})~((s) == NULL)}
+
+Returns 1 if stack s is empty, else 0. 
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}\label{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}} 
+\index{stack.h@{stack.h}!stack\_t@{stack\_t}}
+\index{stack\_t@{stack\_t}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_t}{stack\_t}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structstack__s}{stack\+\_\+s}} $\ast$ \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}
+
+Stack item. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{stack_8h_a141b39db697c1cf2172054fba1420625}\label{stack_8h_a141b39db697c1cf2172054fba1420625}} 
+\index{stack.h@{stack.h}!stack\_dup@{stack\_dup}}
+\index{stack\_dup@{stack\_dup}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_dup()}{stack\_dup()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} stack\+\_\+dup (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s1,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s2 }\end{DoxyParamCaption})}
+
+Duplicate the top of stack s1 and pushes the result on s2, which is returned as value Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a141b39db697c1cf2172054fba1420625_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a141b39db697c1cf2172054fba1420625_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a46ba14aca04f41b297148756fee4ab77}\label{stack_8h_a46ba14aca04f41b297148756fee4ab77}} 
+\index{stack.h@{stack.h}!stack\_fprint@{stack\_fprint}}
+\index{stack\_fprint@{stack\_fprint}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_fprint()}{stack\_fprint()}}
+{\footnotesize\ttfamily void stack\+\_\+fprint (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{f,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s }\end{DoxyParamCaption})}
+
+Prints the contents of a stack on a file. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a46ba14aca04f41b297148756fee4ab77_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a6d57536ff33b5cf985bfea0e85e6ced2}\label{stack_8h_a6d57536ff33b5cf985bfea0e85e6ced2}} 
+\index{stack.h@{stack.h}!stack\_new@{stack\_new}}
+\index{stack\_new@{stack\_new}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_new()}{stack\_new()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} stack\+\_\+new (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Creates a new stack with a single item not initialized. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=253pt]{stack_8h_a6d57536ff33b5cf985bfea0e85e6ced2_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a6d57536ff33b5cf985bfea0e85e6ced2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a15d04c180f15032e8e83b54ae4ab1c41}\label{stack_8h_a15d04c180f15032e8e83b54ae4ab1c41}} 
+\index{stack.h@{stack.h}!stack\_next@{stack\_next}}
+\index{stack\_next@{stack\_next}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_next()}{stack\_next()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} stack\+\_\+next (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s }\end{DoxyParamCaption})}
+
+Returns a pointer to the stack resulting from s by dropping its topmost element. If s is NULL no error is raised but NULL is returned. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a15d04c180f15032e8e83b54ae4ab1c41_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a9f1f2d245a1130d4b0068660be6f9fab}\label{stack_8h_a9f1f2d245a1130d4b0068660be6f9fab}} 
+\index{stack.h@{stack.h}!stack\_push@{stack\_push}}
+\index{stack\_push@{stack\_push}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_push()}{stack\_push()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} stack\+\_\+push (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s,  }\item[{\mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}}}]{v }\end{DoxyParamCaption})}
+
+Push a value v on the stack s. Return the updated value of s. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a9f1f2d245a1130d4b0068660be6f9fab_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a9f1f2d245a1130d4b0068660be6f9fab_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a3fcf0119ddd166068ad8cc3b5d8504fd}\label{stack_8h_a3fcf0119ddd166068ad8cc3b5d8504fd}} 
+\index{stack.h@{stack.h}!stack\_push\_s@{stack\_push\_s}}
+\index{stack\_push\_s@{stack\_push\_s}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_push\_s()}{stack\_push\_s()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} stack\+\_\+push\+\_\+s (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s1 }\end{DoxyParamCaption})}
+
+Push a value v = \{STACK, s1\} on the stack s. Return the updated value of s. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a3fcf0119ddd166068ad8cc3b5d8504fd_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a3fcf0119ddd166068ad8cc3b5d8504fd_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a40264fa48696006f6219eb5731d5aa98}\label{stack_8h_a40264fa48696006f6219eb5731d5aa98}} 
+\index{stack.h@{stack.h}!stack\_reset@{stack\_reset}}
+\index{stack\_reset@{stack\_reset}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_reset()}{stack\_reset()}}
+{\footnotesize\ttfamily void stack\+\_\+reset (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Delete all stack items allocated so far. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=252pt]{stack_8h_a40264fa48696006f6219eb5731d5aa98_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_a40264fa48696006f6219eb5731d5aa98_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_ad4f71374a4f4add62005e1a762eead7d}\label{stack_8h_ad4f71374a4f4add62005e1a762eead7d}} 
+\index{stack.h@{stack.h}!stack\_reverse@{stack\_reverse}}
+\index{stack\_reverse@{stack\_reverse}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_reverse()}{stack\_reverse()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} stack\+\_\+reverse (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{s }\end{DoxyParamCaption})}
+
+Reverse the order of elements in a stack s\+: the new stack pointer is returned. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{stack_8h_ad4f71374a4f4add62005e1a762eead7d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{stack_8h_a33755ae5cfb5b71d6999ffc28dda1d4c}\label{stack_8h_a33755ae5cfb5b71d6999ffc28dda1d4c}} 
+\index{stack.h@{stack.h}!stack\_status@{stack\_status}}
+\index{stack\_status@{stack\_status}!stack.h@{stack.h}}
+\doxysubsubsection{\texorpdfstring{stack\_status()}{stack\_status()}}
+{\footnotesize\ttfamily void stack\+\_\+status (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{dump }\end{DoxyParamCaption})}
+
+Logs on a file the current stack status. 

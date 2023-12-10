@@ -1,0 +1,209 @@
+\hypertarget{awful_8c}{}\doxysection{c/src/awful.c File Reference}
+\label{awful_8c}\index{c/src/awful.c@{c/src/awful.c}}
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/awful.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/awful\+\_\+key.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/except.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/repl.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/scan.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/stack.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/str.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/val.\+h\char`\"{}}\newline
+Include dependency graph for awful.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{awful_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}
+\item 
+\#define \mbox{\hyperlink{awful_8c_af4bced5cf8ed55746d4b5d34f9a0fe39}{ENTER}}
+\item 
+\#define \mbox{\hyperlink{awful_8c_ad111e603bbebe5d87f6bc39264ce4733}{EXIT}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful_8c_af3af0cb20dd07f2b65231da3909dd6bb}{awful\+\_\+find}} (char $\ast$t, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} e)
+\item 
+static \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{awful_8c_a0ea66d81a2d9648c1f354c4ec73d7704}{awful\+\_\+parse}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+tokens)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful_8c_a1e47afac65347d39b773f33426e93b48}{awful\+\_\+application}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful_8c_a21c70e05612c2d5ecd8246d26d59688c}{awful\+\_\+closure}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+\mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful_8c_aaed2ba3c080e41c4db822886253cfa69}{awful\+\_\+eval}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$r\+\_\+tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+int \mbox{\hyperlink{awful_8c_ada469a00526c9f84e318d5fed847189a}{awful}} (char $\ast$text, FILE $\ast$file)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static int \mbox{\hyperlink{awful_8c_a81eb46670a4a6e4b128f5c822671b859}{awful\+\_\+eval\+\_\+count}} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{awful_8c_af4bced5cf8ed55746d4b5d34f9a0fe39}\label{awful_8c_af4bced5cf8ed55746d4b5d34f9a0fe39}} 
+\index{awful.c@{awful.c}!ENTER@{ENTER}}
+\index{ENTER@{ENTER}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{ENTER}{ENTER}}
+{\footnotesize\ttfamily \#define ENTER}
+
+\mbox{\Hypertarget{awful_8c_ad111e603bbebe5d87f6bc39264ce4733}\label{awful_8c_ad111e603bbebe5d87f6bc39264ce4733}} 
+\index{awful.c@{awful.c}!EXIT@{EXIT}}
+\index{EXIT@{EXIT}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{EXIT}{EXIT}}
+{\footnotesize\ttfamily \#define EXIT}
+
+\mbox{\Hypertarget{awful_8c_ab702106cf3b3e96750b6845ded4e0299}\label{awful_8c_ab702106cf3b3e96750b6845ded4e0299}} 
+\index{awful.c@{awful.c}!RESET@{RESET}}
+\index{RESET@{RESET}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{RESET}{RESET}}
+{\footnotesize\ttfamily \#define RESET}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{awful_8c_ada469a00526c9f84e318d5fed847189a}\label{awful_8c_ada469a00526c9f84e318d5fed847189a}} 
+\index{awful.c@{awful.c}!awful@{awful}}
+\index{awful@{awful}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful()}{awful()}}
+{\footnotesize\ttfamily int awful (\begin{DoxyParamCaption}\item[{char $\ast$}]{text,  }\item[{FILE $\ast$}]{file }\end{DoxyParamCaption})}
+
+Interpret the string $\ast$text as an Awful expression and print the resulting value on the file. If an error occurs, a non zero error code is returned. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_ada469a00526c9f84e318d5fed847189a_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_ada469a00526c9f84e318d5fed847189a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful_8c_a1e47afac65347d39b773f33426e93b48}\label{awful_8c_a1e47afac65347d39b773f33426e93b48}} 
+\index{awful.c@{awful.c}!awful\_application@{awful\_application}}
+\index{awful\_application@{awful\_application}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful\_application()}{awful\_application()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} awful\+\_\+application (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse the application of a closure to a list of actual parameters and return its value\+: $\ast$r\+\_\+tokens is the \char`\"{}control stack\char`\"{} containing the next symbol to parse, a variable or \char`\"{}\+:\char`\"{}, while env contains the current environment. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_a1e47afac65347d39b773f33426e93b48_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_a1e47afac65347d39b773f33426e93b48_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful_8c_a21c70e05612c2d5ecd8246d26d59688c}\label{awful_8c_a21c70e05612c2d5ecd8246d26d59688c}} 
+\index{awful.c@{awful.c}!awful\_closure@{awful\_closure}}
+\index{awful\_closure@{awful\_closure}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful\_closure()}{awful\_closure()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} awful\+\_\+closure (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parse a closure and return it\+: $\ast$r\+\_\+tokens is the \char`\"{}control stack\char`\"{} containing the next symbol to parse, a variable or \char`\"{}\+:\char`\"{}, while env contains the current environment. A closure is a stack of the form \mbox{[}\mbox{[}x1,...,xn\mbox{]},\mbox{[}body\mbox{]},\mbox{[}fenv\mbox{]}\mbox{]}, so the returned value is this stack (or NONE in case of error). Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_a21c70e05612c2d5ecd8246d26d59688c_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_a21c70e05612c2d5ecd8246d26d59688c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful_8c_aaed2ba3c080e41c4db822886253cfa69}\label{awful_8c_aaed2ba3c080e41c4db822886253cfa69}} 
+\index{awful.c@{awful.c}!awful\_eval@{awful\_eval}}
+\index{awful\_eval@{awful\_eval}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful\_eval()}{awful\_eval()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} awful\+\_\+eval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})}
+
+Interpret a token list, thus a stack whose elements are items representing an Awful text, w.\+r.\+t. an environment, both passed by reference, and return the value with the result of the evaluation. On error, the returned value is NONE. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_aaed2ba3c080e41c4db822886253cfa69_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_aaed2ba3c080e41c4db822886253cfa69_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful_8c_af3af0cb20dd07f2b65231da3909dd6bb}\label{awful_8c_af3af0cb20dd07f2b65231da3909dd6bb}} 
+\index{awful.c@{awful.c}!awful\_find@{awful\_find}}
+\index{awful\_find@{awful\_find}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful\_find()}{awful\_find()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} awful\+\_\+find (\begin{DoxyParamCaption}\item[{char $\ast$}]{t,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Look for an atom inside a stack of environments\+: if found, then return a clone of the value of the variable. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_af3af0cb20dd07f2b65231da3909dd6bb_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful_8c_a0ea66d81a2d9648c1f354c4ec73d7704}\label{awful_8c_a0ea66d81a2d9648c1f354c4ec73d7704}} 
+\index{awful.c@{awful.c}!awful\_parse@{awful\_parse}}
+\index{awful\_parse@{awful\_parse}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful\_parse()}{awful\_parse()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} awful\+\_\+parse (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{r\+\_\+tokens }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Parses a sequence of tokens from r\+\_\+tokens until the next \char`\"{},\char`\"{} or \char`\"{})\char`\"{} is found\+: the ending \textquotesingle{})\textquotesingle{} or \textquotesingle{},\textquotesingle{} is parsed too but not included in the returned parsed text. Inside the sequence braces and parentheses can be nested. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_a0ea66d81a2d9648c1f354c4ec73d7704_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful_8c_a0ea66d81a2d9648c1f354c4ec73d7704_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{awful_8c_a81eb46670a4a6e4b128f5c822671b859}\label{awful_8c_a81eb46670a4a6e4b128f5c822671b859}} 
+\index{awful.c@{awful.c}!awful\_eval\_count@{awful\_eval\_count}}
+\index{awful\_eval\_count@{awful\_eval\_count}!awful.c@{awful.c}}
+\doxysubsubsection{\texorpdfstring{awful\_eval\_count}{awful\_eval\_count}}
+{\footnotesize\ttfamily int awful\+\_\+eval\+\_\+count = 0\hspace{0.3cm}{\ttfamily [static]}}
+

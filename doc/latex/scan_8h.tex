@@ -1,0 +1,67 @@
+\hypertarget{scan_8h}{}\doxysection{c/header/scan.h File Reference}
+\label{scan_8h}\index{c/header/scan.h@{c/header/scan.h}}
+{\ttfamily \#include \char`\"{}stack.\+h\char`\"{}}\newline
+Include dependency graph for scan.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=178pt]{scan_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{scan_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} \mbox{\hyperlink{scan_8h_a69972104c1790e0e3fd681fbc57316e3}{scan}} (char $\ast$text, char $\ast$delims, void $\ast$key\+\_\+find(char $\ast$, unsigned))
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{scan_8h_a69972104c1790e0e3fd681fbc57316e3}\label{scan_8h_a69972104c1790e0e3fd681fbc57316e3}} 
+\index{scan.h@{scan.h}!scan@{scan}}
+\index{scan@{scan}!scan.h@{scan.h}}
+\doxysubsubsection{\texorpdfstring{scan()}{scan()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} scan (\begin{DoxyParamCaption}\item[{char $\ast$}]{text,  }\item[{char $\ast$}]{delims,  }\item[{void $\ast$}]{key\+\_\+findchar $\ast$, unsigned }\end{DoxyParamCaption})}
+
+Scan a list of tokens from text, using any character in delimiters as delimiter; the key\+\_\+find function should return the pointer to the subroutine corresponding to a keyword if the text matches with the keyword name, else NULL. It is void$\ast$ but when needed it is casted to a function pointer of the form val\+\_\+t ($\ast$)(stack\+\_\+t$\ast$, stack\+\_\+t).
+
+Scan returns a tokens list, thus a stack containing the list of tokens where the top of the stack contains the first token, etc. If some error occurred, NULL is returned and in case of end of text inside a string, a message is printed on the stderr.
+
+Each item is an Awful value as follows\+:
+
+
+\begin{DoxyItemize}
+\item \{type\+:NONE\}
+\item \{type\+:NUMBER, val\+:n\}
+\item \{type\+:STRING, val\+:t\}
+\item \{type\+:ATOM, val\+:t\}
+\item \{type\+:STACK, val\+:s\}
+\item \{type\+:CLOSURE, val\+:s\}
+\item \{type\+:KEYWORD, val\+:p\}
+\item \{type\+:d\} if d is a delimiter (val is ignored)
+\end{DoxyItemize}
+
+\mbox{\hyperlink{scan_8c}{scan.\+c}} Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{scan_8h_a69972104c1790e0e3fd681fbc57316e3_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{scan_8h_a69972104c1790e0e3fd681fbc57316e3_icgraph}
+\end{center}
+\end{figure}

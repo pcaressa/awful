@@ -1,0 +1,52 @@
+\hypertarget{except_8c}{}\doxysection{c/src/except.c File Reference}
+\label{except_8c}\index{c/src/except.c@{c/src/except.c}}
+{\ttfamily \#include $<$stdarg.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/except.\+h\char`\"{}}\newline
+Include dependency graph for except.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=334pt]{except_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{except_8c_ac8928cf36c3e890d2814a0cc46d3f1ca}{except\+\_\+on}} (int cond, const char $\ast$fmt,...)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+jmp\+\_\+buf \mbox{\hyperlink{except_8c_adac96dcda5bbd6c9711de17d442ccf4c}{except\+\_\+buf}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{except_8c_ac8928cf36c3e890d2814a0cc46d3f1ca}\label{except_8c_ac8928cf36c3e890d2814a0cc46d3f1ca}} 
+\index{except.c@{except.c}!except\_on@{except\_on}}
+\index{except\_on@{except\_on}!except.c@{except.c}}
+\doxysubsubsection{\texorpdfstring{except\_on()}{except\_on()}}
+{\footnotesize\ttfamily void except\+\_\+on (\begin{DoxyParamCaption}\item[{int}]{cond,  }\item[{const char $\ast$}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+If cond is not 0 then raises an exception. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{except_8c_ac8928cf36c3e890d2814a0cc46d3f1ca_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{except_8c_adac96dcda5bbd6c9711de17d442ccf4c}\label{except_8c_adac96dcda5bbd6c9711de17d442ccf4c}} 
+\index{except.c@{except.c}!except\_buf@{except\_buf}}
+\index{except\_buf@{except\_buf}!except.c@{except.c}}
+\doxysubsubsection{\texorpdfstring{except\_buf}{except\_buf}}
+{\footnotesize\ttfamily jmp\+\_\+buf except\+\_\+buf}
+
+Allows a syntax of the form \begin{DoxyVerb}TRY { some code } CATCH { remedy code }
+\end{DoxyVerb}
+ To raise an exception use except\+\_\+on(cond, fmt, ...) whose parameter list from fmt on is like the one of printf. Exception handler. 

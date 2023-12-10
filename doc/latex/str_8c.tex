@@ -1,0 +1,199 @@
+\hypertarget{str_8c}{}\doxysection{c/src/str.c File Reference}
+\label{str_8c}\index{c/src/str.c@{c/src/str.c}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/except.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/stack.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/str.\+h\char`\"{}}\newline
+Include dependency graph for str.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structstr__table__s}{str\+\_\+table\+\_\+s}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{str_8c_a6511bfd47ae935d09420c07d0ae15af9}{TABSIZE}}~(1024)  /$\ast$ Need to be a power of 2 $\ast$/
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structstr__table__s}{str\+\_\+table\+\_\+s}} $\ast$ \mbox{\hyperlink{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}{str\+\_\+table\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}{str\+\_\+table\+\_\+t}} \mbox{\hyperlink{str_8c_ac8e47715170eb14fac78466c1599f068}{str\+\_\+table\+\_\+new}} (unsigned h)
+\item 
+static unsigned \mbox{\hyperlink{str_8c_a805128a19cc92034ca58cfa4a4e4c2cb}{str\+\_\+hash}} (unsigned h, const char $\ast$s, size\+\_\+t n)
+\item 
+char $\ast$ \mbox{\hyperlink{str_8c_aacccbe51630209e2e7873b91c03f5a92}{str\+\_\+cat}} (const char $\ast$s1, const char $\ast$s2)
+\item 
+char $\ast$ \mbox{\hyperlink{str_8c_ab7adfce1ea07ad97736670384b882c62}{str\+\_\+new}} (const char $\ast$s, size\+\_\+t n)
+\item 
+void \mbox{\hyperlink{str_8c_a4a954738deddfb8de120e38a9123c421}{str\+\_\+reset}} (void)
+\item 
+void \mbox{\hyperlink{str_8c_ac9f00d395a5ff6592619dc16c6397b00}{str\+\_\+status}} (FILE $\ast$dump)
+\item 
+char $\ast$ \mbox{\hyperlink{str_8c_a157c8ddc38e6bf209798e9d5818d33c9}{str\+\_\+strip}} (char $\ast$s)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}{str\+\_\+table\+\_\+t}} \mbox{\hyperlink{str_8c_acbafc08679e726a67fe29852f8bcab1b}{str\+\_\+table}} \mbox{[}\mbox{\hyperlink{str_8c_a6511bfd47ae935d09420c07d0ae15af9}{TABSIZE}}\mbox{]} = \{0\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{str_8c_a6511bfd47ae935d09420c07d0ae15af9}\label{str_8c_a6511bfd47ae935d09420c07d0ae15af9}} 
+\index{str.c@{str.c}!TABSIZE@{TABSIZE}}
+\index{TABSIZE@{TABSIZE}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{TABSIZE}{TABSIZE}}
+{\footnotesize\ttfamily \#define TABSIZE~(1024)  /$\ast$ Need to be a power of 2 $\ast$/}
+
+Strings are stored into a hash table whose elements are stack items\+: each item of the stack contains a string whose hash encoding is the same.
+
+When a string is created, it is inserted or retrieved from the table. 
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}\label{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}} 
+\index{str.c@{str.c}!str\_table\_t@{str\_table\_t}}
+\index{str\_table\_t@{str\_table\_t}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_table\_t}{str\_table\_t}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structstr__table__s}{str\+\_\+table\+\_\+s}} $\ast$ \mbox{\hyperlink{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}{str\+\_\+table\+\_\+t}}}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{str_8c_aacccbe51630209e2e7873b91c03f5a92}\label{str_8c_aacccbe51630209e2e7873b91c03f5a92}} 
+\index{str.c@{str.c}!str\_cat@{str\_cat}}
+\index{str\_cat@{str\_cat}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_cat()}{str\_cat()}}
+{\footnotesize\ttfamily char$\ast$ str\+\_\+cat (\begin{DoxyParamCaption}\item[{const char $\ast$}]{s1,  }\item[{const char $\ast$}]{s2 }\end{DoxyParamCaption})}
+
+Concatenates two strings\+: a new string is created to contain the concatenation and its address is returned. If s1 == NULL then s2 is returned; if s2 == NULL then s1 is returned. s1 and s2 cannot be both NULL. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_aacccbe51630209e2e7873b91c03f5a92_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_aacccbe51630209e2e7873b91c03f5a92_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8c_a805128a19cc92034ca58cfa4a4e4c2cb}\label{str_8c_a805128a19cc92034ca58cfa4a4e4c2cb}} 
+\index{str.c@{str.c}!str\_hash@{str\_hash}}
+\index{str\_hash@{str\_hash}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_hash()}{str\_hash()}}
+{\footnotesize\ttfamily static unsigned str\+\_\+hash (\begin{DoxyParamCaption}\item[{unsigned}]{h,  }\item[{const char $\ast$}]{s,  }\item[{size\+\_\+t}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Simple minded hash function. The h parameter is used to compute the hash of a concatenation of strings s1 + s2\+: call str\+\_\+hash(str\+\_\+hash(0,s1,strlen(s1)),s2, strlen(s2). Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_a805128a19cc92034ca58cfa4a4e4c2cb_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8c_ab7adfce1ea07ad97736670384b882c62}\label{str_8c_ab7adfce1ea07ad97736670384b882c62}} 
+\index{str.c@{str.c}!str\_new@{str\_new}}
+\index{str\_new@{str\_new}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_new()}{str\_new()}}
+{\footnotesize\ttfamily char$\ast$ str\+\_\+new (\begin{DoxyParamCaption}\item[{const char $\ast$}]{s,  }\item[{size\+\_\+t}]{n }\end{DoxyParamCaption})}
+
+Create a new string from a text starting at s and with length n and returns its address. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_ab7adfce1ea07ad97736670384b882c62_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_ab7adfce1ea07ad97736670384b882c62_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8c_a4a954738deddfb8de120e38a9123c421}\label{str_8c_a4a954738deddfb8de120e38a9123c421}} 
+\index{str.c@{str.c}!str\_reset@{str\_reset}}
+\index{str\_reset@{str\_reset}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_reset()}{str\_reset()}}
+{\footnotesize\ttfamily void str\+\_\+reset (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Resets all strings\+: don\textquotesingle{}t free them explicitly, that is done by \mbox{\hyperlink{stack_8h_a40264fa48696006f6219eb5731d5aa98}{stack\+\_\+reset()}} that destroys data inside stack elements. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_a4a954738deddfb8de120e38a9123c421_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8c_ac9f00d395a5ff6592619dc16c6397b00}\label{str_8c_ac9f00d395a5ff6592619dc16c6397b00}} 
+\index{str.c@{str.c}!str\_status@{str\_status}}
+\index{str\_status@{str\_status}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_status()}{str\_status()}}
+{\footnotesize\ttfamily void str\+\_\+status (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{dump }\end{DoxyParamCaption})}
+
+Print on a file the current string table status. \mbox{\Hypertarget{str_8c_a157c8ddc38e6bf209798e9d5818d33c9}\label{str_8c_a157c8ddc38e6bf209798e9d5818d33c9}} 
+\index{str.c@{str.c}!str\_strip@{str\_strip}}
+\index{str\_strip@{str\_strip}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_strip()}{str\_strip()}}
+{\footnotesize\ttfamily char$\ast$ str\+\_\+strip (\begin{DoxyParamCaption}\item[{char $\ast$}]{s }\end{DoxyParamCaption})}
+
+Return the address of the substring of s which is stripped by spaces, both on the left and on the right\+: on the left the effect is achieved returing a pointer on the first non space character, on the right by setting to \textquotesingle{}\textbackslash{}0\textquotesingle{} the leftmost space from the end of the string. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_a157c8ddc38e6bf209798e9d5818d33c9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8c_ac8e47715170eb14fac78466c1599f068}\label{str_8c_ac8e47715170eb14fac78466c1599f068}} 
+\index{str.c@{str.c}!str\_table\_new@{str\_table\_new}}
+\index{str\_table\_new@{str\_table\_new}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_table\_new()}{str\_table\_new()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}{str\+\_\+table\+\_\+t}} str\+\_\+table\+\_\+new (\begin{DoxyParamCaption}\item[{unsigned}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Allocate a new item in the h-\/th element of the string table and return its address. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=271pt]{str_8c_ac8e47715170eb14fac78466c1599f068_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8c_ac8e47715170eb14fac78466c1599f068_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{str_8c_acbafc08679e726a67fe29852f8bcab1b}\label{str_8c_acbafc08679e726a67fe29852f8bcab1b}} 
+\index{str.c@{str.c}!str\_table@{str\_table}}
+\index{str\_table@{str\_table}!str.c@{str.c}}
+\doxysubsubsection{\texorpdfstring{str\_table}{str\_table}}
+{\footnotesize\ttfamily \mbox{\hyperlink{str_8c_a2da1e44ed18dd3b17412f4ea4ff16724}{str\+\_\+table\+\_\+t}} str\+\_\+table\mbox{[}\mbox{\hyperlink{str_8c_a6511bfd47ae935d09420c07d0ae15af9}{TABSIZE}}\mbox{]} = \{0\}\hspace{0.3cm}{\ttfamily [static]}}
+
+The string table is an array indexed by string hashes\+: each item points to a str\+\_\+table\+\_\+t with the list of all strings with that same hash. 

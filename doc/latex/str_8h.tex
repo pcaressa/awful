@@ -1,0 +1,113 @@
+\hypertarget{str_8h}{}\doxysection{c/header/str.h File Reference}
+\label{str_8h}\index{c/header/str.h@{c/header/str.h}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+Include dependency graph for str.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=169pt]{str_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+char $\ast$ \mbox{\hyperlink{str_8h_aacccbe51630209e2e7873b91c03f5a92}{str\+\_\+cat}} (const char $\ast$s1, const char $\ast$s2)
+\item 
+char $\ast$ \mbox{\hyperlink{str_8h_ab7adfce1ea07ad97736670384b882c62}{str\+\_\+new}} (const char $\ast$s, size\+\_\+t n)
+\item 
+void \mbox{\hyperlink{str_8h_a4a954738deddfb8de120e38a9123c421}{str\+\_\+reset}} (void)
+\item 
+void \mbox{\hyperlink{str_8h_ac9f00d395a5ff6592619dc16c6397b00}{str\+\_\+status}} (FILE $\ast$dump)
+\item 
+char $\ast$ \mbox{\hyperlink{str_8h_a157c8ddc38e6bf209798e9d5818d33c9}{str\+\_\+strip}} (char $\ast$s)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{str_8h_aacccbe51630209e2e7873b91c03f5a92}\label{str_8h_aacccbe51630209e2e7873b91c03f5a92}} 
+\index{str.h@{str.h}!str\_cat@{str\_cat}}
+\index{str\_cat@{str\_cat}!str.h@{str.h}}
+\doxysubsubsection{\texorpdfstring{str\_cat()}{str\_cat()}}
+{\footnotesize\ttfamily char$\ast$ str\+\_\+cat (\begin{DoxyParamCaption}\item[{const char $\ast$}]{s1,  }\item[{const char $\ast$}]{s2 }\end{DoxyParamCaption})}
+
+Concatenates two strings\+: a new string is created to contain the concatenation and its address is returned. If s1 == NULL then s2 is returned; if s2 == NULL then s1 is returned. s1 and s2 cannot be both NULL. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h_aacccbe51630209e2e7873b91c03f5a92_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h_aacccbe51630209e2e7873b91c03f5a92_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8h_ab7adfce1ea07ad97736670384b882c62}\label{str_8h_ab7adfce1ea07ad97736670384b882c62}} 
+\index{str.h@{str.h}!str\_new@{str\_new}}
+\index{str\_new@{str\_new}!str.h@{str.h}}
+\doxysubsubsection{\texorpdfstring{str\_new()}{str\_new()}}
+{\footnotesize\ttfamily char$\ast$ str\+\_\+new (\begin{DoxyParamCaption}\item[{const char $\ast$}]{s,  }\item[{size\+\_\+t}]{n }\end{DoxyParamCaption})}
+
+Create a new string from a text starting at s and with length n and returns its address. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h_ab7adfce1ea07ad97736670384b882c62_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h_ab7adfce1ea07ad97736670384b882c62_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8h_a4a954738deddfb8de120e38a9123c421}\label{str_8h_a4a954738deddfb8de120e38a9123c421}} 
+\index{str.h@{str.h}!str\_reset@{str\_reset}}
+\index{str\_reset@{str\_reset}!str.h@{str.h}}
+\doxysubsubsection{\texorpdfstring{str\_reset()}{str\_reset()}}
+{\footnotesize\ttfamily void str\+\_\+reset (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Resets all strings\+: don\textquotesingle{}t free them explicitly, that is done by \mbox{\hyperlink{stack_8h_a40264fa48696006f6219eb5731d5aa98}{stack\+\_\+reset()}} that destroys data inside stack elements. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h_a4a954738deddfb8de120e38a9123c421_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{str_8h_ac9f00d395a5ff6592619dc16c6397b00}\label{str_8h_ac9f00d395a5ff6592619dc16c6397b00}} 
+\index{str.h@{str.h}!str\_status@{str\_status}}
+\index{str\_status@{str\_status}!str.h@{str.h}}
+\doxysubsubsection{\texorpdfstring{str\_status()}{str\_status()}}
+{\footnotesize\ttfamily void str\+\_\+status (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{dump }\end{DoxyParamCaption})}
+
+Print on a file the current string table status. \mbox{\Hypertarget{str_8h_a157c8ddc38e6bf209798e9d5818d33c9}\label{str_8h_a157c8ddc38e6bf209798e9d5818d33c9}} 
+\index{str.h@{str.h}!str\_strip@{str\_strip}}
+\index{str\_strip@{str\_strip}!str.h@{str.h}}
+\doxysubsubsection{\texorpdfstring{str\_strip()}{str\_strip()}}
+{\footnotesize\ttfamily char$\ast$ str\+\_\+strip (\begin{DoxyParamCaption}\item[{char $\ast$}]{s }\end{DoxyParamCaption})}
+
+Return the address of the substring of s which is stripped by spaces, both on the left and on the right\+: on the left the effect is achieved returing a pointer on the first non space character, on the right by setting to \textquotesingle{}\textbackslash{}0\textquotesingle{} the leftmost space from the end of the string. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{str_8h_a157c8ddc38e6bf209798e9d5818d33c9_icgraph}
+\end{center}
+\end{figure}

@@ -1,0 +1,278 @@
+\hypertarget{awful__key_8c}{}\doxysection{c/src/awful\+\_\+key.c File Reference}
+\label{awful__key_8c}\index{c/src/awful\_key.c@{c/src/awful\_key.c}}
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../header/awful.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/awful\+\_\+key.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/except.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/stack.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../header/val.\+h\char`\"{}}\newline
+Include dependency graph for awful\+\_\+key.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{awful__key_8c_a86822ec914c68878f3ad8a09c0f68e33}{GETXY}}()
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_ad23e7c55525d0d68778d84cc40498ac3}{ADD}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_ac31068733022f744da6e1f97080870aa}{BOS}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a07641fda752746a4a976ca3ffa3e0ece}{COND}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_addac7dbff50c3e2e3fcd36a31e5120b4}{DIV}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_afcb4a545a0cbd59d0d8c26075d448ace}{EQ}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_abaf9dd14688d64a5b47879ba2ebd6f47}{GE}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a7edb62e18ebf10346a29cfef5977b3c4}{GT}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a6089f417e5d2234de7d1bb1ce7c577e9}{ISNIL}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_af8a793c888fe8193ac87ada5ead33c10}{LE}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a7e121b8794183b9b4d3b96eda2fba980}{LT}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_aa3121f67239180a029a3061235e8da3c}{MAX}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a47e8b128e7a97e47dfc6a68f2c5381fc}{MIN}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a1981ea703acef7dbaf12e50e29aae476}{MUL}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a039108fbed3b8d99d35197c0cfa4ef95}{NE}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a514bc7ea7e6fd36cb9ff006fde8d2fbc}{NIL}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_afd03de99f3875aa71a06bd2953fde7fa}{POW}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_abd088f4013839509c3d1ce77dd54f89d}{PUSH}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_a1747fcaf01d686c9def988470ec564ed}{SUB}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} \mbox{\hyperlink{awful__key_8c_acae6fbb093e1fe042a10627486cddd78}{TOS}} (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} env)
+\item 
+void $\ast$ \mbox{\hyperlink{awful__key_8c_ae1669d4e32d2a3dad67e4b69c2355aa1}{awful\+\_\+key\+\_\+find}} (char $\ast$t, unsigned n)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{awful__key_8c_a86822ec914c68878f3ad8a09c0f68e33}\label{awful__key_8c_a86822ec914c68878f3ad8a09c0f68e33}} 
+\index{awful\_key.c@{awful\_key.c}!GETXY@{GETXY}}
+\index{GETXY@{GETXY}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{GETXY}{GETXY}}
+{\footnotesize\ttfamily \#define GETXY(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    \mbox{\hyperlink{structval__s}{val\_t}} x = \mbox{\hyperlink{awful_8c_aaed2ba3c080e41c4db822886253cfa69}{awful\_eval}}(tokens, env);    \(\backslash\)}
+\DoxyCodeLine{    except\_on(x.\mbox{\hyperlink{structval__s_a06eb0aaf952580b3398f2bc67c11d494}{type}} != \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba12a90dfe20486bbe3e075afcd19ef2d0}{NUMBER}}, \textcolor{stringliteral}{"{}Number expected"{}});    \(\backslash\)}
+\DoxyCodeLine{    val\_t y = \mbox{\hyperlink{awful_8c_aaed2ba3c080e41c4db822886253cfa69}{awful\_eval}}(tokens, env);    \(\backslash\)}
+\DoxyCodeLine{    except\_on(y.type != \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba12a90dfe20486bbe3e075afcd19ef2d0}{NUMBER}}, \textcolor{stringliteral}{"{}Number expected"{}});}
+
+\end{DoxyCode}
+This submodule of the awful module manages built-\/in functions, aka keywords. Parses two expressions and check their values are numbers. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{awful__key_8c_ad23e7c55525d0d68778d84cc40498ac3}\label{awful__key_8c_ad23e7c55525d0d68778d84cc40498ac3}} 
+\index{awful\_key.c@{awful\_key.c}!ADD@{ADD}}
+\index{ADD@{ADD}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{ADD()}{ADD()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} ADD (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_ae1669d4e32d2a3dad67e4b69c2355aa1}\label{awful__key_8c_ae1669d4e32d2a3dad67e4b69c2355aa1}} 
+\index{awful\_key.c@{awful\_key.c}!awful\_key\_find@{awful\_key\_find}}
+\index{awful\_key\_find@{awful\_key\_find}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{awful\_key\_find()}{awful\_key\_find()}}
+{\footnotesize\ttfamily void$\ast$ awful\+\_\+key\+\_\+find (\begin{DoxyParamCaption}\item[{char $\ast$}]{text,  }\item[{unsigned}]{n }\end{DoxyParamCaption})}
+
+Check whether the string text is a keyword and if it is then return the pointer of the corresponding routine, casted to void$\ast$, else NULL. The string to check starts at text and is n characters long. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_ae1669d4e32d2a3dad67e4b69c2355aa1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_ac31068733022f744da6e1f97080870aa}\label{awful__key_8c_ac31068733022f744da6e1f97080870aa}} 
+\index{awful\_key.c@{awful\_key.c}!BOS@{BOS}}
+\index{BOS@{BOS}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{BOS()}{BOS()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} BOS (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_ac31068733022f744da6e1f97080870aa_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_a07641fda752746a4a976ca3ffa3e0ece}\label{awful__key_8c_a07641fda752746a4a976ca3ffa3e0ece}} 
+\index{awful\_key.c@{awful\_key.c}!COND@{COND}}
+\index{COND@{COND}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{COND()}{COND()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} COND (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_a07641fda752746a4a976ca3ffa3e0ece_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_addac7dbff50c3e2e3fcd36a31e5120b4}\label{awful__key_8c_addac7dbff50c3e2e3fcd36a31e5120b4}} 
+\index{awful\_key.c@{awful\_key.c}!DIV@{DIV}}
+\index{DIV@{DIV}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{DIV()}{DIV()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} DIV (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_afcb4a545a0cbd59d0d8c26075d448ace}\label{awful__key_8c_afcb4a545a0cbd59d0d8c26075d448ace}} 
+\index{awful\_key.c@{awful\_key.c}!EQ@{EQ}}
+\index{EQ@{EQ}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{EQ()}{EQ()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} EQ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_afcb4a545a0cbd59d0d8c26075d448ace_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=176pt]{awful__key_8c_afcb4a545a0cbd59d0d8c26075d448ace_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_abaf9dd14688d64a5b47879ba2ebd6f47}\label{awful__key_8c_abaf9dd14688d64a5b47879ba2ebd6f47}} 
+\index{awful\_key.c@{awful\_key.c}!GE@{GE}}
+\index{GE@{GE}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{GE()}{GE()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} GE (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_a7edb62e18ebf10346a29cfef5977b3c4}\label{awful__key_8c_a7edb62e18ebf10346a29cfef5977b3c4}} 
+\index{awful\_key.c@{awful\_key.c}!GT@{GT}}
+\index{GT@{GT}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{GT()}{GT()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} GT (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_a6089f417e5d2234de7d1bb1ce7c577e9}\label{awful__key_8c_a6089f417e5d2234de7d1bb1ce7c577e9}} 
+\index{awful\_key.c@{awful\_key.c}!ISNIL@{ISNIL}}
+\index{ISNIL@{ISNIL}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{ISNIL()}{ISNIL()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} ISNIL (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_a6089f417e5d2234de7d1bb1ce7c577e9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_af8a793c888fe8193ac87ada5ead33c10}\label{awful__key_8c_af8a793c888fe8193ac87ada5ead33c10}} 
+\index{awful\_key.c@{awful\_key.c}!LE@{LE}}
+\index{LE@{LE}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{LE()}{LE()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} LE (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_a7e121b8794183b9b4d3b96eda2fba980}\label{awful__key_8c_a7e121b8794183b9b4d3b96eda2fba980}} 
+\index{awful\_key.c@{awful\_key.c}!LT@{LT}}
+\index{LT@{LT}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{LT()}{LT()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} LT (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_aa3121f67239180a029a3061235e8da3c}\label{awful__key_8c_aa3121f67239180a029a3061235e8da3c}} 
+\index{awful\_key.c@{awful\_key.c}!MAX@{MAX}}
+\index{MAX@{MAX}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{MAX()}{MAX()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} MAX (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_a47e8b128e7a97e47dfc6a68f2c5381fc}\label{awful__key_8c_a47e8b128e7a97e47dfc6a68f2c5381fc}} 
+\index{awful\_key.c@{awful\_key.c}!MIN@{MIN}}
+\index{MIN@{MIN}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{MIN()}{MIN()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} MIN (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_a1981ea703acef7dbaf12e50e29aae476}\label{awful__key_8c_a1981ea703acef7dbaf12e50e29aae476}} 
+\index{awful\_key.c@{awful\_key.c}!MUL@{MUL}}
+\index{MUL@{MUL}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{MUL()}{MUL()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} MUL (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_a039108fbed3b8d99d35197c0cfa4ef95}\label{awful__key_8c_a039108fbed3b8d99d35197c0cfa4ef95}} 
+\index{awful\_key.c@{awful\_key.c}!NE@{NE}}
+\index{NE@{NE}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{NE()}{NE()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} NE (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_a039108fbed3b8d99d35197c0cfa4ef95_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_a514bc7ea7e6fd36cb9ff006fde8d2fbc}\label{awful__key_8c_a514bc7ea7e6fd36cb9ff006fde8d2fbc}} 
+\index{awful\_key.c@{awful\_key.c}!NIL@{NIL}}
+\index{NIL@{NIL}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{NIL()}{NIL()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} NIL (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_afd03de99f3875aa71a06bd2953fde7fa}\label{awful__key_8c_afd03de99f3875aa71a06bd2953fde7fa}} 
+\index{awful\_key.c@{awful\_key.c}!POW@{POW}}
+\index{POW@{POW}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{POW()}{POW()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} POW (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_abd088f4013839509c3d1ce77dd54f89d}\label{awful__key_8c_abd088f4013839509c3d1ce77dd54f89d}} 
+\index{awful\_key.c@{awful\_key.c}!PUSH@{PUSH}}
+\index{PUSH@{PUSH}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{PUSH()}{PUSH()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} PUSH (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_abd088f4013839509c3d1ce77dd54f89d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{awful__key_8c_a1747fcaf01d686c9def988470ec564ed}\label{awful__key_8c_a1747fcaf01d686c9def988470ec564ed}} 
+\index{awful\_key.c@{awful\_key.c}!SUB@{SUB}}
+\index{SUB@{SUB}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{SUB()}{SUB()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} SUB (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{awful__key_8c_acae6fbb093e1fe042a10627486cddd78}\label{awful__key_8c_acae6fbb093e1fe042a10627486cddd78}} 
+\index{awful\_key.c@{awful\_key.c}!TOS@{TOS}}
+\index{TOS@{TOS}!awful\_key.c@{awful\_key.c}}
+\doxysubsubsection{\texorpdfstring{TOS()}{TOS()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} TOS (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}}}]{env }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8c_acae6fbb093e1fe042a10627486cddd78_cgraph}
+\end{center}
+\end{figure}

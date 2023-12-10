@@ -1,0 +1,80 @@
+\hypertarget{except_8h}{}\doxysection{c/header/except.h File Reference}
+\label{except_8h}\index{c/header/except.h@{c/header/except.h}}
+{\ttfamily \#include $<$setjmp.\+h$>$}\newline
+Include dependency graph for except.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=188pt]{except_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{except_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{except_8h_ad2746371528bdf15c3910b7bf217dac0}{TRY}}~if(setjmp(\mbox{\hyperlink{except_8c_adac96dcda5bbd6c9711de17d442ccf4c}{except\+\_\+buf}})==0)
+\item 
+\#define \mbox{\hyperlink{except_8h_ae30f5c713cfa6a69c6b26492c992052b}{CATCH}}~else
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{except_8h_ac8928cf36c3e890d2814a0cc46d3f1ca}{except\+\_\+on}} (int cond, const char $\ast$fmt,...)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+jmp\+\_\+buf \mbox{\hyperlink{except_8h_adac96dcda5bbd6c9711de17d442ccf4c}{except\+\_\+buf}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{except_8h_ae30f5c713cfa6a69c6b26492c992052b}\label{except_8h_ae30f5c713cfa6a69c6b26492c992052b}} 
+\index{except.h@{except.h}!CATCH@{CATCH}}
+\index{CATCH@{CATCH}!except.h@{except.h}}
+\doxysubsubsection{\texorpdfstring{CATCH}{CATCH}}
+{\footnotesize\ttfamily \#define CATCH~else}
+
+\mbox{\Hypertarget{except_8h_ad2746371528bdf15c3910b7bf217dac0}\label{except_8h_ad2746371528bdf15c3910b7bf217dac0}} 
+\index{except.h@{except.h}!TRY@{TRY}}
+\index{TRY@{TRY}!except.h@{except.h}}
+\doxysubsubsection{\texorpdfstring{TRY}{TRY}}
+{\footnotesize\ttfamily \#define TRY~if(setjmp(\mbox{\hyperlink{except_8c_adac96dcda5bbd6c9711de17d442ccf4c}{except\+\_\+buf}})==0)}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{except_8h_ac8928cf36c3e890d2814a0cc46d3f1ca}\label{except_8h_ac8928cf36c3e890d2814a0cc46d3f1ca}} 
+\index{except.h@{except.h}!except\_on@{except\_on}}
+\index{except\_on@{except\_on}!except.h@{except.h}}
+\doxysubsubsection{\texorpdfstring{except\_on()}{except\_on()}}
+{\footnotesize\ttfamily void except\+\_\+on (\begin{DoxyParamCaption}\item[{int}]{cond,  }\item[{const char $\ast$}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+If cond is not 0 then raises an exception. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{except_8h_ac8928cf36c3e890d2814a0cc46d3f1ca_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{except_8h_adac96dcda5bbd6c9711de17d442ccf4c}\label{except_8h_adac96dcda5bbd6c9711de17d442ccf4c}} 
+\index{except.h@{except.h}!except\_buf@{except\_buf}}
+\index{except\_buf@{except\_buf}!except.h@{except.h}}
+\doxysubsubsection{\texorpdfstring{except\_buf}{except\_buf}}
+{\footnotesize\ttfamily jmp\+\_\+buf except\+\_\+buf\hspace{0.3cm}{\ttfamily [extern]}}
+
+Allows a syntax of the form \begin{DoxyVerb}TRY { some code } CATCH { remedy code }
+\end{DoxyVerb}
+ To raise an exception use except\+\_\+on(cond, fmt, ...) whose parameter list from fmt on is like the one of printf. Exception handler. 

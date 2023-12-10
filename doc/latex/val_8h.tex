@@ -1,0 +1,120 @@
+\hypertarget{val_8h}{}\doxysection{c/header/val.h File Reference}
+\label{val_8h}\index{c/header/val.h@{c/header/val.h}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}stack.\+h\char`\"{}}\newline
+Include dependency graph for val.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=178pt]{val_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{val_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structval__s}{val\+\_\+s}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structval__s}{val\+\_\+s}} \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \{ \newline
+\mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55bac157bdf0b85a40d2619cbc8bc1ae5fe2}{NONE}}
+, \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba12a90dfe20486bbe3e075afcd19ef2d0}{NUMBER}}
+, \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55baee847e634a4297b274316de8a8ca9921}{STRING}}
+, \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba868daeaf74b2132e2566214d51dc1c00}{ATOM}}
+, \newline
+\mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba129281444e94f5f509cba213d51a814d}{KEYWORD}}
+, \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba3bfeb3e4822bcc96abf42601a42bbcd3}{STACK}}
+, \mbox{\hyperlink{val_8h_a06fc87d81c62e9abb8790b6e5713c55bae2c4a03baadacd89b21c9bbbc951bd29}{CLOSURE}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{val_8h_ad3c9b94778817c948153b3c3f4406d06}{val\+\_\+fprint}} (FILE $\ast$f, \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}} v)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{val_8h_a9b5273bda990499c85be2ce163f31095}\label{val_8h_a9b5273bda990499c85be2ce163f31095}} 
+\index{val.h@{val.h}!val\_t@{val\_t}}
+\index{val\_t@{val\_t}!val.h@{val.h}}
+\doxysubsubsection{\texorpdfstring{val\_t}{val\_t}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structval__s}{val\+\_\+s}} \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}}}
+
+Type containing a single Awful value or token. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55b}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55b}} 
+\doxysubsubsection{\texorpdfstring{anonymous enum}{anonymous enum}}
+{\footnotesize\ttfamily anonymous enum}
+
+Constants used to encode values or tokens types. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{NONE@{NONE}!val.h@{val.h}}\index{val.h@{val.h}!NONE@{NONE}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55bac157bdf0b85a40d2619cbc8bc1ae5fe2}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55bac157bdf0b85a40d2619cbc8bc1ae5fe2}} 
+NONE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{NUMBER@{NUMBER}!val.h@{val.h}}\index{val.h@{val.h}!NUMBER@{NUMBER}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba12a90dfe20486bbe3e075afcd19ef2d0}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba12a90dfe20486bbe3e075afcd19ef2d0}} 
+NUMBER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STRING@{STRING}!val.h@{val.h}}\index{val.h@{val.h}!STRING@{STRING}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55baee847e634a4297b274316de8a8ca9921}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55baee847e634a4297b274316de8a8ca9921}} 
+STRING&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ATOM@{ATOM}!val.h@{val.h}}\index{val.h@{val.h}!ATOM@{ATOM}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba868daeaf74b2132e2566214d51dc1c00}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba868daeaf74b2132e2566214d51dc1c00}} 
+ATOM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{KEYWORD@{KEYWORD}!val.h@{val.h}}\index{val.h@{val.h}!KEYWORD@{KEYWORD}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba129281444e94f5f509cba213d51a814d}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba129281444e94f5f509cba213d51a814d}} 
+KEYWORD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STACK@{STACK}!val.h@{val.h}}\index{val.h@{val.h}!STACK@{STACK}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba3bfeb3e4822bcc96abf42601a42bbcd3}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55ba3bfeb3e4822bcc96abf42601a42bbcd3}} 
+STACK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CLOSURE@{CLOSURE}!val.h@{val.h}}\index{val.h@{val.h}!CLOSURE@{CLOSURE}}}\mbox{\Hypertarget{val_8h_a06fc87d81c62e9abb8790b6e5713c55bae2c4a03baadacd89b21c9bbbc951bd29}\label{val_8h_a06fc87d81c62e9abb8790b6e5713c55bae2c4a03baadacd89b21c9bbbc951bd29}} 
+CLOSURE&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{val_8h_ad3c9b94778817c948153b3c3f4406d06}\label{val_8h_ad3c9b94778817c948153b3c3f4406d06}} 
+\index{val.h@{val.h}!val\_fprint@{val\_fprint}}
+\index{val\_fprint@{val\_fprint}!val.h@{val.h}}
+\doxysubsubsection{\texorpdfstring{val\_fprint()}{val\_fprint()}}
+{\footnotesize\ttfamily void val\+\_\+fprint (\begin{DoxyParamCaption}\item[{FILE $\ast$}]{f,  }\item[{\mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}}}]{v }\end{DoxyParamCaption})}
+
+Print a value on a file. Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=267pt]{val_8h_ad3c9b94778817c948153b3c3f4406d06_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{val_8h_ad3c9b94778817c948153b3c3f4406d06_icgraph}
+\end{center}
+\end{figure}

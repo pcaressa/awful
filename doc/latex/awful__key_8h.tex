@@ -1,0 +1,56 @@
+\hypertarget{awful__key_8h}{}\doxysection{c/header/awful\+\_\+key.h File Reference}
+\label{awful__key_8h}\index{c/header/awful\_key.h@{c/header/awful\_key.h}}
+{\ttfamily \#include \char`\"{}stack.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}val.\+h\char`\"{}}\newline
+Include dependency graph for awful\+\_\+key.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{awful__key_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}}($\ast$ \mbox{\hyperlink{awful__key_8h_a690ec3ec54c11247fc42e255ee232918}{awful\+\_\+key\+\_\+t}}) (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \mbox{\hyperlink{awful__key_8h_abce8a5d101a8bf3d557d9ae34c6192c9}{awful\+\_\+key\+\_\+find}} (char $\ast$text, unsigned n)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{awful__key_8h_a690ec3ec54c11247fc42e255ee232918}\label{awful__key_8h_a690ec3ec54c11247fc42e255ee232918}} 
+\index{awful\_key.h@{awful\_key.h}!awful\_key\_t@{awful\_key\_t}}
+\index{awful\_key\_t@{awful\_key\_t}!awful\_key.h@{awful\_key.h}}
+\doxysubsubsection{\texorpdfstring{awful\_key\_t}{awful\_key\_t}}
+{\footnotesize\ttfamily typedef \mbox{\hyperlink{val_8h_a9b5273bda990499c85be2ce163f31095}{val\+\_\+t}}($\ast$ awful\+\_\+key\+\_\+t) (\mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}} $\ast$, \mbox{\hyperlink{stack_8h_a6d1fc96cfd1265fd092cbaba0679108c}{stack\+\_\+t}})}
+
+Data type of a pointer to a keyword routine, that is invoked when the keyword is parsed in a tokens list. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{awful__key_8h_abce8a5d101a8bf3d557d9ae34c6192c9}\label{awful__key_8h_abce8a5d101a8bf3d557d9ae34c6192c9}} 
+\index{awful\_key.h@{awful\_key.h}!awful\_key\_find@{awful\_key\_find}}
+\index{awful\_key\_find@{awful\_key\_find}!awful\_key.h@{awful\_key.h}}
+\doxysubsubsection{\texorpdfstring{awful\_key\_find()}{awful\_key\_find()}}
+{\footnotesize\ttfamily void$\ast$ awful\+\_\+key\+\_\+find (\begin{DoxyParamCaption}\item[{char $\ast$}]{text,  }\item[{unsigned}]{n }\end{DoxyParamCaption})}
+
+Check whether the string text is a keyword and if it is then return the pointer of the corresponding routine, casted to void$\ast$, else NULL. The string to check starts at text and is n characters long. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{awful__key_8h_abce8a5d101a8bf3d557d9ae34c6192c9_icgraph}
+\end{center}
+\end{figure}
