@@ -544,7 +544,7 @@ ENTER
         
         SI CONCATENA t IN FONDO A s.
     
-        QUANDO SI È FINITO, SI USA buf_del(s) PER
+        QUANDO SI E' FINITO, SI USA buf_del(s) PER
         CANCELLARE LA STRINGA.
     */
     
